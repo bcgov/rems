@@ -1,0 +1,15 @@
+Package: rems
+Type: Package
+Title: Get Data From British Columbia's Environmental Monitoring System
+Version: 0.1.0
+Authors@R: c(person("Andy", "Teucher", role = c("aut", "cre"),
+                    email = "andy.teucher@gov.bc.ca"),
+             person("Province of British Columbia", role = "cph"))
+Description: Downloads and parses data from B.C.s Environemtal Monitoring System
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  readr (>= 0.2.2),
+  httr (>= 1.2.1)
+RoxygenNote: 5.0.1
