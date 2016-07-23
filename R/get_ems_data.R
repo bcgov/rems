@@ -69,7 +69,7 @@ update_cache <- function(which) {
 
 write_cache <- function() {
   path <- rappdirs::user_data_dir("rems")
-  cache <- storr::storr_rds(path, default_namespace = "rems")
+  cache <- storr::storr_rds(path, mangle_key = TRUE, default_namespace = "rems")
   cache
 }
 
@@ -95,7 +95,12 @@ col_spec <- function() {
               COLLECTION_END = readr::col_datetime("%Y%m%d%H%M%S"))
 }
 
-remove_cache <- function() {
+#' Remove cached EMS data from your computer
+#'
+#' @return NULL
+#' @export
+remove_data_cache <- function() {
   cache <- write_cache()
   cache$destroy()
+  invisible(NULL)
 }
