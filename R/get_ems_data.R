@@ -56,7 +56,7 @@ update_cache <- function(which) {
   cache$set(which, data_obj)
 
   if (cache$exists("update_dates")) {
-    update_dates <- cache$get(update_dates)
+    update_dates <- cache$get("update_dates")
   } else {
     update_dates <- list()
   }
@@ -68,7 +68,7 @@ update_cache <- function(which) {
 
 write_cache <- function() {
   path <- rappdirs::user_data_dir("rems")
-  cache <- storr::storr_rds(path, mangle_key = TRUE, default_namespace = "rems")
+  cache <- storr::storr_rds(path, default_namespace = "rems")
   cache
 }
 
