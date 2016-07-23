@@ -29,8 +29,7 @@ get_ems_data <- function(which = "current") {
   }
 
   cache <- write_cache()
-  if (cache$exists(which)) {
-    if (cache$exists("update_dates")) {
+  if (cache$exists(which) && cache$exists("update_dates")) {
       update_date <- cache$get("update_dates")[[which]]
       update_which <- "n"
       if (update_date < Sys.Date()) {
@@ -40,7 +39,6 @@ get_ems_data <- function(which = "current") {
           update_cache(which)
         }
       }
-    }
   } else {
     update_cache(which)
   }
@@ -49,8 +47,9 @@ get_ems_data <- function(which = "current") {
 }
 
 update_cache <- function(which) {
-  message("Downloading latest ", which, " data")
   url <- get_data_url(which)
+  message("Downloading latest '", which,
+          "' EMS data from BC Data Catalogue (url:", url, ")")
   zipfile <- download_ems_data(url)
   data_obj <- read_ems_data(zipfile)
   cache <- write_cache()
@@ -75,7 +74,8 @@ write_cache <- function() {
 
 download_ems_data <- function(url) {
   tfile <- tempfile(fileext = ".zip")
-  res <- httr::GET(url, httr::write_disk(tfile))
+  res <- httr::GET(url, httr::write_disk(tfile), httr::progress("down"))
+  cat("\n")
   httr::stop_for_status(res)
   res$request$output$path
 }
@@ -87,6 +87,7 @@ get_data_url <- function(which) {
 }
 
 read_ems_data <- function(file) {
+  message("Reading data from file...")
   readr::read_csv(file, col_types = col_spec(), locale = readr::locale(tz = "Etc/GMT+8"))
 }
 
