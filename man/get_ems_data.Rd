@@ -7,7 +7,9 @@
 get_ems_data(which = "current")
 }
 \arguments{
-\item{which}{Do you want current (past 2 years) or historic data?}
+\item{which}{Do you want "current" (past 2 years; default) or "historic" data?
+Currently only supports current as the historic files are really big and
+need special handling that hasn't been implemented yet}
 }
 \value{
 a data frame

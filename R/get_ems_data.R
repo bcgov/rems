@@ -12,7 +12,9 @@
 
 #' get EMS data from BC Data Catalogue
 #'
-#' @param which Do you want current (past 2 years) or historic data?
+#' @param which Do you want "current" (past 2 years; default) or "historic" data?
+#'  Currently only supports current as the historic files are really big and
+#'  need special handling that hasn't been implemented yet
 #' @return a data frame
 #' @export
 #'

@@ -38,6 +38,18 @@ install_github("bcgov/rems")
 
 ```
 
+
+### Usage
+
+Currently there is only one function, `get_ems_data()`:
+
+```{r}
+library(rems)
+data <- get_ems_data()
+head(data[1:22])
+```
+
+
 ### Project Status
 
 The package is under active development.
