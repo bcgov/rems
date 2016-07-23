@@ -20,14 +20,57 @@
 #'
 #' @import httr
 #' @import readr
+#' @import storr
+#' @import rappdirs
 get_ems_data <- function(which = "current") {
   which <- match.arg(which, c("current", "historic"))
   if (which == "historic") {
     stop("Only downloading current data is currently supported")
   }
+
+  cache <- write_cache()
+  if (cache$exists(which)) {
+    if (cache$exists("update_dates")) {
+      update_date <- cache$get("update_dates")[[which]]
+      update_which <- "n"
+      if (update_date < Sys.Date()) {
+        update_which <- readline(paste0("Your version of ", which, " is dated ",
+                                        update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
+        if (update_which == "y") {
+          update_cache(which)
+        }
+      }
+    }
+  } else {
+    update_cache(which)
+  }
+
+  cache$get(which)
+}
+
+update_cache <- function(which) {
+  message("Downloading latest ", which, " data")
   url <- get_data_url(which)
   zipfile <- download_ems_data(url)
-  read_ems_data(zipfile)
+  data_obj <- read_ems_data(zipfile)
+  cache <- write_cache()
+  cache$set(which, data_obj)
+
+  if (cache$exists("update_dates")) {
+    update_dates <- cache$get(update_dates)
+  } else {
+    update_dates <- list()
+  }
+  update_dates[which] <- Sys.Date()
+
+  cache$set("update_dates", update_dates)
+  return(invisible(NULL))
+}
+
+write_cache <- function() {
+  path <- rappdirs::user_data_dir("rems")
+  cache <- storr::storr_rds(path, default_namespace = "rems")
+  cache
 }
 
 download_ems_data <- function(url) {
@@ -52,8 +95,7 @@ col_spec <- function() {
               COLLECTION_END = readr::col_datetime("%Y%m%d%H%M%S"))
 }
 
-# dat <- get_ems_data()
-# path <- rappdirs::user_data_dir("rems")
-# cache <- storr::storr_rds(path, default_namespace = "rems")
-# cache$set("current_ems", dat)
-# bar <- cache$get("current_ems")
+remove_cache <- function() {
+  cache <- write_cache()
+  cache$destroy()
+}

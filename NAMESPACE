@@ -2,4 +2,6 @@
 
 export(get_ems_data)
 import(httr)
+import(rappdirs)
 import(readr)
+import(storr)
