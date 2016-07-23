@@ -51,3 +51,9 @@ col_spec <- function() {
   readr::cols(COLLECTION_START = readr::col_datetime("%Y%m%d%H%M%S"),
               COLLECTION_END = readr::col_datetime("%Y%m%d%H%M%S"))
 }
+
+# dat <- get_ems_data()
+# path <- rappdirs::user_data_dir("rems")
+# cache <- storr::storr_rds(path, default_namespace = "rems")
+# cache$set("current_ems", dat)
+# bar <- cache$get("current_ems")
