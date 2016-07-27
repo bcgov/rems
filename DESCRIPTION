@@ -15,3 +15,4 @@ Imports:
   rappdirs (>= 0.3.1),
   storr (>= 1.0.1)
 RoxygenNote: 5.0.1
+Suggests: testthat
