@@ -24,7 +24,7 @@
 #' @import rappdirs
 get_ems_data <- function(which = "current") {
   which <- match.arg(which, c("current", "historic"))
-  if (which == "historic") {
+  if (which == "historic" && packageVersion("readr") < "0.2.2.9000") {
     stop("Only downloading current data is currently supported")
   }
 
