@@ -65,14 +65,7 @@ update_cache <- function(which) {
   cache <- write_cache()
   cache$set(which, data_obj)
 
-  if (cache$exists("update_dates")) {
-    update_dates <- cache$get("update_dates")
-  } else {
-    update_dates <- list()
-  }
-  update_dates[which] <- Sys.Date()
-
-  cache$set("update_dates", update_dates)
+  set_update_date(which)
   data_obj
 }
 
@@ -96,22 +89,33 @@ get_data_url <- function(which) {
   data_urls[which]
 }
 
-read_ems_data <- function(file) {
-  message("Reading data from file...")
-  readr::read_csv(file, col_types = col_spec(), locale = readr::locale(tz = "Etc/GMT+8"))
-}
+set_update_date <- function(which, value = Sys.Date()) {
+  cache <- write_cache()
+  if (cache$exists("update_dates")) {
+    update_dates <- cache$get("update_dates")
+  } else {
+    update_dates <- list()
+  }
+  update_dates[which] <- value
 
-col_spec <- function() {
-  readr::cols(COLLECTION_START = readr::col_datetime("%Y%m%d%H%M%S"),
-              COLLECTION_END = readr::col_datetime("%Y%m%d%H%M%S"))
+  cache$set("update_dates", update_dates)
 }
 
 #' Remove cached EMS data from your computer
 #'
+#' @param which which data to remove? Either \code{"current"}, \code{"historic"},
+#' or \code{"all"}.
+#'
 #' @return NULL
 #' @export
-remove_data_cache <- function() {
+remove_data_cache <- function(which = c("all", "current", "historic")) {
   cache <- write_cache()
-  cache$destroy()
+  if (which == "all") {
+    cache$destroy()
+  } else {
+    cache$del(which)
+    set_update_date(which, NULL)
+  }
+
   invisible(NULL)
 }
