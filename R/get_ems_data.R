@@ -30,20 +30,23 @@ get_ems_data <- function(which = "current") {
 
   cache <- write_cache()
   if (cache$exists(which) && cache$exists("update_dates")) {
-      update_date <- cache$get("update_dates")[[which]]
-      update_which <- "n"
-      if (update_date < Sys.Date()) {
-        update_which <- readline(paste0("Your version of ", which, " is dated ",
-                                        update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
-        if (update_which == "y") {
-          update_cache(which)
-        }
-      }
+    update <- FALSE
+    update_date <- cache$get("update_dates")[[which]]
+    if (update_date < Sys.Date()) {
+      ans <- readline(paste0("Your version of ", which, " is dated ",
+                             update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
+      if (ans == "y") update <- TRUE
+    }
   } else {
-    update_cache(which)
+    update <- TRUE
   }
 
-  cache$get(which)
+  if (update) {
+    ret <- update_cache(which)
+  } else {
+    ret <- cache$get(which)
+  }
+  ret
 }
 
 update_cache <- function(which) {
@@ -63,7 +66,7 @@ update_cache <- function(which) {
   update_dates[which] <- Sys.Date()
 
   cache$set("update_dates", update_dates)
-  return(invisible(NULL))
+  data_obj
 }
 
 write_cache <- function() {
