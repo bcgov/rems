@@ -7,14 +7,19 @@
 get_ems_data(which = "current")
 }
 \arguments{
-\item{which}{Do you want "current" (past 2 years; default) or "historic" data?
-Currently only supports current as the historic files are really big and
-need special handling that hasn't been implemented yet}
+\item{which}{Do you want \code{"current"} (past 2 years; default) or
+\code{"historic"} data? Currently only supports current as the historic
+files are really big and need special handling that hasn't yet been implemented.}
 }
 \value{
 a data frame
 }
 \description{
-get EMS data from BC Data Catalogue
+EMS data are distributed through the \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results}{BC Data Catalogue}
+under the \href{http://www.data.gov.bc.ca/local/dbc/docs/license/OGL-vbc2.0.pdf}{Open Government License - British Columbia}.
+This function downloads the chosen data ('historic' - 1964-2014, or 'current'
+- 2015 to now) and imports it into your R session. It also caches the data so
+subsequent loads are much faster - if the data in the Data Catalogue are more
+current than that in your cache, you will be prompted to update it.
 }
 
