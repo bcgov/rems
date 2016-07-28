@@ -4,7 +4,11 @@
 \alias{remove_data_cache}
 \title{Remove cached EMS data from your computer}
 \usage{
-remove_data_cache()
+remove_data_cache(which = c("all", "current", "historic"))
+}
+\arguments{
+\item{which}{which data to remove? Either \code{"current"}, \code{"historic"},
+or \code{"all"}.}
 }
 \description{
 Remove cached EMS data from your computer

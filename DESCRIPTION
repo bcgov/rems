@@ -13,6 +13,7 @@ Imports:
   readr (>= 0.2.2),
   httr (>= 1.2.1),
   rappdirs (>= 0.3.1),
-  storr (>= 1.0.1)
+  storr (>= 1.0.1),
+  tibble (>= 1.1)
 RoxygenNote: 5.0.1
 Suggests: testthat

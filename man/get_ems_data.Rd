@@ -4,12 +4,15 @@
 \alias{get_ems_data}
 \title{get EMS data from BC Data Catalogue}
 \usage{
-get_ems_data(which = "current")
+get_ems_data(which = "current", n = -1)
 }
 \arguments{
 \item{which}{Do you want \code{"current"} (past 2 years; default) or
 \code{"historic"} data? Currently only supports current as the historic
 files are really big and need special handling that hasn't yet been implemented.}
+
+\item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = -1}).
+The 'current' dataset contains about 1 million rows, and the historic dataset contains about 10 million.}
 }
 \value{
 a data frame

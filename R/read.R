@@ -1,7 +1,9 @@
+#' @importFrom tibble as_tibble
 read_ems_data <- function(file, n) {
   message("Reading data from file...")
-  readr::read_csv(file, col_types = col_spec(), n_max = n,
+  ret <- readr::read_csv(file, col_types = col_spec(), n_max = n,
                   locale = readr::locale(tz = "Etc/GMT+8"))
+  tibble::as_tibble(ret)
 }
 
 col_spec <- function() {

@@ -22,6 +22,8 @@
 #' @param which Do you want \code{"current"} (past 2 years; default) or
 #' \code{"historic"} data? Currently only supports current as the historic
 #' files are really big and need special handling that hasn't yet been implemented.
+#' @param n how many rows of the data do you want to load? Defaults to all (\code{n = -1}).
+#' The 'current' dataset contains about 1 million rows, and the historic dataset contains about 10 million.
 #' @return a data frame
 #' @export
 #'
@@ -29,11 +31,11 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "current") {
+get_ems_data <- function(which = "current", n = -1) {
   which <- match.arg(which, c("current", "historic"))
-  if (which == "historic" && packageVersion("readr") < "0.2.2.9000") {
-    stop("Only downloading current data is currently supported")
-  }
+  # if (which == "historic" && packageVersion("readr") < "0.2.2.9000") {
+  #   stop("Only downloading current data is currently supported")
+  # }
 
   cache <- write_cache()
   if (cache$exists(which) && cache$exists("update_dates")) {
@@ -49,19 +51,20 @@ get_ems_data <- function(which = "current") {
   }
 
   if (update) {
-    ret <- update_cache(which)
+    ret <- update_cache(which = which, n = n)
   } else {
-    ret <- cache$get(which)
+    message("Fetching data from cache...")
+    ret <- tibble::as_tibble(cache$get(which))
   }
   ret
 }
 
-update_cache <- function(which) {
+update_cache <- function(which, n) {
   url <- get_data_url(which)
   message("Downloading latest '", which,
           "' EMS data from BC Data Catalogue (url:", url, ")")
-  zipfile <- download_ems_data(url)
-  data_obj <- read_ems_data(zipfile)
+  csv_file <- download_ems_data(url)
+  data_obj <- read_ems_data(csv_file, n = n)
   cache <- write_cache()
   cache$set(which, data_obj)
 
@@ -77,28 +80,17 @@ write_cache <- function() {
 
 download_ems_data <- function(url) {
   tfile <- tempfile(fileext = ".zip")
+  csvdir <- tempdir()
   res <- httr::GET(url, httr::write_disk(tfile), httr::progress("down"))
   cat("\n")
   httr::stop_for_status(res)
-  res$request$output$path
+  unzip(res$request$output$path, exdir = csvdir)
 }
 
 get_data_url <- function(which) {
   data_urls <- c(historic = "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip",
                  current = "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.zip")
   data_urls[which]
-}
-
-set_update_date <- function(which, value = Sys.Date()) {
-  cache <- write_cache()
-  if (cache$exists("update_dates")) {
-    update_dates <- cache$get("update_dates")
-  } else {
-    update_dates <- list()
-  }
-  update_dates[which] <- value
-
-  cache$set("update_dates", update_dates)
 }
 
 #' Remove cached EMS data from your computer
@@ -118,4 +110,16 @@ remove_data_cache <- function(which = c("all", "current", "historic")) {
   }
 
   invisible(NULL)
+}
+
+set_update_date <- function(which, value = Sys.Date()) {
+  cache <- write_cache()
+  if (cache$exists("update_dates")) {
+    update_dates <- cache$get("update_dates")
+  } else {
+    update_dates <- list()
+  }
+  update_dates[which] <- value
+
+  cache$set("update_dates", update_dates)
 }
