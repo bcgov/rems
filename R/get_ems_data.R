@@ -83,10 +83,16 @@ write_cache <- function() {
 download_ems_data <- function(url) {
   tfile <- tempfile(fileext = ".zip")
   csvdir <- tempdir()
-  res <- httr::GET(url, httr::write_disk(tfile), httr::progress("down"))
+  res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
   cat("\n")
   httr::stop_for_status(res)
   unzip(res$request$output$path, exdir = csvdir)
+}
+
+httr_progress <- function() {
+  if (interactive()) {
+    return(httr::progress("down"))
+  }
 }
 
 get_data_url <- function(which) {
@@ -108,7 +114,7 @@ remove_data_cache <- function(which = c("all", "current", "historic")) {
     cache$destroy()
   } else {
     cache$del(which)
-    set_update_date(which, NULL)
+    set_update_date(cache, which, NULL)
   }
 
   invisible(NULL)
