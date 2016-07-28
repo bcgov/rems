@@ -51,7 +51,7 @@ get_ems_data <- function(which = "current", n = -1) {
   }
 
   if (update) {
-    ret <- update_cache(which = which, n = n)
+    ret <- update_cache(cache, which = which, n = n)
   } else {
     message("Fetching data from cache...")
     ret <- tibble::as_tibble(cache$get(which))
@@ -59,16 +59,17 @@ get_ems_data <- function(which = "current", n = -1) {
   ret
 }
 
-update_cache <- function(which, n) {
+update_cache <- function(cache, which, n) {
   url <- get_data_url(which)
   message("Downloading latest '", which,
           "' EMS data from BC Data Catalogue (url:", url, ")")
   csv_file <- download_ems_data(url)
   data_obj <- read_ems_data(csv_file, n = n)
-  cache <- write_cache()
+  message("Caching data on disk...")
   cache$set(which, data_obj)
 
-  set_update_date(which)
+  set_update_date(cache, which)
+  message("Loading data...")
   data_obj
 }
 
@@ -78,6 +79,7 @@ write_cache <- function() {
   cache
 }
 
+#' @importFrom utils unzip
 download_ems_data <- function(url) {
   tfile <- tempfile(fileext = ".zip")
   csvdir <- tempdir()
@@ -112,8 +114,7 @@ remove_data_cache <- function(which = c("all", "current", "historic")) {
   invisible(NULL)
 }
 
-set_update_date <- function(which, value = Sys.Date()) {
-  cache <- write_cache()
+set_update_date <- function(cache, which, value = Sys.Date()) {
   if (cache$exists("update_dates")) {
     update_dates <- cache$get("update_dates")
   } else {
