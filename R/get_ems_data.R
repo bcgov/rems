@@ -109,6 +109,7 @@ get_data_url <- function(which) {
 #' @return NULL
 #' @export
 remove_data_cache <- function(which = c("all", "current", "historic")) {
+  message("Removing ", which, " data from your local cache...")
   cache <- write_cache()
   if (which == "all") {
     cache$destroy()

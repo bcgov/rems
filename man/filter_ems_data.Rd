@@ -4,12 +4,15 @@
 \alias{filter_ems_data}
 \title{Simple filtering of ems data by emsid and or dates.}
 \usage{
-filter_ems_data(x, emsid = NULL, from_date = NULL, to_date = NULL)
+filter_ems_data(x, emsid = NULL, parameter = NULL, from_date = NULL,
+  to_date = NULL)
 }
 \arguments{
 \item{x}{The ems dat frame to filter}
 
-\item{emsid}{A character string of the ems id of interest}
+\item{emsid}{A character vector of the ems id(s) of interest}
+
+\item{parameter}{a character vector of parameter names}
 
 \item{from_date}{A date string in a standard unambiguos format (e.g., "YYYY/MM/DD")}
 

@@ -27,23 +27,26 @@ bind_ems_data <- function(...) {
 #' Simple filtering of ems data by emsid and or dates.
 #'
 #' @param x The ems dat frame to filter
-#' @param emsid A character string of the ems id of interest
+#' @param emsid A character vector of the ems id(s) of interest
+#' @param parameter a character vector of parameter names
 #' @param from_date A date string in a standard unambiguos format (e.g., "YYYY/MM/DD")
 #' @param to_date A date string in a standard unambiguos format (e.g., "YYYY/MM/DD")
 #'
 #' @return A filtered data frame
 #' @export
 #' @importFrom dplyr filter_
-filter_ems_data <- function(x, emsid = NULL, from_date = NULL, to_date = NULL) {
+filter_ems_data <- function(x, emsid = NULL, parameter = NULL, from_date = NULL,
+                            to_date = NULL) {
   # See which arguments have been given a value
   argslist <- names(as.list(match.call()))[c(-1,-2)]
   if (!is.null(from_date)) from_date <- as.POSIXct(from_date, tz = ems_tz())
   if (!is.null(to_date)) to_date <- as.POSIXct(to_date, ems_tz())
   # Create the dots objects to be passed in to filter_, then remove the elements
   # didn't get passed a value, and remove names
-  dots <- list(emsid = ~EMS_ID == emsid,
+  dots <- list(emsid = ~EMS_ID %in% emsid,
+               parameter = ~PARAMETER %in% parameter,
                from_date = ~COLLECTION_START >= from_date,
-               to_date = ~COLLECTION_END >= to_date)
+               to_date = ~COLLECTION_END <= to_date)
   dots <- unname(dots[argslist])
   dplyr::filter_(x, .dots = dots)
 }
