@@ -1,7 +1,7 @@
 context("get_ems_data")
 
 test_that("read_ems_data works with current", {
-  test <- read_ems_data("current_expanded_test.csv")
+  test <- read_ems_data("current_expanded_test.csv", n = -1)
   expect_is(test, "data.frame")
   expect_equal(dim(test), c(4,55))
   expect_equal(names(test),
@@ -22,7 +22,7 @@ test_that("read_ems_data works with current", {
 })
 
 test_that("read_ems_data works with historic", {
-  test <- read_ems_data("historic_expanded_test.csv")
+  test <- read_ems_data("historic_expanded_test.csv", n = -1)
   expect_is(test, "data.frame")
   expect_equal(dim(test), c(4,55))
   expect_equal(names(test),
