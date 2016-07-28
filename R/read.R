@@ -1,8 +1,20 @@
+# Copyright 2016 Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
 #' @importFrom tibble as_tibble
 read_ems_data <- function(file, n) {
   message("Reading data from file...")
   ret <- readr::read_csv(file, col_types = col_spec(), n_max = n,
-                  locale = readr::locale(tz = "Etc/GMT+8"))
+                  locale = readr::locale(tz = ems_tz()))
   tibble::as_tibble(ret)
 }
 
@@ -62,4 +74,8 @@ col_spec <- function() {
               , WEIGHT_UNIT_1 = "c"
               , SPECIES = "c"
               , RESULT_LIFE_STAGE = "c")
+}
+
+ems_tz <- function() {
+  "Etc/GMT+8"
 }
