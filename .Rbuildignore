@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
-^README-.*\.png$
+^fig/README-.*\.png$
 ^CODE_OF_CONDUCT\.md$
 ^CONTRIBUTING\.md$
-^.*\.csv$
+^.*\.zip$

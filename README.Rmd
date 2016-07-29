@@ -8,8 +8,9 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "fig/README-"
 )
+rems::remove_data_cache("all")
 ```
 
 
@@ -21,9 +22,9 @@ envreportutils::devex_badge("exploration")
 
 # rems
 
-### Features
+An [R](https://www.r-project.org) package to download, import, and filter data from [BC's Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
-- Download and import data from EMS into R.
+The package pulls data from the [BC Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licensed under the [Open Government License - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
 ### Installation
 
@@ -41,12 +42,64 @@ install_github("bcgov/rems")
 
 ### Usage
 
-Currently there is only one function, `get_ems_data()`:
+You can use the `get_ems_data()` function to get current (last two years), or historic data:
 
 ```{r}
 library(rems)
-data <- get_ems_data()
-head(data[1:22])
+current <- get_ems_data("current")
+nrow(current)
+head(current[1:22])
+```
+
+Get historic data, but constrain how much to import as the full record is 
+over 10 million rows.
+
+```{r}
+historic <- get_ems_data("historic", n = 1e6)
+nrow(historic)
+```
+
+You can combine the previously imported historic and current data sets using `bind_ems_data`:
+
+```{r}
+all_data <- bind_ems_data(current, historic)
+nrow(all_data)
+```
+
+And you can do very basic filtering it on ems id and start / end dates:
+
+```{r}
+filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"), 
+                                 parameter = c("Aluminum Total", "Cadmium Total", 
+                                               "Copper Total", " Zinc Total", 
+                                               "Turbidity"),
+                                 from_date = "2011/02/05", 
+                                 to_date = "2015/12/31")
+nrow(filtered_data)
+```
+
+For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
+
+Then you can plot your data with ggplot2:
+
+```{r fig.height=6, fig.width=6}
+library(ggplot2)
+
+ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) + 
+  geom_point() + 
+  facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
+```
+
+When the data are downloaded from the BC Data Catalogue, they are cached so that 
+you don't have to download it every time you want to use it. If there is newer 
+data available in the Catalogue, you will be prompted the next time you use 
+`get_ems_data`.
+
+If you want to remove the cached data, use the function `remove_data_cache`. You 
+can remove all the data, just the historic, or just the current:
+
+```{r}
+remove_data_cache("current")
 ```
 
 

@@ -1,5 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+    ## Removing all data from your local cache...
+
 <a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="http://bcdevexchange.org/badge/2.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a>
 
 ------------------------------------------------------------------------
@@ -7,9 +9,9 @@
 rems
 ====
 
-### Features
+An [R](https://www.r-project.org) package to download, import, and filter data from [BC's Environemtnal Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
--   Download and import data from EMS into R.
+The package pulls data from the [BC Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licensed under the [Open Government License - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
 ### Installation
 
@@ -24,61 +26,87 @@ install_github("bcgov/rems")
 
 ### Usage
 
-Currently there is only one function, `get_ems_data()`:
+You can use the `get_ems_data()` function to get current (last two years), or historic data:
 
 ``` r
 library(rems)
-data <- get_ems_data()
-head(data[1:22])
+current <- get_ems_data("current")
+#> Downloading latest 'current' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.zip)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
+head(current[1:22])
+#> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
+#>     <chr>                        <chr>    <dbl>     <dbl>
 #> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 2 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 3 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#>           LOCATION_TYPE    COLLECTION_START      COLLECTION_END
-#> 1 RIVER,STREAM OR CREEK 2015-01-05 08:55:00 2015-01-05 08:55:00
-#> 2 RIVER,STREAM OR CREEK 2015-01-05 08:55:00 2015-01-05 08:55:00
-#> 3 RIVER,STREAM OR CREEK 2015-01-05 08:55:00 2015-01-05 08:55:00
-#> 4 RIVER,STREAM OR CREEK 2015-01-05 08:55:00 2015-01-05 08:55:00
-#> 5 RIVER,STREAM OR CREEK 2015-01-05 08:55:00 2015-01-05 08:55:00
-#> 6 RIVER,STREAM OR CREEK 2015-01-05 08:55:00 2015-01-05 08:55:00
-#>   REQUISITION_ID SAMPLING_AGENCY      ANALYZING_AGENCY
-#> 1       08402387   Water Quality Maxxam Analytics Inc.
-#> 2       08402387   Water Quality Maxxam Analytics Inc.
-#> 3       08402387   Water Quality Maxxam Analytics Inc.
-#> 4       08402387   Water Quality Maxxam Analytics Inc.
-#> 5       08402387   Water Quality Maxxam Analytics Inc.
-#> 6       08402387   Water Quality Maxxam Analytics Inc.
-#>         COLLECTION_METHOD SAMPLE_CLASS SAMPLE_STATE SAMPLE_DESCRIPTOR
-#> 1 Grab - Discrete Samples      Regular  Fresh Water           General
-#> 2 Grab - Discrete Samples      Regular  Fresh Water           General
-#> 3 Grab - Discrete Samples      Regular  Fresh Water           General
-#> 4 Grab - Discrete Samples      Regular  Fresh Water           General
-#> 5 Grab - Discrete Samples      Regular  Fresh Water           General
-#> 6 Grab - Discrete Samples      Regular  Fresh Water           General
-#>   PARAMETER_CODE                     PARAMETER ANALYTICAL_METHOD_CODE
-#> 1           0002                    Color True                   X106
-#> 2           0004                            pH                   5065
-#> 3           0008 Residue: Non-filterable (TSS)                   1071
-#> 4           0011          Specific Conductance                   X330
-#> 5           0015                     Turbidity                   XM08
-#> 6           0020             Temperature (Air)                   XM02
-#>                     ANALYTICAL_METHOD RESULT_LETTER RESULT     UNIT
-#> 1           Lab Cent;Visual Compariso          <NA>  36.00 Col.unit
-#> 2 Meter: Glass/Ref Low Ionic Strength          <NA>   7.33 pH units
-#> 3             Grav; Subsamp Buch 105C          <NA>  12.80     mg/L
-#> 4                               Meter          <NA>  56.90    uS/cm
-#> 5                        Nephelometer          <NA>   7.30      NTU
-#> 6                         Thermometer          <NA>   5.40        C
-#>   METHOD_DETECTION_LIMIT
-#> 1                    5.0
-#> 2                     NA
-#> 3                    1.0
-#> 4                    1.0
-#> 5                    0.1
-#> 6                    0.0
+#> # ... with 18 more variables: LOCATION_TYPE <chr>,
+#> #   COLLECTION_START <time>, COLLECTION_END <time>, REQUISITION_ID <chr>,
+#> #   SAMPLING_AGENCY <chr>, ANALYZING_AGENCY <chr>,
+#> #   COLLECTION_METHOD <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
+#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>,
+#> #   RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
+#> #   METHOD_DETECTION_LIMIT <dbl>
+```
+
+Get historic data, but constrain how much to import as the full record is over 10 million rows
+
+``` r
+historic <- get_ems_data("historic", n = 1e6)
+#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
+nrow(historic)
+#> [1] 1000000
+```
+
+You can combine the previously imported historic and current datasets using `bind_ems_data`:
+
+``` r
+all_data <- bind_ems_data(current, historic)
+nrow(all_data)
+#> [1] 1846797
+```
+
+And you can filter it on emsid and start / end dates:
+
+``` r
+filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"), 
+                                 parameter = c("Aluminum Total", "Cadmium Total", 
+                                               "Copper Total", " Zinc Total", 
+                                               "Turbidity"),
+                                 from_date = "2011/02/05", 
+                                 to_date = "2015/12/31")
+nrow(filtered_data)
+#> [1] 140
+```
+
+Then you can plot your data with ggplot2:
+
+``` r
+library(ggplot2)
+
+ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) + 
+  geom_point() + 
+  facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
+```
+
+![](fig/README-unnamed-chunk-8-1.png)
+
+When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted when you use `get_ems_data`.
+
+If you want to remove the cached data, use the function `remove_data_cache`. You can remove all the data, just the historic, or just the current:
+
+``` r
+remove_data_cache("current")
+#> Removing current data from your local cache...
 ```
 
 ### Project Status
