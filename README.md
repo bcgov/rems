@@ -1,7 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-    ## Removing all data from your local cache...
-
 <a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="http://bcdevexchange.org/badge/2.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a>
 
 ------------------------------------------------------------------------
@@ -9,7 +7,7 @@
 rems
 ====
 
-An [R](https://www.r-project.org) package to download, import, and filter data from [BC's Environemtnal Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
+An [R](https://www.r-project.org) package to download, import, and filter data from [BC's Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
 The package pulls data from the [BC Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licensed under the [Open Government License - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
@@ -35,6 +33,8 @@ current <- get_ems_data("current")
 #> Reading data from file...
 #> Caching data on disk...
 #> Loading data...
+nrow(current)
+#> [1] 846797
 head(current[1:22])
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -55,7 +55,7 @@ head(current[1:22])
 #> #   METHOD_DETECTION_LIMIT <dbl>
 ```
 
-Get historic data, but constrain how much to import as the full record is over 10 million rows
+Get historic data, but constrain how much to import as the full record is over 10 million rows.
 
 ``` r
 historic <- get_ems_data("historic", n = 1e6)
@@ -67,7 +67,7 @@ nrow(historic)
 #> [1] 1000000
 ```
 
-You can combine the previously imported historic and current datasets using `bind_ems_data`:
+You can combine the previously imported historic and current data sets using `bind_ems_data`:
 
 ``` r
 all_data <- bind_ems_data(current, historic)
@@ -75,7 +75,7 @@ nrow(all_data)
 #> [1] 1846797
 ```
 
-And you can filter it on emsid and start / end dates:
+And you can do very basic filtering it on ems id and start / end dates:
 
 ``` r
 filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"), 
@@ -87,6 +87,8 @@ filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"),
 nrow(filtered_data)
 #> [1] 140
 ```
+
+For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
 
 Then you can plot your data with ggplot2:
 
@@ -100,7 +102,7 @@ ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) +
 
 ![](fig/README-unnamed-chunk-8-1.png)
 
-When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted when you use `get_ems_data`.
+When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data`.
 
 If you want to remove the cached data, use the function `remove_data_cache`. You can remove all the data, just the historic, or just the current:
 
