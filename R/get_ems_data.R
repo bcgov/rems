@@ -54,7 +54,7 @@ get_ems_data <- function(which = "current", n = -1) {
     ret <- update_cache(cache, which = which, n = n)
   } else {
     message("Fetching data from cache...")
-    ret <- tibble::as_tibble(cache$get(which))
+    ret <- cache$get(which)
   }
   ret
 }
