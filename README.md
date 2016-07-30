@@ -34,7 +34,7 @@ current <- get_ems_data("current")
 #> Caching data on disk...
 #> Loading data...
 nrow(current)
-#> [1] 846797
+#> [1] 855392
 head(current[1:22])
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -67,12 +67,24 @@ nrow(historic)
 #> [1] 1000000
 ```
 
+If you decide you want to download more (lets get all the records now), you can add `force = TRUE`:
+
+``` r
+historic <- get_ems_data("historic", force = TRUE)
+#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
+nrow(historic)
+#> [1] 10518573
+```
+
 You can combine the previously imported historic and current data sets using `bind_ems_data`:
 
 ``` r
 all_data <- bind_ems_data(current, historic)
 nrow(all_data)
-#> [1] 1846797
+#> [1] 11373965
 ```
 
 And you can do very basic filtering it on ems id and start / end dates:
@@ -85,7 +97,7 @@ filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"),
                                  from_date = "2011/02/05", 
                                  to_date = "2015/12/31")
 nrow(filtered_data)
-#> [1] 140
+#> [1] 869
 ```
 
 For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
@@ -100,7 +112,7 @@ ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
-![](fig/README-unnamed-chunk-8-1.png)
+![](fig/README-unnamed-chunk-9-1.png)
 
 When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data`.
 

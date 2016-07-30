@@ -59,6 +59,14 @@ historic <- get_ems_data("historic", n = 1e6)
 nrow(historic)
 ```
 
+If you decide you want to download more (lets get all the records now), 
+you can add `force = TRUE`:
+
+```{r}
+historic <- get_ems_data("historic", force = TRUE)
+nrow(historic)
+```
+
 You can combine the previously imported historic and current data sets using `bind_ems_data`:
 
 ```{r}
