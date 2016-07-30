@@ -23,6 +23,8 @@
 #' \code{"historic"} data? Currently only supports current as the historic
 #' files are really big and need special handling that hasn't yet been implemented.
 #' @param n how many rows of the data do you want to load? Defaults to all (\code{n = -1}).
+#' @param force Default \code{FALSE}. Setting to \code{TRUE} will download new data even
+#' if it's not out of date on your computer.
 #' The 'current' dataset contains about 1 million rows, and the historic dataset contains about 10 million.
 #' @return a data frame
 #' @export
@@ -31,23 +33,24 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "current", n = -1) {
+get_ems_data <- function(which = "current", n = -1, force = FALSE) {
   which <- match.arg(which, c("current", "historic"))
   # if (which == "historic" && packageVersion("readr") < "0.2.2.9000") {
   #   stop("Only downloading current data is currently supported")
   # }
 
   cache <- write_cache()
-  if (cache$exists(which) && cache$exists("update_dates")) {
-    update <- FALSE
+
+  update <- FALSE # Don't update by default
+  if (force || !cache$exists(which)) {
+    update <- TRUE
+  } else if (cache$exists("update_dates")) {
     update_date <- cache$get("update_dates")[[which]]
     if (update_date < Sys.Date()) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
                              update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
-      if (ans == "y") update <- TRUE
+      if (tolower(ans) == "y") update <- TRUE
     }
-  } else {
-    update <- TRUE
   }
 
   if (update) {
