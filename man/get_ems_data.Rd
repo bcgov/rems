@@ -4,7 +4,7 @@
 \alias{get_ems_data}
 \title{get EMS data from BC Data Catalogue}
 \usage{
-get_ems_data(which = "current", n = -1, force = FALSE)
+get_ems_data(which = "current", n = -1, cols = NULL, force = FALSE)
 }
 \arguments{
 \item{which}{Do you want \code{"current"} (past 2 years; default) or
@@ -12,6 +12,10 @@ get_ems_data(which = "current", n = -1, force = FALSE)
 files are really big and need special handling that hasn't yet been implemented.}
 
 \item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = -1}).}
+
+\item{cols}{which subset of columns to read. Can be \code{NULL} (default) which reads all
+columns, the shortcut code \code{"wq"} which returns a predefined subset of columns common
+for water quality analysis, or a character vector of column names (see details below)}
 
 \item{force}{Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 if it's not out of date on your computer.
@@ -27,5 +31,23 @@ This function downloads the chosen data ('historic' - 1964-2014, or 'current'
 - 2015 to now) and imports it into your R session. It also caches the data so
 subsequent loads are much faster - if the data in the Data Catalogue are more
 current than that in your cache, you will be prompted to update it.
+}
+\details{
+cols can specify any of the following column names as a character vector:
+
+\code{"EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE",
+"LOCATION_TYPE", "COLLECTION_START", "COLLECTION_END", "REQUISITION_ID",
+"SAMPLING_AGENCY", "ANALYZING_AGENCY", "COLLECTION_METHOD",
+"SAMPLE_CLASS", "SAMPLE_STATE", "SAMPLE_DESCRIPTOR", "PARAMETER_CODE",
+"PARAMETER", "ANALYTICAL_METHOD_CODE", "ANALYTICAL_METHOD", "RESULT_LETTER",
+"RESULT", "UNIT", "METHOD_DETECTION_LIMIT", "QA_INDEX_CODE", "UPPER_DEPTH",
+"LOWER_DEPTH", "TIDE", "AIR_FILTER_SIZE", "AIR_FLOW_VOLUME", "FLOW_UNIT",
+"COMPOSITE_ITEMS", "CONTINUOUS_AVERAGE", "CONTINUOUS_MAXIMUM",
+"CONTINUOUS_MINIMUM", "CONTINUOUS_UNIT_CODE", "CONTINUOUS_DURATION",
+"CONTINUOUS_DURATION_UNIT", "CONTINUOUS_DATA_POINTS", "TISSUE_TYPE",
+"SAMPLE_SPECIES", "SEX", "LIFE_STAGE", "BIO_SAMPLE_VOLUME", "VOLUME_UNIT",
+"BIO_SAMPLE_AREA", "AREA_UNIT", "BIO_SIZE_FROM", "BIO_SIZE_TO", "SIZE_UNIT",
+"BIO_SAMPLE_WEIGHT", "WEIGHT_UNIT", "BIO_SAMPLE_WEIGHT_FROM",
+"BIO_SAMPLE_WEIGHT_TO", "WEIGHT_UNIT_1", "SPECIES", "RESULT_LIFE_STAGE"}
 }
 

@@ -11,15 +11,18 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 #' @importFrom tibble as_tibble
-read_ems_data <- function(file, n) {
+read_ems_data <- function(file, n, cols) {
   message("Reading data from file...")
-  ret <- readr::read_csv(file, col_types = col_spec(), n_max = n,
+  if (cols == "wq") {
+    cols <- wq_cols()
+  }
+  ret <- readr::read_csv(file, col_types = col_spec(cols), n_max = n,
                   locale = readr::locale(tz = ems_tz()))
   tibble::as_tibble(ret)
 }
 
-col_spec <- function() {
-  readr::cols(EMS_ID = "c"
+col_spec <- function(subset = NULL) {
+  spec <- readr::cols_only(EMS_ID = "c"
               , MONITORING_LOCATION = "c"
               , LATITUDE = "d"
               , LONGITUDE = "d"
@@ -74,6 +77,30 @@ col_spec <- function() {
               , WEIGHT_UNIT_1 = "c"
               , SPECIES = "c"
               , RESULT_LIFE_STAGE = "c")
+  if (!is.null(subset)) {
+    spec$cols <- spec$cols[subset]
+  }
+  spec
+}
+
+wq_cols <- function() {
+  c("EMS_ID"
+    , "MONITORING_LOCATION"
+    , "LATITUDE"
+    , "LONGITUDE"
+    , "LOCATION_TYPE"
+    , "COLLECTION_START"
+    , "PARAMETER_CODE"
+    , "PARAMETER"
+    , "ANALYTICAL_METHOD_CODE"
+    , "ANALYTICAL_METHOD"
+    , "RESULT_LETTER"
+    , "RESULT"
+    , "UNIT"
+    , "METHOD_DETECTION_LIMIT"
+    , "QA_INDEX_CODE"
+    , "UPPER_DEPTH"
+    , "LOWER_DEPTH")
 }
 
 ems_tz <- function() {
