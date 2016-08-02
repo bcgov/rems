@@ -8,8 +8,7 @@ get_ems_data(which = "current", n = -1, cols = "wq", force = FALSE)
 }
 \arguments{
 \item{which}{Do you want \code{"current"} (past 2 years; default) or
-\code{"historic"} data? Currently only supports current as the historic
-files are really big and need special handling that hasn't yet been implemented.}
+\code{"historic"} data?}
 
 \item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = -1}).}
 

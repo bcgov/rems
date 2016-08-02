@@ -20,8 +20,7 @@
 #' current than that in your cache, you will be prompted to update it.
 #'
 #' @param which Do you want \code{"current"} (past 2 years; default) or
-#' \code{"historic"} data? Currently only supports current as the historic
-#' files are really big and need special handling that hasn't yet been implemented.
+#' \code{"historic"} data?
 #' @param n how many rows of the data do you want to load? Defaults to all (\code{n = -1}).
 #' @param cols which subset of columns to read. Can be \code{"all"} which reads all
 #' columns, \code{"wq"} (default) which returns a predefined subset of columns common
@@ -63,9 +62,6 @@
 #' @import rappdirs
 get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) {
   which <- match.arg(which, c("current", "historic"))
-  # if (which == "historic" && packageVersion("readr") < "0.2.2.9000") {
-  #   stop("Only downloading current data is currently supported")
-  # }
 
   cache <- write_cache()
 
@@ -96,6 +92,7 @@ update_cache <- function(cache, which, n, cols) {
           "' EMS data from BC Data Catalogue (url:", url, ")")
   csv_file <- download_ems_data(url)
   data_obj <- read_ems_data(csv_file, n = n, cols = cols)
+
   message("Caching data on disk...")
   cache$set(which, data_obj)
 
@@ -139,7 +136,10 @@ get_data_url <- function(which) {
 #'
 #' @return NULL
 #' @export
-remove_data_cache <- function(which = c("all", "current", "historic")) {
+remove_data_cache <- function(which) {
+  if (!which %in% c("all", "current", "historic")) {
+    stop("'which' must be one of 'all', 'current', 'historic'")
+  }
   message("Removing ", which, " data from your local cache...")
   cache <- write_cache()
   if (which == "all") {
