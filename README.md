@@ -34,9 +34,9 @@ current <- get_ems_data("current")
 #> Caching data on disk...
 #> Loading data...
 nrow(current)
-#> [1] 855392
-head(current[1:22])
-#> # A tibble: 6 x 22
+#> [1] 871925
+head(current)
+#> # A tibble: 6 x 17
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
 #>     <chr>                        <chr>    <dbl>     <dbl>
 #> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
@@ -45,15 +45,15 @@ head(current[1:22])
 #> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> # ... with 18 more variables: LOCATION_TYPE <chr>,
-#> #   COLLECTION_START <time>, COLLECTION_END <time>, REQUISITION_ID <chr>,
-#> #   SAMPLING_AGENCY <chr>, ANALYZING_AGENCY <chr>,
-#> #   COLLECTION_METHOD <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
-#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> # ... with 13 more variables: LOCATION_TYPE <chr>,
+#> #   COLLECTION_START <time>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>,
 #> #   RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
-#> #   METHOD_DETECTION_LIMIT <dbl>
+#> #   METHOD_DETECTION_LIMIT <dbl>, QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>,
+#> #   LOWER_DEPTH <dbl>
 ```
+
+By default, `get_ems_data` imports only a subset of columns that are useful for water quality analysis. This is controlled by the `cols` argumnet, which has a default value of `"wq"`. This can be set to `"all"` to download all of the columns, or a character vector of column names (see `?get_ems_data` for details).
 
 Get historic data, but constrain how much to import as the full record is over 10 million rows.
 
@@ -84,7 +84,7 @@ You can combine the previously imported historic and current data sets using `bi
 ``` r
 all_data <- bind_ems_data(current, historic)
 nrow(all_data)
-#> [1] 11373965
+#> [1] 11390498
 ```
 
 And you can do very basic filtering it on ems id and start / end dates:

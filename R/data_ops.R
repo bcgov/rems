@@ -46,7 +46,8 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, from_date = NULL,
   dots <- list(emsid = ~EMS_ID %in% emsid,
                parameter = ~PARAMETER %in% parameter,
                from_date = ~COLLECTION_START >= from_date,
-               to_date = ~COLLECTION_END <= to_date)
+               to_date = ~COLLECTION_START <= to_date)
   dots <- unname(dots[argslist])
+
   dplyr::filter_(x, .dots = dots)
 }

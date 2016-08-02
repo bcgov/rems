@@ -4,7 +4,7 @@
 \alias{get_ems_data}
 \title{get EMS data from BC Data Catalogue}
 \usage{
-get_ems_data(which = "current", n = -1, cols = NULL, force = FALSE)
+get_ems_data(which = "current", n = -1, cols = "wq", force = FALSE)
 }
 \arguments{
 \item{which}{Do you want \code{"current"} (past 2 years; default) or
@@ -13,9 +13,9 @@ files are really big and need special handling that hasn't yet been implemented.
 
 \item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = -1}).}
 
-\item{cols}{which subset of columns to read. Can be \code{NULL} (default) which reads all
-columns, the shortcut code \code{"wq"} which returns a predefined subset of columns common
-for water quality analysis, or a character vector of column names (see details below)}
+\item{cols}{which subset of columns to read. Can be \code{"all"} which reads all
+columns, \code{"wq"} (default) which returns a predefined subset of columns common
+for water quality analysis, or a character vector of column names (see details below).}
 
 \item{force}{Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 if it's not out of date on your computer.
@@ -49,5 +49,13 @@ cols can specify any of the following column names as a character vector:
 "BIO_SAMPLE_AREA", "AREA_UNIT", "BIO_SIZE_FROM", "BIO_SIZE_TO", "SIZE_UNIT",
 "BIO_SAMPLE_WEIGHT", "WEIGHT_UNIT", "BIO_SAMPLE_WEIGHT_FROM",
 "BIO_SAMPLE_WEIGHT_TO", "WEIGHT_UNIT_1", "SPECIES", "RESULT_LIFE_STAGE"}
+
+The default value of \code{cols} is \code{"wq"}, which will return a data
+frame with the following columns:
+
+\code{"EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE",
+"LOCATION_TYPE", "COLLECTION_START", "PARAMETER_CODE", "PARAMETER",
+"ANALYTICAL_METHOD_CODE", "ANALYTICAL_METHOD", "RESULT_LETTER", "RESULT",
+"UNIT", "METHOD_DETECTION_LIMIT", "QA_INDEX_CODE", "UPPER_DEPTH", "LOWER_DEPTH"}
 }
 

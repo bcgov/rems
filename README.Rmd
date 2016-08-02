@@ -48,8 +48,13 @@ You can use the `get_ems_data()` function to get current (last two years), or hi
 library(rems)
 current <- get_ems_data("current")
 nrow(current)
-head(current[1:22])
+head(current)
 ```
+
+By default, `get_ems_data` imports only a subset of columns that are useful for 
+water quality analysis. This is controlled by the `cols` argumnet, which has a 
+default value of `"wq"`. This can be set to `"all"` to download all of the columns, 
+or a character vector of column names (see `?get_ems_data` for details).
 
 Get historic data, but constrain how much to import as the full record is 
 over 10 million rows.

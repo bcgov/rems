@@ -15,7 +15,10 @@ read_ems_data <- function(file, n, cols) {
   message("Reading data from file...")
   if (cols == "wq") {
     cols <- wq_cols()
+  } else if (cols == "all") {
+    cols <- NULL
   }
+
   ret <- readr::read_csv(file, col_types = col_spec(cols), n_max = n,
                   locale = readr::locale(tz = ems_tz()))
   tibble::as_tibble(ret)
@@ -24,8 +27,8 @@ read_ems_data <- function(file, n, cols) {
 col_spec <- function(subset = NULL) {
   spec <- readr::cols_only(EMS_ID = "c"
               , MONITORING_LOCATION = "c"
-              , LATITUDE = "d"
               , LONGITUDE = "d"
+              , LATITUDE = "d"
               , LOCATION_TYPE = "c"
               , COLLECTION_START = readr::col_datetime("%Y%m%d%H%M%S")
               , COLLECTION_END = readr::col_datetime("%Y%m%d%H%M%S")
@@ -86,8 +89,8 @@ col_spec <- function(subset = NULL) {
 wq_cols <- function() {
   c("EMS_ID"
     , "MONITORING_LOCATION"
-    , "LATITUDE"
     , "LONGITUDE"
+    , "LATITUDE"
     , "LOCATION_TYPE"
     , "COLLECTION_START"
     , "PARAMETER_CODE"
