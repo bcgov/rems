@@ -77,11 +77,17 @@ get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) 
     }
   }
 
+  if (cols == "wq") {
+    cols <- wq_cols()
+  } else if (cols == "all") {
+    cols <- all_cols()
+  }
+
   if (update) {
     ret <- update_cache(cache, which = which, n = n, cols = cols)
   } else {
     message("Fetching data from cache...")
-    ret <- cache$get(which)[cols]
+    ret <- cache$get(which)[, cols]
   }
   ret
 }
