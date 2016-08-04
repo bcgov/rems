@@ -10,7 +10,7 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  readr (>= 0.2.2),
+  readr (>= 1.0.0),
   httr (>= 1.2.1),
   rappdirs (>= 0.3.1),
   storr (>= 1.0.1),

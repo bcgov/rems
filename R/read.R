@@ -16,65 +16,68 @@ read_ems_data <- function(file, n, cols) {
 
   ret <- readr::read_csv(file, col_types = col_spec(cols), n_max = n,
                   locale = readr::locale(tz = ems_tz()))
+  readr::stop_for_problems(ret)
   tibble::as_tibble(ret)
 }
 
 col_spec <- function(subset = NULL) {
-  spec <- readr::cols_only(EMS_ID = "c"
-              , MONITORING_LOCATION = "c"
-              , LONGITUDE = "d"
-              , LATITUDE = "d"
-              , LOCATION_TYPE = "c"
-              , COLLECTION_START = readr::col_datetime("%Y%m%d%H%M%S")
-              , COLLECTION_END = readr::col_datetime("%Y%m%d%H%M%S")
-              , REQUISITION_ID = "c"
-              , SAMPLING_AGENCY = "c"
-              , ANALYZING_AGENCY = "c"
-              , COLLECTION_METHOD = "c"
-              , SAMPLE_CLASS = "c"
-              , SAMPLE_STATE = "c"
-              , SAMPLE_DESCRIPTOR = "c"
-              , PARAMETER_CODE = "c"
-              , PARAMETER = "c"
-              , ANALYTICAL_METHOD_CODE = "c"
-              , ANALYTICAL_METHOD = "c"
-              , RESULT_LETTER = "c"
-              , RESULT = "d"
-              , UNIT = "c"
-              , METHOD_DETECTION_LIMIT = "d"
-              , QA_INDEX_CODE = "c"
-              , UPPER_DEPTH = "d"
-              , LOWER_DEPTH = "d"
-              , TIDE = "c"
-              , AIR_FILTER_SIZE = "d"
-              , AIR_FLOW_VOLUME = "d"
-              , FLOW_UNIT = "c"
-              , COMPOSITE_ITEMS = "d"
-              , CONTINUOUS_AVERAGE = "d"
-              , CONTINUOUS_MAXIMUM = "d"
-              , CONTINUOUS_MINIMUM = "d"
-              , CONTINUOUS_UNIT_CODE = "c"
-              , CONTINUOUS_DURATION = "d"
-              , CONTINUOUS_DURATION_UNIT = "c"
-              , CONTINUOUS_DATA_POINTS = "d"
-              , TISSUE_TYPE = "c"
-              , SAMPLE_SPECIES = "c"
-              , SEX = "c"
-              , LIFE_STAGE = "c"
-              , BIO_SAMPLE_VOLUME = "d"
-              , VOLUME_UNIT = "c"
-              , BIO_SAMPLE_AREA = "d"
-              , AREA_UNIT = "c"
-              , BIO_SIZE_FROM = "d"
-              , BIO_SIZE_TO = "d"
-              , SIZE_UNIT = "c"
-              , BIO_SAMPLE_WEIGHT = "d"
-              , WEIGHT_UNIT = "c"
-              , BIO_SAMPLE_WEIGHT_FROM = "d"
-              , BIO_SAMPLE_WEIGHT_TO = "d"
-              , WEIGHT_UNIT_1 = "c"
-              , SPECIES = "c"
-              , RESULT_LIFE_STAGE = "c")
+  spec <- readr::cols_only(
+    EMS_ID = col_character(),
+    MONITORING_LOCATION = col_character(),
+    LATITUDE = col_double(),
+    LONGITUDE = col_double(),
+    LOCATION_TYPE = col_character(),
+    COLLECTION_START = col_datetime(format = "%Y%m%d%H%M%S"),
+    COLLECTION_END = col_datetime(format = "%Y%m%d%H%M%S"),
+    REQUISITION_ID = col_character(),
+    SAMPLING_AGENCY = col_character(),
+    ANALYZING_AGENCY = col_character(),
+    COLLECTION_METHOD = col_character(),
+    SAMPLE_CLASS = col_character(),
+    SAMPLE_STATE = col_character(),
+    SAMPLE_DESCRIPTOR = col_character(),
+    PARAMETER_CODE = col_character(),
+    PARAMETER = col_character(),
+    ANALYTICAL_METHOD_CODE = col_character(),
+    ANALYTICAL_METHOD = col_character(),
+    RESULT_LETTER = col_character(),
+    RESULT = col_double(),
+    UNIT = col_character(),
+    METHOD_DETECTION_LIMIT = col_double(),
+    QA_INDEX_CODE = col_character(),
+    UPPER_DEPTH = col_double(),
+    LOWER_DEPTH = col_double(),
+    TIDE = col_character(),
+    AIR_FILTER_SIZE = col_double(),
+    AIR_FLOW_VOLUME = col_double(),
+    FLOW_UNIT = col_character(),
+    COMPOSITE_ITEMS = col_double(),
+    CONTINUOUS_AVERAGE = col_double(),
+    CONTINUOUS_MAXIMUM = col_double(),
+    CONTINUOUS_MINIMUM = col_double(),
+    CONTINUOUS_UNIT_CODE = col_character(),
+    CONTINUOUS_DURATION = col_double(),
+    CONTINUOUS_DURATION_UNIT = col_character(),
+    CONTINUOUS_DATA_POINTS = col_double(),
+    TISSUE_TYPE = col_character(),
+    SAMPLE_SPECIES = col_character(),
+    SEX = col_character(),
+    LIFE_STAGE = col_character(),
+    BIO_SAMPLE_VOLUME = col_double(),
+    VOLUME_UNIT = col_character(),
+    BIO_SAMPLE_AREA = col_double(),
+    AREA_UNIT = col_character(),
+    BIO_SIZE_FROM = col_double(),
+    BIO_SIZE_TO = col_double(),
+    SIZE_UNIT = col_character(),
+    BIO_SAMPLE_WEIGHT = col_double(),
+    WEIGHT_UNIT = col_character(),
+    BIO_SAMPLE_WEIGHT_FROM = col_double(),
+    BIO_SAMPLE_WEIGHT_TO = col_double(),
+    WEIGHT_UNIT_1 = col_character(),
+    SPECIES = col_character(),
+    RESULT_LIFE_STAGE = col_character()
+  )
   if (!is.null(subset)) {
     spec$cols <- spec$cols[subset]
   }
