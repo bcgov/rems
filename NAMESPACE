@@ -3,6 +3,7 @@
 export(bind_ems_data)
 export(filter_ems_data)
 export(get_ems_data)
+export(get_update_date)
 export(remove_data_cache)
 import(httr)
 import(rappdirs)

@@ -69,7 +69,7 @@ get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) 
   if (force || !cache$exists(which)) {
     update <- TRUE
   } else if (cache$exists("update_dates")) {
-    update_date <- cache$get("update_dates")[[which]]
+    update_date <- get_update_date(which)
     if (update_date < Sys.Date()) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
                              update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
@@ -93,7 +93,8 @@ get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) 
 }
 
 update_cache <- function(cache, which, n, cols) {
-  url <- get_data_url(which)
+  file_meta <- get_file_metadata()[which,]
+  url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest '", which,
           "' EMS data from BC Data Catalogue (url:", url, ")")
   csv_file <- download_ems_data(url)
@@ -101,15 +102,15 @@ update_cache <- function(cache, which, n, cols) {
 
   message("Caching data on disk...")
   cache$set(which, data_obj)
+  set_update_date(cache = cache, which = which, value = file_meta[["date_upd"]])
 
-  set_update_date(cache, which)
   message("Loading data...")
   data_obj
 }
 
 write_cache <- function() {
   path <- rappdirs::user_data_dir("rems")
-  cache <- storr_rds2(path, compress = TRUE, default_namespace = "rems")
+  cache <- storr_rds2(path, compress = FALSE, default_namespace = "rems")
   cache
 }
 
@@ -129,10 +130,22 @@ httr_progress <- function() {
   }
 }
 
-get_data_url <- function(which) {
-  data_urls <- c(historic = "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip",
-                 current = "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.zip")
-  data_urls[which]
+get_file_metadata <- function() {
+  url <- base_url()
+  res <- httr::GET(url)
+  res_text <- httr::content(res, "text")
+  res_text_split <- unlist(strsplit(res_text, "</A>(<br>){1,2}\\s*|<A HREF=\"/datasets/949f2233-9612-4b06-92a9-903e817da659/ems.+?\\.zip\">"))[2:9]
+  res_text_split <- gsub("<br>\\s*|^\\s+|\\s+$", "", res_text_split)
+  res_text_split <- unlist(strsplit(res_text_split, "\\s{2,}"))
+  files_df <- data.frame(matrix(res_text_split, nrow = 4, byrow = TRUE))[c(2,4),]
+  colnames(files_df) <- c("date_upd", "time_upd", "size", "filename")
+  rownames(files_df) <- ifelse(grepl("current", files_df$filename), "current", "historic")
+  files_df$date_upd <- as.Date(files_df$date_upd, format = "%m/%d/%Y")
+  files_df
+}
+
+base_url <- function() {
+  "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659"
 }
 
 #' Remove cached EMS data from your computer
@@ -152,13 +165,13 @@ remove_data_cache <- function(which) {
     cache$destroy()
   } else {
     cache$del(which)
-    set_update_date(cache, which, NULL)
+    set_update_date(cache = cache, which = which, value = NULL)
   }
 
   invisible(NULL)
 }
 
-set_update_date <- function(cache, which, value = Sys.Date()) {
+set_update_date <- function(cache, which, value) {
   if (cache$exists("update_dates")) {
     update_dates <- cache$get("update_dates")
   } else {
@@ -167,4 +180,15 @@ set_update_date <- function(cache, which, value = Sys.Date()) {
   update_dates[which] <- value
 
   cache$set("update_dates", update_dates)
+}
+
+#' Get the date(s) when ems data was last updated.
+#'
+#' @param which The data for which you want to check it's update date. "current" or "historic
+#'
+#' @return The date the data was last updated (if it exists in your cache)
+#' @export
+get_update_date <- function(which) {
+  cache <- write_cache()
+  as.Date(cache$get("update_dates")[[which]], origin = "1970/01/01")
 }
