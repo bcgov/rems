@@ -130,6 +130,7 @@ httr_progress <- function() {
   }
 }
 
+#' @importFrom httr GET content
 get_file_metadata <- function() {
   url <- base_url()
   res <- httr::GET(url)
