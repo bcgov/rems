@@ -20,6 +20,6 @@ the object, invisibly
 }
 \description{
 You must specify either an object in your environment (via \code{obj}), or one of \code{"current"}
-or \code{"historic} (via \code{which}), but not both.
+or \code{"historic"} (via \code{which}), but not both.
 }
 
