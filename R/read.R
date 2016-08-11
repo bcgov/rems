@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 #' @importFrom tibble as_tibble
-read_ems_data <- function(file, n, cols) {
+read_ems_data <- function(file, n, cols, ...) {
   message("Reading data from file...")
 
   ret <- readr::read_csv(file, col_types = col_spec(cols), n_max = n,
-                  locale = readr::locale(tz = ems_tz()))
+                  locale = readr::locale(tz = ems_tz()), ...)
   readr::stop_for_problems(ret)
   tibble::as_tibble(ret)
 }
