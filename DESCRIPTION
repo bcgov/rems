@@ -17,7 +17,6 @@ Imports:
   tibble (>= 1.1),
   dplyr (>= 0.5.0),
   RSQLite (>= 1.0.0),
-  DBI (>= 0.4.1),
-  lazyeval (>= 0.2.0)
+  DBI (>= 0.4.1)
 RoxygenNote: 5.0.1
 Suggests: testthat

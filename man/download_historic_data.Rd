@@ -8,6 +8,8 @@ download_historic_data(n = 1e+06, force = FALSE)
 }
 \arguments{
 \item{n}{the chunk size to use to iteratively read and store the historic data}
+
+\item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}
 }
 \value{
 TRUE
