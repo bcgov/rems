@@ -63,7 +63,7 @@
 get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) {
   which <- match.arg(which, c("current", "historic"))
 
-  cache <- write_cache()
+  cache <- ._remsCache_
 
   update <- FALSE # Don't update by default
   if (force || !cache$exists(which)) {
@@ -84,7 +84,7 @@ get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) 
   }
 
   if (update) {
-    ret <- update_cache(cache, which = which, n = n, cols = cols)
+    ret <- update_cache(which = which, n = n, cols = cols)
   } else {
     message("Fetching data from cache...")
     ret <- cache$get(which)[, cols]
@@ -92,7 +92,8 @@ get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) 
   ret
 }
 
-update_cache <- function(cache, which, n, cols) {
+update_cache <- function(which, n, cols) {
+  cache <- ._remsCache_
   file_meta <- get_file_metadata()[which,]
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest '", which,
@@ -102,16 +103,10 @@ update_cache <- function(cache, which, n, cols) {
 
   message("Caching data on disk...")
   cache$set(which, data_obj)
-  set_update_date(cache = cache, which = which, value = file_meta[["date_upd"]])
+  set_update_date(which = which, value = file_meta[["date_upd"]])
 
   message("Loading data...")
   data_obj
-}
-
-write_cache <- function() {
-  path <- rappdirs::user_data_dir("rems")
-  cache <- storr_rds2(path, compress = FALSE, default_namespace = "rems")
-  cache
 }
 
 #' @importFrom utils unzip
@@ -161,18 +156,20 @@ remove_data_cache <- function(which) {
     stop("'which' must be one of 'all', 'current', 'historic'")
   }
   message("Removing ", which, " data from your local cache...")
-  cache <- write_cache()
+  cache <- ._remsCache_
   if (which == "all") {
     cache$destroy()
+    ._remsCache_ <<- write_cache()
   } else {
     cache$del(which)
-    set_update_date(cache = cache, which = which, value = NULL)
+    set_update_date(which = which, value = NULL)
   }
 
   invisible(NULL)
 }
 
-set_update_date <- function(cache, which, value) {
+set_update_date <- function(which, value) {
+  cache <- ._remsCache_
   if (cache$exists("update_dates")) {
     update_dates <- cache$get("update_dates")
   } else {
@@ -190,6 +187,9 @@ set_update_date <- function(cache, which, value) {
 #' @return The date the data was last updated (if it exists in your cache)
 #' @export
 get_update_date <- function(which) {
-  cache <- write_cache()
-  as.Date(cache$get("update_dates")[[which]], origin = "1970/01/01")
+  cache <- ._remsCache_
+  if (!cache$exists("update_dates")) return(-Inf)
+  update_date <- cache$get("update_dates")[[which]]
+  if (is.null(update_date)) return(-Inf)
+  as.Date(update_date, origin = "1970/01/01")
 }

@@ -43,10 +43,14 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, from_date = NULL,
   if (!is.null(to_date)) to_date <- as.POSIXct(to_date, ems_tz())
   # Create the dots objects to be passed in to filter_, then remove the elements
   # didn't get passed a value, and remove names
-  dots <- list(emsid = ~EMS_ID %in% emsid,
-               parameter = ~PARAMETER %in% parameter,
-               from_date = ~COLLECTION_START >= from_date,
-               to_date = ~COLLECTION_START <= to_date)
+  # dots <- list(emsid = ~EMS_ID %in% emsid,
+  #              parameter = ~PARAMETER %in% parameter,
+  #              from_date = ~COLLECTION_START >= from_date,
+  #              to_date = ~COLLECTION_START <= to_date)
+  dots <- list(emsid = lazyeval::interp(~EMS_ID %in% id, id = emsid),
+               parameter = lazyeval::interp(~PARAMETER %in% par, par = parameter),
+               from_date = lazyeval::interp(~COLLECTION_START >= from, from = from_date),
+               to_date = lazyeval::interp(~COLLECTION_START <= to, to = to_date))
   dots <- unname(dots[argslist])
 
   dplyr::filter_(x, .dots = dots)
