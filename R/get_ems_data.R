@@ -159,7 +159,7 @@ remove_data_cache <- function(which) {
   cache <- ._remsCache_
   if (which == "all") {
     cache$destroy()
-    ._remsCache_ <<- write_cache()
+    write_cache()
   } else {
     cache$del(which)
     set_update_date(which = which, value = NULL)
