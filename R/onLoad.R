@@ -2,7 +2,7 @@
 
 write_cache <- function() {
   path <- rappdirs::user_data_dir("rems")
-  cache <- storr_rds2(path, compress = FALSE, default_namespace = "rems")
+  cache <- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
   cache
 }
 
