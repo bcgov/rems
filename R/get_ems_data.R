@@ -20,8 +20,8 @@
 #' current than that in your cache, you will be prompted to update it.
 #'
 #' @param which Defaults to \code{"current"} (past 2 years) - this is the only option available right now.
-#' If you want historic data, use the \link{\code{download_historic_data}} and
-#' \link{\code{read_historic_data}} functions.
+#' If you want historic data, use the \code{\link{download_historic_data}} and
+#' \code{\link{read_historic_data}} functions.
 #' @param n how many rows of the data do you want to load? Defaults to all (\code{n = -1}).
 #' @param cols which subset of columns to read. Can be \code{"all"} which reads all
 #' columns, \code{"wq"} (default) which returns a predefined subset of columns common

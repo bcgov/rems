@@ -1,6 +1,6 @@
-#' Download and store the large historic ems data
+#' Download and store the large historic ems dataset
 #'
-#' @param n the chunk size to use to iteratively read and store the historic data
+#' @param n the chunk size to use to iteratively read and store the historic data (default 1 million)
 #' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
 #'
 #' @return TRUE

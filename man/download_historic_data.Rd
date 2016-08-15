@@ -2,12 +2,12 @@
 % Please edit documentation in R/ems_sqlite.R
 \name{download_historic_data}
 \alias{download_historic_data}
-\title{Download and store the large historic ems data}
+\title{Download and store the large historic ems dataset}
 \usage{
 download_historic_data(n = 1e+06, force = FALSE)
 }
 \arguments{
-\item{n}{the chunk size to use to iteratively read and store the historic data}
+\item{n}{the chunk size to use to iteratively read and store the historic data (default 1 million)}
 
 \item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}
 }
@@ -15,6 +15,6 @@ download_historic_data(n = 1e+06, force = FALSE)
 TRUE
 }
 \description{
-Download and store the large historic ems data
+Download and store the large historic ems dataset
 }
 

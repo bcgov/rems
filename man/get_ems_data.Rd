@@ -7,8 +7,9 @@
 get_ems_data(which = "current", n = -1, cols = "wq", force = FALSE)
 }
 \arguments{
-\item{which}{Do you want \code{"current"} (past 2 years; default) or
-\code{"historic"} data?}
+\item{which}{Defaults to \code{"current"} (past 2 years) - this is the only option available right now.
+If you want historic data, use the \code{\link{download_historic_data}} and
+\code{\link{read_historic_data}} functions.}
 
 \item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = -1}).}
 
@@ -18,7 +19,7 @@ for water quality analysis, or a character vector of column names (see details b
 
 \item{force}{Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 if it's not out of date on your computer.
-The 'current' dataset contains about 1 million rows, and the historic dataset contains about 10 million.}
+The 'current' dataset contains about 1 million rows.}
 }
 \value{
 a data frame
