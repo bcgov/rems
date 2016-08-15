@@ -19,15 +19,16 @@
 #' subsequent loads are much faster - if the data in the Data Catalogue are more
 #' current than that in your cache, you will be prompted to update it.
 #'
-#' @param which Do you want \code{"current"} (past 2 years; default) or
-#' \code{"historic"} data?
+#' @param which Defaults to \code{"current"} (past 2 years) - this is the only option available right now.
+#' If you want historic data, use the \link{\code{download_historic_data}} and
+#' \link{\code{read_historic_data}} functions.
 #' @param n how many rows of the data do you want to load? Defaults to all (\code{n = -1}).
 #' @param cols which subset of columns to read. Can be \code{"all"} which reads all
 #' columns, \code{"wq"} (default) which returns a predefined subset of columns common
 #' for water quality analysis, or a character vector of column names (see details below).
 #' @param force Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 #' if it's not out of date on your computer.
-#' The 'current' dataset contains about 1 million rows, and the historic dataset contains about 10 million.
+#' The 'current' dataset contains about 1 million rows.
 #' @return a data frame
 #' @details cols can specify any of the following column names as a character vector:
 #'
@@ -61,7 +62,7 @@
 #' @import storr
 #' @import rappdirs
 get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) {
-  which <- match.arg(which, c("current", "historic"))
+  which <- match.arg(which, c("current"))
 
   cache <- ._remsCache_
 
@@ -156,16 +157,27 @@ remove_data_cache <- function(which) {
     stop("'which' must be one of 'all', 'current', 'historic'")
   }
   message("Removing ", which, " data from your local cache...")
-  cache <- ._remsCache_
   if (which == "all") {
-    cache$destroy()
-    write_cache()
+    remove_it("historic")
+    remove_it("current")
   } else {
-    cache$del(which)
-    set_update_date(which = which, value = NULL)
+    remove_it(which)
   }
 
   invisible(NULL)
+}
+
+remove_it <- function(which) {
+  if (which == "historic") {
+    fpath <- write_db_path()
+    if (file.exists(fpath)) {
+      file.remove(write_db_path())
+    }
+  } else if (which == "current") {
+    cache <- ._remsCache_
+    cache$del(which)
+  }
+  lapply(c("historic", "current"), set_update_date, value = NULL)
 }
 
 set_update_date <- function(which, value) {
