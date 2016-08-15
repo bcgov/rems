@@ -100,14 +100,14 @@ update_cache <- function(which, n, cols) {
   message("Downloading latest '", which,
           "' EMS data from BC Data Catalogue (url:", url, ")")
   csv_file <- download_ems_data(url)
-  data_obj <- read_ems_data(csv_file, n = n, cols = cols)
+  data_obj <- read_ems_data(csv_file, n = n, cols = NULL)
 
   message("Caching data on disk...")
   cache$set(which, data_obj)
   set_update_date(which = which, value = file_meta[["date_upd"]])
 
   message("Loading data...")
-  data_obj
+  data_obj[, cols]
 }
 
 #' @importFrom utils unzip
