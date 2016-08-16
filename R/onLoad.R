@@ -21,6 +21,7 @@ burn_it_down <- function() {
   if (file.exists(rappdirs::user_data_dir("rems"))) {
     ._remsCache_$destroy()
   }
+  unlockBinding("._remsCache_", getNamespace("rems"))
   ._remsCache_ <<- write_cache()
-  invisible(TRUE)
+  lockBinding("._remsCache_", getNamespace("rems"))
 }
