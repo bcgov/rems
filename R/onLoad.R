@@ -16,7 +16,7 @@ write_cache <- function() {
 #' from the cache
 #'
 #' @return TRUE
-#' @export
+#' @noRd
 burn_it_down <- function() {
   if (file.exists(rappdirs::user_data_dir("rems"))) {
     ._remsCache_$destroy()

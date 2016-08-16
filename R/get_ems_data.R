@@ -177,7 +177,7 @@ remove_it <- function(which) {
     cache <- ._remsCache_
     cache$del(which)
   }
-  lapply(c("historic", "current"), set_update_date, value = NULL)
+  set_update_date(which, value = NULL)
 }
 
 set_update_date <- function(which, value) {
