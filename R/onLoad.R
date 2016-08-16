@@ -9,3 +9,10 @@ write_cache <- function() {
 .onLoad <- function(libname, pkgname) {
   ._remsCache_ <<- write_cache()
 }
+
+burn_it_down <- function() {
+  if (file.exists(rappdirs::user_data_dir("rems"))) {
+    ._remsCache_$destroy()
+  }
+  ._remsCache_ <<- write_cache()
+}
