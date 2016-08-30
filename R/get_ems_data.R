@@ -161,7 +161,7 @@ remove_data_cache <- function(which) {
   message("Removing ", which, " data from your local cache...")
   if (which == "all") {
     remove_it("historic")
-    remove_it("current")
+    burn_it_down()
   } else {
     remove_it(which)
   }
@@ -189,7 +189,8 @@ set_update_date <- function(which, value) {
   } else {
     update_dates <- list()
   }
-  update_dates[which] <- as.numeric(value) # store time as a numeric value
+  if (!is.null(value)) value <- as.numeric(value)
+  update_dates[which] <- value # store time as a numeric value
 
   cache$set("update_dates", update_dates)
 }
