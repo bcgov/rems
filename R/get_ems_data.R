@@ -71,7 +71,7 @@ get_ems_data <- function(which = "current", n = -1, cols = "wq", force = FALSE) 
     update <- TRUE
   } else if (cache$exists("update_dates")) {
     update_date <- get_update_date(which)
-    if (update_date < Sys.Date()) {
+    if (update_date > Sys.time()) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
                              update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
@@ -131,13 +131,15 @@ get_file_metadata <- function() {
   url <- base_url()
   res <- httr::GET(url)
   res_text <- httr::content(res, "text")
-  res_text_split <- unlist(strsplit(res_text, "</A>(<br>){1,2}\\s*|<A HREF=\"/datasets/949f2233-9612-4b06-92a9-903e817da659/ems.+?\\.zip\">"))[2:9]
+  res_text_split <- unlist(strsplit(res_text, "</A>(<br>){1,2}\\s*|<A HREF=\"/datasets/949f2233-9612-4b06-92a9-903e817da659/ems.+?\\.zip\">"))
+  res_text_split <- res_text_split[2:(length(res_text_split) - 1)]
   res_text_split <- gsub("<br>\\s*|^\\s+|\\s+$", "", res_text_split)
-  res_text_split <- unlist(strsplit(res_text_split, "\\s{2,}"))
-  files_df <- data.frame(matrix(res_text_split, nrow = 4, byrow = TRUE))[c(2,4),]
-  colnames(files_df) <- c("date_upd", "time_upd", "size", "filename")
-  rownames(files_df) <- ifelse(grepl("current", files_df$filename), "current", "historic")
-  files_df$date_upd <- as.Date(files_df$date_upd, format = "%m/%d/%Y")
+  res_text_split <- unlist(strsplit(res_text_split, "\\s{3,}"))
+  files_df <- data.frame(matrix(res_text_split, ncol = 3, byrow = TRUE))
+  colnames(files_df) <- c("date_upd", "size", "filename")
+  files_df <- files_df[grepl("expanded", files_df[[3]]), ]
+  rownames(files_df) <- ifelse(grepl("\\d.+_current", files_df$filename), "3yr_current", ifelse(grepl("current", files_df$filename), "current", "historic"))
+  files_df$date_upd <- strptime(files_df$date_upd, format = "%m/%d/%Y %R %p")
   files_df
 }
 
@@ -187,7 +189,7 @@ set_update_date <- function(which, value) {
   } else {
     update_dates <- list()
   }
-  update_dates[which] <- value
+  update_dates[which] <- as.numeric(value) # store time as a numeric value
 
   cache$set("update_dates", update_dates)
 }
@@ -203,5 +205,5 @@ get_update_date <- function(which) {
   if (!cache$exists("update_dates")) return(-Inf)
   update_date <- cache$get("update_dates")[[which]]
   if (is.null(update_date)) return(-Inf)
-  as.Date(update_date, origin = "1970/01/01")
+  as.POSIXct(update_date, origin = "1970/01/01") # converted numeric to POSIXct
 }
