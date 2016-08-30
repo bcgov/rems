@@ -3,7 +3,7 @@
 #' @param n the chunk size to use to iteratively read and store the historic data (default 1 million)
 #' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
 #'
-#' @return TRUE
+#' @return The path where the sqlite database is stored (invisibly).
 #' @export
 #'
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
@@ -31,7 +31,7 @@ download_historic_data <- function(n = 1e6, force = FALSE) {
 
   message("Successfully downloaded and stored the historic EMS data.\n",
           "You can access it with the 'read_historic_data' function")
-  invisible(TRUE)
+  invisible(db_path)
 }
 
 save_historic_data <- function(csv_file, db_path, n) {
