@@ -42,7 +42,7 @@ install_github("bcgov/rems")
 
 ### Usage
 
-You can use the `get_ems_data()` function to get current (last two years), or historic data:
+You can use the `get_ems_data()` function to get current (last two years) of data:
 
 ```{r}
 library(rems)
@@ -56,39 +56,43 @@ water quality analysis. This is controlled by the `cols` argumnet, which has a
 default value of `"wq"`. This can be set to `"all"` to download all of the columns, 
 or a character vector of column names (see `?get_ems_data` for details).
 
-Get historic data, but constrain how much to import as the full record is 
-over 10 million rows.
+You can filter the data to just get the records you want:
 
 ```{r}
-historic <- get_ems_data("historic", n = 1e6)
-nrow(historic)
+filtered_current <- filter_ems_data(current, emsid = c("0121580", "0126400"), 
+                                 parameter = c("Aluminum Total", "Cadmium Total", 
+                                               "Copper Total", " Zinc Total", 
+                                               "Turbidity"),
+                                 from_date = "2011/02/06", 
+                                 to_date = "2015/12/31")
 ```
 
-If you decide you want to download more (lets get all the records now), 
-you can add `force = TRUE`:
+
+You can also get the entire historic dataset, which has records back to 1964. This needs to be done in two steps: 
+
+1. First download the dataset using `download_historic_data`, which downloads 
+the data and stores it in a `sqlite` database:
 
 ```{r}
-historic <- get_ems_data("historic", force = TRUE)
-nrow(historic)
+download_historic_data()
+```
+
+2. Next, read in the historic data, supplying constraints to only import the records you want:
+
+```{r}
+filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
+                               parameter = c("Aluminum Total", "Cadmium Total",
+                                             "Copper Total", " Zinc Total",
+                                             "Turbidity"),
+                               from_date = "2001/02/05",
+                               to_date = "2011/12/31")
 ```
 
 You can combine the previously imported historic and current data sets using `bind_ems_data`:
 
 ```{r}
-all_data <- bind_ems_data(current, historic)
+all_data <- bind_ems_data(filtered_current, filtered_historic)
 nrow(all_data)
-```
-
-And you can do very basic filtering it on ems id and start / end dates:
-
-```{r}
-filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"), 
-                                 parameter = c("Aluminum Total", "Cadmium Total", 
-                                               "Copper Total", " Zinc Total", 
-                                               "Turbidity"),
-                                 from_date = "2011/02/05", 
-                                 to_date = "2015/12/31")
-nrow(filtered_data)
 ```
 
 For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
@@ -98,7 +102,7 @@ Then you can plot your data with ggplot2:
 ```{r fig.height=6, fig.width=6}
 library(ggplot2)
 
-ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) + 
+ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) + 
   geom_point() + 
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
@@ -106,7 +110,7 @@ ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) +
 When the data are downloaded from the BC Data Catalogue, they are cached so that 
 you don't have to download it every time you want to use it. If there is newer 
 data available in the Catalogue, you will be prompted the next time you use 
-`get_ems_data`.
+`get_ems_data` or `download_historic_data`.
 
 If you want to remove the cached data, use the function `remove_data_cache`. You 
 can remove all the data, just the historic, or just the current:

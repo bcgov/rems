@@ -24,7 +24,7 @@ install_github("bcgov/rems")
 
 ### Usage
 
-You can use the `get_ems_data()` function to get current (last two years), or historic data:
+You can use the `get_ems_data()` function to get current (last two years) of data:
 
 ``` r
 library(rems)
@@ -34,19 +34,19 @@ current <- get_ems_data("current")
 #> Caching data on disk...
 #> Loading data...
 nrow(current)
-#> [1] 871925
+#> [1] 940343
 head(current)
-#> # A tibble: 6 x 17
-#>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
-#>     <chr>                        <chr>    <dbl>     <dbl>
-#> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 2 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 3 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> # A tibble: 6 × 17
+#>    EMS_ID          MONITORING_LOCATION LONGITUDE LATITUDE
+#>     <chr>                        <chr>     <dbl>    <dbl>
+#> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
+#> 2 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
+#> 3 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
+#> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
+#> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
+#> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
 #> # ... with 13 more variables: LOCATION_TYPE <chr>,
-#> #   COLLECTION_START <time>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   COLLECTION_START <dttm>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>,
 #> #   RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
 #> #   METHOD_DETECTION_LIMIT <dbl>, QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>,
@@ -55,49 +55,48 @@ head(current)
 
 By default, `get_ems_data` imports only a subset of columns that are useful for water quality analysis. This is controlled by the `cols` argumnet, which has a default value of `"wq"`. This can be set to `"all"` to download all of the columns, or a character vector of column names (see `?get_ems_data` for details).
 
-Get historic data, but constrain how much to import as the full record is over 10 million rows.
+You can filter the data to just get the records you want:
 
 ``` r
-historic <- get_ems_data("historic", n = 1e6)
-#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
-nrow(historic)
-#> [1] 1000000
+filtered_current <- filter_ems_data(current, emsid = c("0121580", "0126400"), 
+                                 parameter = c("Aluminum Total", "Cadmium Total", 
+                                               "Copper Total", " Zinc Total", 
+                                               "Turbidity"),
+                                 from_date = "2011/02/06", 
+                                 to_date = "2015/12/31")
 ```
 
-If you decide you want to download more (lets get all the records now), you can add `force = TRUE`:
+You can also get the entire historic dataset, which has records back to 1964. This needs to be done in two steps:
+
+1.  First download the dataset using `download_historic_data`, which downloads the data and stores it in a `sqlite` database:
 
 ``` r
-historic <- get_ems_data("historic", force = TRUE)
+download_historic_data()
+#> This is going to take a while...
 #> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
-nrow(historic)
-#> [1] 10518573
+#> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
+#> |==========| 100%
+#> Successfully downloaded and stored the historic EMS data.
+#> You can access it with the 'read_historic_data' function
+```
+
+2.  Next, read in the historic data, supplying constraints to only import the records you want:
+
+``` r
+filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
+                               parameter = c("Aluminum Total", "Cadmium Total",
+                                             "Copper Total", " Zinc Total",
+                                             "Turbidity"),
+                               from_date = "2001/02/05",
+                               to_date = "2011/12/31")
 ```
 
 You can combine the previously imported historic and current data sets using `bind_ems_data`:
 
 ``` r
-all_data <- bind_ems_data(current, historic)
+all_data <- bind_ems_data(filtered_current, filtered_historic)
 nrow(all_data)
-#> [1] 11390498
-```
-
-And you can do very basic filtering it on ems id and start / end dates:
-
-``` r
-filtered_data <- filter_ems_data(all_data, emsid = c("0121580", "0126400"), 
-                                 parameter = c("Aluminum Total", "Cadmium Total", 
-                                               "Copper Total", " Zinc Total", 
-                                               "Turbidity"),
-                                 from_date = "2011/02/05", 
-                                 to_date = "2015/12/31")
-nrow(filtered_data)
-#> [1] 869
+#> [1] 2553
 ```
 
 For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
@@ -107,14 +106,14 @@ Then you can plot your data with ggplot2:
 ``` r
 library(ggplot2)
 
-ggplot(filtered_data, aes(x = COLLECTION_START, y = RESULT)) + 
+ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) + 
   geom_point() + 
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
 ![](fig/README-unnamed-chunk-9-1.png)
 
-When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data`.
+When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data` or `download_historic_data`.
 
 If you want to remove the cached data, use the function `remove_data_cache`. You can remove all the data, just the historic, or just the current:
 
