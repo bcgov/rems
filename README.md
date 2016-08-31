@@ -2,6 +2,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="http://bcdevexchange.org/badge/2.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a>
 
+[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+
 ------------------------------------------------------------------------
 
 rems
@@ -34,7 +36,7 @@ current <- get_ems_data("current")
 #> Caching data on disk...
 #> Loading data...
 nrow(current)
-#> [1] 940343
+#> [1] 943658
 head(current)
 #> # A tibble: 6 × 17
 #>    EMS_ID          MONITORING_LOCATION LONGITUDE LATITUDE
@@ -80,7 +82,7 @@ download_historic_data()
 #> You can access it with the 'read_historic_data' function
 ```
 
-2.  Next, read in the historic data, supplying constraints to only import the records you want:
+1.  Next, read in the historic data, supplying constraints to only import the records you want:
 
 ``` r
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
