@@ -26,7 +26,7 @@ bind_ems_data <- function(...) {
 
 #' Simple filtering of ems data by emsid and or dates.
 #'
-#' @param x The ems dat frame to filter
+#' @param x The ems data frame to filter
 #' @param emsid A character vector of the ems id(s) of interest
 #' @param parameter a character vector of parameter names
 #' @param from_date A date string in a standard unambiguos format (e.g., "YYYY/MM/DD")
