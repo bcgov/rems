@@ -64,12 +64,10 @@
 get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE) {
   which <- match.arg(which, c("current"))
 
-  cache <- ._remsCache_
-
   update <- FALSE # Don't update by default
-  if (force || !cache$exists(which)) {
+  if (force || !._remsCache_$exists(which)) {
     update <- TRUE
-  } else if (cache$exists("update_dates")) {
+  } else if (._remsCache_$exists("update_dates")) {
     update_date <- get_update_date(which)
     if (update_date > Sys.time()) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
@@ -88,13 +86,12 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE)
     ret <- update_cache(which = which, n = n, cols = cols)
   } else {
     message("Fetching data from cache...")
-    ret <- cache$get(which)[, cols]
+    ret <- ._remsCache_$get(which)[, cols]
   }
   ret
 }
 
 update_cache <- function(which, n, cols) {
-  cache <- ._remsCache_
   file_meta <- get_file_metadata()[which,]
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest '", which,
@@ -103,7 +100,7 @@ update_cache <- function(which, n, cols) {
   data_obj <- read_ems_data(csv_file, n = n, cols = NULL)
 
   message("Caching data on disk...")
-  cache$set(which, data_obj)
+  ._remsCache_$set(which, data_obj)
   set_update_date(which = which, value = file_meta[["date_upd"]])
 
   message("Loading data...")
@@ -140,16 +137,15 @@ get_file_metadata <- function() {
 }
 
 set_update_date <- function(which, value) {
-  cache <- ._remsCache_
-  if (cache$exists("update_dates")) {
-    update_dates <- cache$get("update_dates")
+  if (._remsCache_$exists("update_dates")) {
+    update_dates <- ._remsCache_$get("update_dates")
   } else {
     update_dates <- list()
   }
   if (!is.null(value)) value <- as.numeric(value)
   update_dates[which] <- value # store time as a numeric value
 
-  cache$set("update_dates", update_dates)
+  ._remsCache_$set("update_dates", update_dates)
 }
 
 #' Get the date(s) when ems data was last updated.
@@ -159,9 +155,8 @@ set_update_date <- function(which, value) {
 #' @return The date the data was last updated (if it exists in your cache)
 #' @export
 get_update_date <- function(which) {
-  cache <- ._remsCache_
-  if (!cache$exists("update_dates")) return(-Inf)
-  update_date <- cache$get("update_dates")[[which]]
+  if (!._remsCache_$exists("update_dates")) return(-Inf)
+  update_date <- ._remsCache_$get("update_dates")[[which]]
   if (is.null(update_date)) return(-Inf)
   as.POSIXct(update_date, origin = "1970/01/01") # converted numeric to POSIXct
 }
