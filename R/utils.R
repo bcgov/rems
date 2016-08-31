@@ -18,7 +18,7 @@ burn_it_down <- function() {
   unlockBinding("._remsCache_", getNamespace("rems"))
   ._remsCache_ <<- write_cache()
   lockBinding("._remsCache_", getNamespace("rems"))
-  invisbile(TRUE)
+  invisible(TRUE)
 }
 
 httr_progress <- function() {
