@@ -21,6 +21,15 @@ read_ems_data <- function(file, n = Inf, cols = NULL, verbose = TRUE, ...) {
 }
 
 col_spec <- function(subset = NULL) {
+
+  if (!is.null(subset)) {
+    diff_cols <- setdiff(subset, all_cols())
+    if (length(diff_cols) > 0 ) {
+      stop("Column(s): ", paste(diff_cols, collapse = ", "), " not in data file",
+           call. = FALSE)
+    }
+  }
+
   spec <- readr::cols_only(
     EMS_ID = col_character(),
     MONITORING_LOCATION = col_character(),
@@ -87,8 +96,8 @@ col_spec <- function(subset = NULL) {
 wq_cols <- function() {
   c("EMS_ID"
     , "MONITORING_LOCATION"
-    , "LONGITUDE"
     , "LATITUDE"
+    , "LONGITUDE"
     , "LOCATION_TYPE"
     , "COLLECTION_START"
     , "PARAMETER_CODE"
