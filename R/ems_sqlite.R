@@ -91,16 +91,16 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
   db_path <- write_db_path()
 
   ## Check for missing or outdated historic database
-  kill <- FALSE
+  exit_fun <- FALSE
   if (!file.exists(db_path)) {
-    kill <- TRUE
+    exit_fun <- TRUE
   } else if (update_date < file_meta[["date_upd"]] && file.exists(db_path)) {
     ans <- readline(paste("Your version of the historic dataset is out of date.",
                           "Would you like to continue with the version you have (y/n)? ",
                           sep = "\n"))
-    if (tolower(ans) != "y") kill <- TRUE
+    if (tolower(ans) != "y") exit_fun <- TRUE
   }
-  if (kill) stop("Please download the historic data with\n",
+  if (exit_fun) stop("Please download the historic data with\n",
                  " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
