@@ -18,6 +18,8 @@ rems::remove_data_cache("all")
 envreportutils::devex_badge("exploration")
 ```
 
+[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+
 ---
 
 # rems
