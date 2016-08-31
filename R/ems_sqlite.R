@@ -166,7 +166,3 @@ stringify_vec <- function(vec) {
 write_db_path <- function() {
   file.path(rappdirs::user_data_dir("rems"), "ems.sqlite")
 }
-
-ems_posix_numeric <- function(x) {
-  as.POSIXct(x, origin = "1970/01/01", tz = ems_tz())
-}
