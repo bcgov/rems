@@ -8,7 +8,7 @@ filter_ems_data(x, emsid = NULL, parameter = NULL, from_date = NULL,
   to_date = NULL)
 }
 \arguments{
-\item{x}{The ems dat frame to filter}
+\item{x}{The ems data frame to filter}
 
 \item{emsid}{A character vector of the ems id(s) of interest}
 

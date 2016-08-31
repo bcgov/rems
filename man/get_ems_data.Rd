@@ -4,14 +4,14 @@
 \alias{get_ems_data}
 \title{get EMS data from BC Data Catalogue}
 \usage{
-get_ems_data(which = "current", n = -1, cols = "wq", force = FALSE)
+get_ems_data(which = "current", n = Inf, cols = "wq", force = FALSE)
 }
 \arguments{
 \item{which}{Defaults to \code{"current"} (past 2 years) - this is the only option available right now.
 If you want historic data, use the \code{\link{download_historic_data}} and
 \code{\link{read_historic_data}} functions.}
 
-\item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = -1}).}
+\item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = Inf}).}
 
 \item{cols}{which subset of columns to read. Can be \code{"all"} which reads all
 columns, \code{"wq"} (default) which returns a predefined subset of columns common
