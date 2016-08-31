@@ -159,6 +159,13 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL,
   sql
 }
 
+#' Turn a character vector into a string with items surrounded by quotes and
+#' separated by commas
+#'
+#' @param vec
+#'
+#' @return character
+#' @noRd
 stringify_vec <- function(vec) {
   paste(shQuote(vec, "sh"), collapse = ",")
 }
