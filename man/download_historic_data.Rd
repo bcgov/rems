@@ -12,7 +12,7 @@ download_historic_data(n = 1e+06, force = FALSE)
 \item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}
 }
 \value{
-TRUE
+The path where the sqlite database is stored (invisibly).
 }
 \description{
 Download and store the large historic ems dataset
