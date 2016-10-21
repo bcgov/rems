@@ -84,7 +84,7 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE)
 
   if (update) {
     permission <- write_permission(paste0("rems would like to store a copy of the current ems data at",
-                                          rappdirs::user_data_dir("rems"), ". Is that okay?"))
+                                          rems_data_dir(), ". Is that okay?"))
 
     if (!permission) stop("Permission denied. Exiting", call. = FALSE)
     ret <- update_cache(which = which, n = n, cols = cols)

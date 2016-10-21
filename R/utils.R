@@ -11,9 +11,11 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 write_cache <- function() {
-  path <- rappdirs::user_data_dir("rems")
+  path <- rems_data_dir()
   ._remsCache_ <<- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
 }
+
+rems_data_dir <- function() rappdirs::user_data_dir("rems")
 
 #' Destroy data cache
 #'
@@ -23,7 +25,7 @@ write_cache <- function() {
 #' @return TRUE
 #' @noRd
 burn_it_down <- function() {
-  if (file.exists(rappdirs::user_data_dir("rems"))) {
+  if (file.exists(rems_data_dir())) {
     ._remsCache_$destroy()
   }
   write_cache()
