@@ -23,7 +23,6 @@
 #'
 
 download_historic_data <- function(n = 1e6, force = FALSE) {
-  message("This is going to take a while...")
 
   file_meta <- get_file_metadata()["historic",]
   update_date <- get_update_date("historic")
@@ -32,9 +31,16 @@ download_historic_data <- function(n = 1e6, force = FALSE) {
 
   if (update_date >= file_meta[["date_upd"]] && file.exists(db_path) && !force) {
     message("It appears that you already have the most up-to date version of the",
-            "historic ems data.")
+            " historic ems data.")
     return(invisible(db_path))
   }
+
+  permission <- write_permission(paste0("rems would like to store a copy of the historic ems data at",
+                                 db_path, ". Is that okay?"))
+
+  if (!permission) stop("Permission denied. Exiting", call. = FALSE)
+
+  message("This is going to take a while...")
 
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest 'historic' EMS data from BC Data Catalogue (url:", url, ")")
