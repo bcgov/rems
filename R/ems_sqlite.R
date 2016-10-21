@@ -141,6 +141,43 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
 
 }
 
+#' Load the historic ems sqlite database as a tbl
+#'
+#' You can then use dplyr verbs such as \code{\link[dplyr]{filter}},
+#' \code{\link[dplyr]{select}}, \code{\link[dplyr]{summarize}}, etc. For basic
+#' importing of historic data based on \code{ems_id}, \code{date}, and \code{parameter},
+#' you can use the function \code{\link{read_historic_data}}
+#'
+#' @return A dplyr connection to the sqlite database. See \code{\link[dplyr]{src_sqlite}} for more.
+#'
+#' @details Note that the dates are stored in the sqlite database as integers.
+#' This number is the number of seconds since midnight on January 1, 1970, PST. Convert the dates
+#' to a \code{POSIXct} object with \code{as.POSIXct(x, origin = "1970/01/01", tz = "Etc/GMT+8")}.
+#' If you use \code{\link{read_historic_data}}, this will be done for you.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' foo <- load_historic_data()
+#' bar <- foo %>%
+#'   group_by(EMS_ID) %>%
+#'   summarise(max_date = max(COLLECTION_START))
+#' baz <- collect(bar)
+#' baz$max_date <- as.POSIXct(baz$max_date, origin = "1970/01/01", tz = "Etc/GMT+8")
+#' }
+load_historic_data <- function() {
+  db_path <- write_db_path()
+  if (!file.exists(db_path)) {
+    stop("Please download the historic data with\n",
+         " the 'download_historic_data' function.", call. = FALSE)
+  }
+  db <- dplyr::src_sqlite(db_path)
+  tbl <- dplyr::tbl(db, "historic")
+  tbl
+}
+
 construct_historic_sql <- function(emsid = NULL, parameter = NULL,
                                    from_date = NULL, to_date = NULL, cols = NULL) {
   emsid_qry <- parameter_qry <- from_date_qry <- to_date_qry <- col_query <- NULL
@@ -191,5 +228,5 @@ stringify_vec <- function(vec) {
 }
 
 write_db_path <- function() {
-  file.path(rappdirs::user_data_dir("rems"), "ems.sqlite")
+  file.path(rems_data_dir(), "ems.sqlite")
 }
