@@ -1,11 +1,11 @@
 # Copyright 2016 Province of British Columbia
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
@@ -21,6 +21,7 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom RSQLite SQLite
 #'
+
 download_historic_data <- function(n = 1e6, force = FALSE) {
   message("This is going to take a while...")
 
@@ -30,8 +31,9 @@ download_historic_data <- function(n = 1e6, force = FALSE) {
   db_path <- write_db_path()
 
   if (update_date >= file_meta[["date_upd"]] && file.exists(db_path) && !force) {
-    stop("It appears that you already have the most up-to date version of the",
-         "historic ems data.")
+    message("It appears that you already have the most up-to date version of the",
+            "historic ems data.")
+    return(invisible(db_path))
   }
 
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
