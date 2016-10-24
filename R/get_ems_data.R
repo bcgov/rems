@@ -83,7 +83,7 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE)
   }
 
   if (update) {
-    permission <- write_permission(paste0("rems would like to store a copy of the current ems data at",
+    permission <- get_write_permission(paste0("rems would like to store a copy of the current ems data at",
                                           rems_data_dir(), ". Is that okay?"))
 
     if (!permission) stop("Permission denied. Exiting", call. = FALSE)

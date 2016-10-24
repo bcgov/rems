@@ -35,7 +35,7 @@ download_historic_data <- function(n = 1e6, force = FALSE) {
     return(invisible(db_path))
   }
 
-  permission <- write_permission(paste0("rems would like to store a copy of the historic ems data at",
+  permission <- get_write_permission(paste0("rems would like to store a copy of the historic ems data at",
                                  db_path, ". Is that okay?"))
 
   if (!permission) stop("Permission denied. Exiting", call. = FALSE)
