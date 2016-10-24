@@ -182,6 +182,7 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL,
                                    from_date = NULL, to_date = NULL, cols = NULL) {
   emsid_qry <- parameter_qry <- from_date_qry <- to_date_qry <- col_query <- NULL
   if (!is.null(emsid)) {
+    emsid <- pad_emsid(emsid)
     emsid_qry <- sprintf("EMS_ID IN (%s)", stringify_vec(emsid))
   }
   if (!is.null(parameter)) {

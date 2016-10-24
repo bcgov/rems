@@ -43,6 +43,9 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, from_date = NULL,
   if (!is.null(to_date)) to_date <- as.POSIXct(to_date, ems_tz())
   # Create the dots objects to be passed in to filter_, then remove the elements
   # didn't get passed a value, and remove names
+
+  emsid <- pad_emsid(emsid)
+
   dots <- list(emsid = ~EMS_ID %in% emsid,
                parameter = ~PARAMETER %in% parameter,
                from_date = ~COLLECTION_START >= from_date,
