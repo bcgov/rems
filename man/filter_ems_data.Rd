@@ -14,9 +14,9 @@ filter_ems_data(x, emsid = NULL, parameter = NULL, from_date = NULL,
 
 \item{parameter}{a character vector of parameter names}
 
-\item{from_date}{A date string in a standard unambiguos format (e.g., "YYYY/MM/DD")}
+\item{from_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
 
-\item{to_date}{A date string in a standard unambiguos format (e.g., "YYYY/MM/DD")}
+\item{to_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
 }
 \value{
 A filtered data frame
