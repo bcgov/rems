@@ -89,6 +89,9 @@ get_write_permission <- function(question) {
 # Add leading zeroes to emsids to make sure they are 7 characters wide.
 # Could use string::stri_pad_left, but didn't want extra dependency
 pad_emsid <- function(x) {
+  lens <- nchar(x)
+  if (all(lens == 7)) return(x)
+  if (any(lens > 7)) stop("emsid should be max 7 characters long", call. = FALSE)
   x <- sprintf("%07s", x) # On some systems pads with a space, so need the
   gsub("\\s", "0", x)     # gsub to put zeros in
 }

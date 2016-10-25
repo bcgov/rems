@@ -62,4 +62,12 @@ test_that("col_spec and friends work", {
 
 test_that("ems_tz works", {
   expect_true(ems_tz() %in% OlsonNames())
+  expect_equal(ems_tz(), "Etc/GMT+8")
+})
+
+test_that("pad_emsid works", {
+  expect_equal(pad_emsid(c("E1234", "12345", "123456", "1234567", "E123456")),
+               c("00E1234", "0012345", "0123456", "1234567", "E123456"))
+  expect_error(pad_emsid(c("12345678", "E123456")),
+               "emsid should be max 7 characters long")
 })
