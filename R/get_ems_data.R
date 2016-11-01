@@ -96,7 +96,7 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE)
 }
 
 update_cache <- function(which, n, cols) {
-  file_meta <- get_file_metadata()[which,]
+  file_meta <- get_file_metadata(which)
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest '", which,
           "' EMS data from BC Data Catalogue (url:", url, ")")
@@ -124,7 +124,8 @@ download_ems_data <- function(url) {
 
 
 #' @importFrom httr GET content
-get_file_metadata <- function() {
+
+get_databc_metadata <- function() {
   url <- base_url()
   res <- httr::GET(url)
   res_text <- httr::content(res, "text")
@@ -132,12 +133,31 @@ get_file_metadata <- function() {
   res_text_split <- res_text_split[2:(length(res_text_split) - 1)]
   res_text_split <- gsub("<br>\\s*|^\\s+|\\s+$", "", res_text_split)
   res_text_split <- unlist(strsplit(res_text_split, "\\s{3,}"))
-  files_df <- data.frame(matrix(res_text_split, ncol = 3, byrow = TRUE))
+  files_df <- data.frame(matrix(res_text_split, ncol = 3, byrow = TRUE),
+                         stringsAsFactors = FALSE)
   colnames(files_df) <- c("date_upd", "size", "filename")
   files_df <- files_df[grepl("expanded", files_df[[3]]), ]
-  rownames(files_df) <- ifelse(grepl("\\d.+_current", files_df$filename), "3yr_current", ifelse(grepl("current", files_df$filename), "current", "historic"))
-  files_df$date_upd <- strptime(files_df$date_upd, format = "%m/%d/%Y %R %p")
+  files_df$label <- ifelse(files_df$filename == "ems_sample_results_current_expanded.zip",
+                               "current",
+                               ifelse(files_df$filename == "ems_sample_results_historic_expanded.zip",
+                                      "historic",
+                                      ifelse(grepl("4yr_current", files_df$filename),
+                                             "4yr_current", "drop")))
+  files_df <- files_df[files_df$label != "drop", ]
+  files_df$date_upd <- as.POSIXct(files_df$date_upd, format = "%m/%d/%Y %R %p")
   files_df
+}
+
+get_file_metadata <- function(which) {
+  choices <- c("current", "historic", "4yr_current")
+  if (!which %in% choices) {
+    stop("'which' needs to be one of: ", paste(choices, collapse = ", "),
+         call. = FALSE)
+  }
+
+  all_meta <- get_databc_metadata()
+
+  all_meta[all_meta$label == which, ]
 }
 
 set_update_date <- function(which, value) {

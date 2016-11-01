@@ -24,7 +24,7 @@
 
 download_historic_data <- function(n = 1e6, force = FALSE) {
 
-  file_meta <- get_file_metadata()["historic",]
+  file_meta <- get_file_metadata("historic")
   update_date <- get_update_date("historic")
 
   db_path <- write_db_path()
@@ -106,7 +106,7 @@ save_historic_data <- function(csv_file, db_path, n) {
 read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
                                to_date = NULL, cols = "wq") {
 
-  file_meta <- get_file_metadata()["historic",]
+  file_meta <- get_file_metadata("historic")
   update_date <- get_update_date("historic")
   db_path <- write_db_path()
 

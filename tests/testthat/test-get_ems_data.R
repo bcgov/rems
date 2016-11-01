@@ -1,0 +1,23 @@
+context("get_ems_data")
+
+test_that("reading metadata works", {
+  skip_on_cran()
+  ret <- get_databc_metadata()
+  expect_is(ret, "data.frame")
+  expect_equal(dim(ret), c(3,4))
+  expect_equal(lapply(ret, class), list(date_upd = c("POSIXct", "POSIXt"), size = "character",
+                                        filename = "character", label = "character"))
+  expect_false(any(duplicated(ret$label)))
+
+  # Test extracting for each
+  expect_equal(nrow(get_file_metadata("historic")), 1L)
+
+  expect_equal(nrow(get_file_metadata("current")), 1L)
+
+  expect_error(get_file_metadata("foo"), "'which' needs to be one of")
+})
+
+test_that("httr_progress works", {
+  # Need to figure out a way to pretend in interactive mode
+  expect_is(httr_progress(), "NULL")
+})
