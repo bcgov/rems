@@ -80,6 +80,7 @@ ems_posix_numeric <- function(x) {
   as.POSIXct(x, origin = "1970/01/01", tz = ems_tz())
 }
 
+#' @importFrom utils menu
 get_write_permission <- function(question) {
   ans <- menu(choices = c("Yes", "No"), title = question)
   permission <- ans == 1L
