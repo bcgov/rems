@@ -112,40 +112,51 @@ update_cache <- function(which, n, cols) {
 }
 
 #' @importFrom utils unzip
+#' @importFrom httr GET
+#' @importFrom stringr str_extract
 download_ems_data <- function(url) {
-  tfile <- tempfile(fileext = ".zip")
-  csvdir <- tempdir()
+  ext <- stringr::str_extract(url, "\\.(csv|zip)$")
+  tfile <- tempfile(fileext = ext)
   res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
   cat("\n")
   httr::stop_for_status(res)
-  unzip(res$request$output$path, exdir = csvdir)
+  if (ext == ".zip") {
+    ret <- unzip(res$request$output$path, exdir = tempdir())
+  } else if (ext == ".csv") {
+    ret <- res$request$output$path
+  }
+  ret
 }
 
-
-
-#' @importFrom httr GET content
-
+#' @importFrom xml2 read_html as_list
+#' @importFrom dplyr filter
 get_databc_metadata <- function() {
   url <- base_url()
-  res <- httr::GET(url)
-  res_text <- httr::content(res, "text")
-  res_text_split <- unlist(strsplit(res_text, "</A>(<br>){1,2}\\s*|<A HREF=\"/datasets/949f2233-9612-4b06-92a9-903e817da659/ems.+?\\.zip\">"))
-  res_text_split <- res_text_split[2:(length(res_text_split) - 1)]
-  res_text_split <- gsub("<br>\\s*|^\\s+|\\s+$", "", res_text_split)
-  res_text_split <- unlist(strsplit(res_text_split, "\\s{3,}"))
-  files_df <- data.frame(matrix(res_text_split, ncol = 3, byrow = TRUE),
+  html <- xml2::read_html(url)
+  ## Convert xml to list and only extract the portion with the information
+  res <- xml2::as_list(html)[["body"]][["pre"]]
+  res <- remove_zero_length(res[2:length(res)])
+  res <- unname(unlist(res))
+  res <- unlist(strsplit(res, "\\s{3,}"))
+  files_df <- data.frame(matrix(res, ncol = 3, byrow = TRUE),
                          stringsAsFactors = FALSE)
   colnames(files_df) <- c("date_upd", "size", "filename")
-  files_df <- files_df[grepl("expanded", files_df[[3]]), ]
-  files_df$label <- ifelse(files_df$filename == "ems_sample_results_current_expanded.zip",
-                               "current",
-                               ifelse(files_df$filename == "ems_sample_results_historic_expanded.zip",
-                                      "historic",
-                                      ifelse(grepl("4yr_current", files_df$filename),
-                                             "4yr_current", "drop")))
+  # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
+  files_df <- files_df[grepl("4yr_current_exp.+\\.zip|results_current_exp.+\\.csv|historic_exp.+\\.zip",
+                             files_df[["filename"]]),]
+  files_df$label <- ifelse(grepl("4yr", files_df[["filename"]]), "4yr",
+                           ifelse(grepl("historic", files_df[["filename"]]),
+                                  "historic",
+                                  ifelse(grepl("results_current", files_df[["filename"]]),
+                                         "current", "drop")))
   files_df <- files_df[files_df$label != "drop", ]
   files_df$date_upd <- as.POSIXct(files_df$date_upd, format = "%m/%d/%Y %R %p")
   files_df
+}
+
+remove_zero_length <- function(l) {
+  out <- lapply(l, function(x) if (length(x) > 0) x)
+  Filter(Negate(is.null), out)
 }
 
 get_file_metadata <- function(which) {
