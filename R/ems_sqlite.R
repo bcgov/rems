@@ -14,6 +14,8 @@
 #'
 #' @param n the chunk size to use to iteratively read and store the historic data (default 1 million)
 #' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
+#' @param ask should the function ask for your permission to cache data on your computer?
+#' Default \code{TRUE}
 #'
 #' @return The path where the sqlite database is stored (invisibly).
 #' @export
@@ -22,7 +24,8 @@
 #' @importFrom RSQLite SQLite
 #'
 
-download_historic_data <- function(n = 1e6, force = FALSE) {
+
+download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE) {
 
   file_meta <- get_file_metadata("historic")
   update_date <- get_update_date("historic")
@@ -35,10 +38,10 @@ download_historic_data <- function(n = 1e6, force = FALSE) {
     return(invisible(db_path))
   }
 
-  permission <- get_write_permission(paste0("rems would like to store a copy of the historic ems data at",
-                                 db_path, ". Is that okay?"))
-
-  if (!permission) stop("Permission denied. Exiting", call. = FALSE)
+  if (ask) {
+    stop_for_permission(paste0("rems would like to store a copy of the historic ems data at",
+                                              db_path, ". Is that okay?"))
+  }
 
   message("This is going to take a while...")
 

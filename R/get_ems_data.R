@@ -29,6 +29,8 @@
 #' @param force Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 #' if it's not out of date on your computer.
 #' The 'current' dataset contains about 1 million rows.
+#' @param ask should the function ask for your permission to cache data on your computer?
+#' Default \code{TRUE}
 #' @return a data frame
 #' @details cols can specify any of the following column names as a character vector:
 #'
@@ -61,7 +63,7 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE) {
+get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE, ask = TRUE) {
   which <- match.arg(which, c("current"))
 
   update <- FALSE # Don't update by default
@@ -69,7 +71,9 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE)
     update <- TRUE
   } else if (._remsCache_$exists("update_dates")) {
     update_date <- get_update_date(which)
-    if (update_date > Sys.time()) {
+    file_meta <- get_file_metadata(which)
+
+    if (update_date < file_meta[["date_upd"]]) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
                              update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
@@ -83,10 +87,10 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE)
   }
 
   if (update) {
-    permission <- get_write_permission(paste0("rems would like to store a copy of the current ems data at",
+    if (ask) {
+    stop_for_permission(paste0("rems would like to store a copy of the current ems data at",
                                           rems_data_dir(), ". Is that okay?"))
-
-    if (!permission) stop("Permission denied. Exiting", call. = FALSE)
+    }
     ret <- update_cache(which = which, n = n, cols = cols)
   } else {
     message("Fetching data from cache...")

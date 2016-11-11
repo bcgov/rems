@@ -4,12 +4,15 @@
 \alias{download_historic_data}
 \title{Download and store the large historic ems dataset}
 \usage{
-download_historic_data(n = 1e+06, force = FALSE)
+download_historic_data(n = 1e+06, force = FALSE, ask = TRUE)
 }
 \arguments{
 \item{n}{the chunk size to use to iteratively read and store the historic data (default 1 million)}
 
 \item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}
+
+\item{ask}{should the function ask for your permission to cache data on your computer?
+Default \code{TRUE}}
 }
 \value{
 The path where the sqlite database is stored (invisibly).

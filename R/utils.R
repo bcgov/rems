@@ -80,6 +80,12 @@ ems_posix_numeric <- function(x) {
   as.POSIXct(x, origin = "1970/01/01", tz = ems_tz())
 }
 
+stop_for_permission <- function(question) {
+  permission <- get_write_permission(question)
+  if (!permission) stop("Permission denied. Exiting", call. = FALSE)
+  invisible(NULL)
+}
+
 #' @importFrom utils menu
 get_write_permission <- function(question) {
   ans <- menu(choices = c("Yes", "No"), title = question)
