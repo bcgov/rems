@@ -104,6 +104,8 @@ wq_cols <- function() {
     , "LONGITUDE"
     , "LOCATION_TYPE"
     , "COLLECTION_START"
+    , "LOCATION_PURPOSE"
+    , "SAMPLE_STATE"
     , "PARAMETER_CODE"
     , "PARAMETER"
     , "ANALYTICAL_METHOD_CODE"
