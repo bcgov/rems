@@ -1,12 +1,13 @@
 context("read_ems_data")
 
 test_that("read_ems_data works with current", {
-  test <- read_ems_data("current_expanded_test.csv")
+  test <- read_ems_data("test_current.csv")
   expect_is(test, "data.frame")
-  expect_equal(dim(test), c(4,55))
+  expect_equal(dim(test), c(10,59))
   expect_equal(names(test),
                c("EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
-                 "COLLECTION_START", "COLLECTION_END", "REQUISITION_ID", "SAMPLING_AGENCY",
+                 "COLLECTION_START", "COLLECTION_END", "LOCATION_PURPOSE", "PERMIT",
+                 "PERMIT_RELATIONSHIP", "DISCHARGE_TO", "REQUISITION_ID", "SAMPLING_AGENCY",
                  "ANALYZING_AGENCY", "COLLECTION_METHOD", "SAMPLE_CLASS", "SAMPLE_STATE",
                  "SAMPLE_DESCRIPTOR", "PARAMETER_CODE", "PARAMETER", "ANALYTICAL_METHOD_CODE",
                  "ANALYTICAL_METHOD", "RESULT_LETTER", "RESULT", "UNIT", "METHOD_DETECTION_LIMIT",
@@ -24,33 +25,35 @@ test_that("read_ems_data works with current", {
                     c("POSIXct", "POSIXt"), c("POSIXct", "POSIXt"), "character",
                     "character", "character", "character", "character", "character",
                     "character", "character", "character", "character", "character",
-                    "character", "numeric", "character", "numeric", "character",
-                    "numeric", "numeric", "character", "numeric", "numeric",
-                    "character", "numeric", "numeric", "numeric", "numeric",
-                    "character", "numeric", "character", "numeric", "character",
-                    "character", "character", "character", "numeric", "character",
+                    "character", "character", "character", "character", "character",
+                    "numeric", "character", "numeric", "character", "numeric",
                     "numeric", "character", "numeric", "numeric", "character",
-                    "numeric", "character", "numeric", "numeric", "character",
-                    "character", "character"))
+                    "numeric", "numeric", "numeric", "numeric", "character",
+                    "numeric", "character", "numeric", "character", "character",
+                    "character", "character", "numeric", "character", "numeric",
+                    "character", "numeric", "numeric", "character", "numeric",
+                    "character", "numeric", "numeric", "character", "character",
+                    "character"))
 })
 
 test_that("read_ems_data works with options", {
-  test <- read_ems_data("current_expanded_test.csv", n = 1)
+  test <- read_ems_data("test_current.csv", n = 1)
   expect_is(test, "data.frame")
-  expect_equal(dim(test), c(1,55))
+  expect_equal(dim(test), c(1,59))
 
-  test2 <- read_ems_data("current_expanded_test.csv", cols = wq_cols())
+  test2 <- read_ems_data("test_current.csv", cols = wq_cols())
   expect_is(test2, "data.frame")
-  expect_equal(dim(test2), c(4,17))
+  expect_equal(dim(test2), c(10,19))
   expect_equal(names(test2),
                c("EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
-                 "COLLECTION_START", "PARAMETER_CODE", "PARAMETER", "ANALYTICAL_METHOD_CODE",
-                 "ANALYTICAL_METHOD", "RESULT_LETTER", "RESULT", "UNIT", "METHOD_DETECTION_LIMIT",
-                 "QA_INDEX_CODE", "UPPER_DEPTH", "LOWER_DEPTH"))
+                 "COLLECTION_START", "LOCATION_PURPOSE", "SAMPLE_STATE", "PARAMETER_CODE",
+                 "PARAMETER", "ANALYTICAL_METHOD_CODE", "ANALYTICAL_METHOD", "RESULT_LETTER",
+                 "RESULT", "UNIT", "METHOD_DETECTION_LIMIT", "QA_INDEX_CODE",
+                 "UPPER_DEPTH", "LOWER_DEPTH"))
 })
 
 test_that("read_ems_data fails correctly", {
-  expect_error(read_ems_data("current_expanded_test.csv", cols = c("foo", "bar")),
+  expect_error(read_ems_data("test_current.csv", cols = c("foo", "bar")),
                "foo, bar not in data file")
 })
 

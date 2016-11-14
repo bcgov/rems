@@ -7,3 +7,4 @@
 ^.*\.zip$
 ^.*\.sqlite$
 ^\.travis\.yml$
+^data-raw$
