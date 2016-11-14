@@ -8,7 +8,7 @@ col_spec(wq_cols())$cols %>% write_rds("tests/testthat/wq_col_struct.RDS")
 
 meta <- rems:::get_databc_metadata()
 
-## Make a test csv of current data
+## Make a test csv of current and historic data
 test_current_csv <- rems:::download_ems_data(paste0(rems:::base_url(), "/",
                                             meta$filename[meta$label == "current"]))
 

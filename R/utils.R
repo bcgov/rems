@@ -64,7 +64,7 @@ remove_it <- function(which) {
   if (which == "historic") {
     fpath <- write_db_path()
     if (file.exists(fpath)) {
-      file.remove(write_db_path())
+      file.remove(fpath)
     }
   } else if (which == "current") {
     ._remsCache_$del(which)

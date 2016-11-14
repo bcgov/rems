@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "fig/README-"
 )
-rems::remove_data_cache("all")
+# rems::remove_data_cache("all")
 ```
 
 
@@ -33,8 +33,8 @@ The package pulls data from the [BC Data Catalogue EMS Results](https://catalogu
 The package is not available on CRAN, but can be installed using
 the [devtools](https://github.com/hadley/devtools) package:
 
-```{r, eval=FALSE}
-install.packages("devtools") # if not already installed
+```{r eval=FALSE}
+# install.packages("devtools") # if not already installed
 
 library(devtools)
 install_github("bcgov/rems")
@@ -48,7 +48,7 @@ You can use the `get_ems_data()` function to get current (last two years) of dat
 
 ```{r}
 library(rems)
-current <- get_ems_data("current")
+current <- get_ems_data("current", ask = FALSE)
 nrow(current)
 head(current)
 ```
@@ -76,7 +76,7 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 the data and stores it in a `sqlite` database:
 
 ```{r}
-download_historic_data()
+download_historic_data(ask = FALSE)
 ```
 
 2. Next, read in the historic data, supplying constraints to only import the records you want:

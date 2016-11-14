@@ -18,7 +18,7 @@ The package pulls data from the [BC Data Catalogue EMS Results](https://catalogu
 The package is not available on CRAN, but can be installed using the [devtools](https://github.com/hadley/devtools) package:
 
 ``` r
-install.packages("devtools") # if not already installed
+# install.packages("devtools") # if not already installed
 
 library(devtools)
 install_github("bcgov/rems")
@@ -30,29 +30,29 @@ You can use the `get_ems_data()` function to get current (last two years) of dat
 
 ``` r
 library(rems)
-current <- get_ems_data("current")
-#> Downloading latest 'current' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.zip)
+current <- get_ems_data("current", ask = FALSE)
+#> Downloading latest 'current' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_explained.csv)
 #> Reading data from file...
 #> Caching data on disk...
 #> Loading data...
 nrow(current)
-#> [1] 943658
+#> [1] 1708896
 head(current)
-#> # A tibble: 6 × 17
-#>    EMS_ID          MONITORING_LOCATION LONGITUDE LATITUDE
-#>     <chr>                        <chr>     <dbl>    <dbl>
-#> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
-#> 2 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
-#> 3 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
-#> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
-#> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
-#> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A -124.2756  49.3011
-#> # ... with 13 more variables: LOCATION_TYPE <chr>,
-#> #   COLLECTION_START <dttm>, PARAMETER_CODE <chr>, PARAMETER <chr>,
-#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>,
-#> #   RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
-#> #   METHOD_DETECTION_LIMIT <dbl>, QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>,
-#> #   LOWER_DEPTH <dbl>
+#> # A tibble: 6 × 19
+#>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
+#>     <chr>                        <chr>    <dbl>     <dbl>
+#> 1 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 2 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 3 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 4 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 5 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 6 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> # ... with 15 more variables: LOCATION_TYPE <chr>,
+#> #   COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>, SAMPLE_STATE <chr>,
+#> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
+#> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>,
+#> #   UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, QA_INDEX_CODE <chr>,
+#> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 
 By default, `get_ems_data` imports only a subset of columns that are useful for water quality analysis. This is controlled by the `cols` argumnet, which has a default value of `"wq"`. This can be set to `"all"` to download all of the columns, or a character vector of column names (see `?get_ems_data` for details).
@@ -73,7 +73,7 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 1.  First download the dataset using `download_historic_data`, which downloads the data and stores it in a `sqlite` database:
 
 ``` r
-download_historic_data()
+download_historic_data(ask = FALSE)
 #> This is going to take a while...
 #> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
 #> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
@@ -98,7 +98,7 @@ You can combine the previously imported historic and current data sets using `bi
 ``` r
 all_data <- bind_ems_data(filtered_current, filtered_historic)
 nrow(all_data)
-#> [1] 2553
+#> [1] 2716
 ```
 
 For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
