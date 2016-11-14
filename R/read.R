@@ -38,6 +38,10 @@ col_spec <- function(subset = NULL) {
     LOCATION_TYPE = col_character(),
     COLLECTION_START = col_datetime(format = "%Y%m%d%H%M%S"),
     COLLECTION_END = col_datetime(format = "%Y%m%d%H%M%S"),
+    LOCATION_PURPOSE = col_character(),
+    PERMIT = col_character(),
+    PERMIT_RELATIONSHIP = col_character(),
+    DISCHARGE_TO = col_character(),
     REQUISITION_ID = col_character(),
     SAMPLING_AGENCY = col_character(),
     ANALYZING_AGENCY = col_character(),
@@ -115,7 +119,8 @@ wq_cols <- function() {
 
 all_cols <- function() {
   c("EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE",
-    "LOCATION_TYPE", "COLLECTION_START", "COLLECTION_END", "REQUISITION_ID",
+    "LOCATION_TYPE", "COLLECTION_START", "COLLECTION_END", "LOCATION_PURPOSE",
+    "PERMIT", "PERMIT_RELATIONSHIP", "DISCHARGE_TO", "REQUISITION_ID",
     "SAMPLING_AGENCY", "ANALYZING_AGENCY", "COLLECTION_METHOD",
     "SAMPLE_CLASS", "SAMPLE_STATE", "SAMPLE_DESCRIPTOR", "PARAMETER_CODE",
     "PARAMETER", "ANALYTICAL_METHOD_CODE", "ANALYTICAL_METHOD", "RESULT_LETTER",
