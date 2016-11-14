@@ -69,7 +69,7 @@ remove_it <- function(which) {
   } else if (which == "current") {
     ._remsCache_$del(which)
   }
-  set_update_date(which, value = NULL)
+  set_cache_date(which, value = NULL)
 }
 
 base_url <- function() {

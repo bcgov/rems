@@ -71,13 +71,13 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE,
   update <- FALSE # Don't update by default
   if (force || !._remsCache_$exists(which)) {
     update <- TRUE
-  } else if (._remsCache_$exists("update_dates")) {
-    update_date <- get_update_date(which)
+  } else if (._remsCache_$exists("cache_dates")) {
+    cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
-    if (update_date < file_meta[["date_upd"]]) {
+    if (cache_date < file_meta[["server_date"]]) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
-                             update_date, " and there is a newer version available. Would you like to download it? (y/n)"))
+                             cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
     }
   }
@@ -111,7 +111,7 @@ update_cache <- function(which, n, cols) {
 
   message("Caching data on disk...")
   ._remsCache_$set(which, data_obj)
-  set_update_date(which = which, value = file_meta[["date_upd"]])
+  set_cache_date(which = which, value = file_meta[["server_date"]])
 
   message("Loading data...")
   data_obj[, cols]
@@ -146,7 +146,7 @@ get_databc_metadata <- function() {
   res <- unlist(strsplit(res, "\\s{3,}"))
   files_df <- data.frame(matrix(res, ncol = 3, byrow = TRUE),
                          stringsAsFactors = FALSE)
-  colnames(files_df) <- c("date_upd", "size", "filename")
+  colnames(files_df) <- c("server_date", "size", "filename")
   # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
   files_df <- files_df[grepl("4yr_current_exp.+\\.zip|results_current_exp.+\\.csv|historic_exp.+\\.zip",
                              files_df[["filename"]]),]
@@ -156,7 +156,7 @@ get_databc_metadata <- function() {
                                   ifelse(grepl("results_current", files_df[["filename"]]),
                                          "current", "drop")))
   files_df <- files_df[files_df$label != "drop", ]
-  files_df$date_upd <- as.POSIXct(files_df$date_upd, format = "%m/%d/%Y %R %p")
+  files_df$server_date <- as.POSIXct(files_df$server_date, format = "%m/%d/%Y %R %p")
   files_df
 }
 
@@ -177,27 +177,27 @@ get_file_metadata <- function(which) {
   all_meta[all_meta$label == which, ]
 }
 
-set_update_date <- function(which, value) {
-  if (._remsCache_$exists("update_dates")) {
-    update_dates <- ._remsCache_$get("update_dates")
+set_cache_date <- function(which, value) {
+  if (._remsCache_$exists("cache_dates")) {
+    cache_dates <- ._remsCache_$get("cache_dates")
   } else {
-    update_dates <- list()
+    cache_dates <- list()
   }
   if (!is.null(value)) value <- as.numeric(value)
-  update_dates[which] <- value # store time as a numeric value
+  cache_dates[which] <- value # store time as a numeric value
 
-  ._remsCache_$set("update_dates", update_dates)
+  ._remsCache_$set("cache_dates", cache_dates)
 }
 
-#' Get the date(s) when ems data was last updated.
+#' Get the date(s) when ems data was last updated locally.
 #'
-#' @param which The data for which you want to check it's update date. "current" or "historic
+#' @param which The data for which you want to check it's cache date. "current" or "historic
 #'
 #' @return The date the data was last updated (if it exists in your cache)
 #' @export
-get_update_date <- function(which) {
-  if (!._remsCache_$exists("update_dates")) return(-Inf)
-  update_date <- ._remsCache_$get("update_dates")[[which]]
-  if (is.null(update_date)) return(-Inf)
-  as.POSIXct(update_date, origin = "1970/01/01") # converted numeric to POSIXct
+get_cache_date <- function(which) {
+  if (!._remsCache_$exists("cache_dates")) return(-Inf)
+  cache_date <- ._remsCache_$get("cache_dates")[[which]]
+  if (is.null(cache_date)) return(-Inf)
+  as.POSIXct(cache_date, origin = "1970/01/01") # converted numeric to POSIXct
 }

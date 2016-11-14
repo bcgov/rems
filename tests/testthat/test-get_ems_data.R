@@ -5,7 +5,7 @@ test_that("reading metadata works", {
   ret <- get_databc_metadata()
   expect_is(ret, "data.frame")
   expect_equal(dim(ret), c(3,4))
-  expect_equal(lapply(ret, class), list(date_upd = c("POSIXct", "POSIXt"), size = "character",
+  expect_equal(lapply(ret, class), list(server_date = c("POSIXct", "POSIXt"), size = "character",
                                         filename = "character", label = "character"))
   expect_false(any(duplicated(ret$label)))
 

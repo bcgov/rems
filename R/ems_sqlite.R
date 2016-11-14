@@ -28,11 +28,11 @@
 download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE) {
 
   file_meta <- get_file_metadata("historic")
-  update_date <- get_update_date("historic")
+  cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
 
-  if (update_date >= file_meta[["date_upd"]] && file.exists(db_path) && !force) {
+  if (cache_date >= file_meta[["server_date"]] && file.exists(db_path) && !force) {
     message("It appears that you already have the most up-to date version of the",
             " historic ems data.")
     return(invisible(db_path))
@@ -50,7 +50,7 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE) {
   csv_file <- download_ems_data(url)
   save_historic_data(csv_file, db_path, n)
 
-  set_update_date("historic", file_meta[["date_upd"]])
+  set_cache_date("historic", file_meta[["server_date"]])
 
   message("Successfully downloaded and stored the historic EMS data.\n",
           "You can access it with the 'read_historic_data' function")
@@ -110,14 +110,14 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
                                to_date = NULL, cols = "wq") {
 
   file_meta <- get_file_metadata("historic")
-  update_date <- get_update_date("historic")
+  cache_date <- get_cache_date("historic")
   db_path <- write_db_path()
 
   ## Check for missing or outdated historic database
   exit_fun <- FALSE
   if (!file.exists(db_path)) {
     exit_fun <- TRUE
-  } else if (update_date < file_meta[["date_upd"]] && file.exists(db_path)) {
+  } else if (cache_date < file_meta[["server_date"]] && file.exists(db_path)) {
     ans <- readline(paste("Your version of the historic dataset is out of date.",
                           "Would you like to continue with the version you have (y/n)? ",
                           sep = "\n"))
