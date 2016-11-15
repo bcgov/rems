@@ -9,7 +9,7 @@ save_ems_data(obj = NULL, which = NULL, filename = NULL, ...)
 \arguments{
 \item{obj}{The name of an object in your environment}
 
-\item{which}{"current" or "historic"}
+\item{which}{"2yr", "4yr", or "historic"}
 
 \item{filename}{the name of the file you are writing to}
 
@@ -19,7 +19,8 @@ save_ems_data(obj = NULL, which = NULL, filename = NULL, ...)
 the object, invisibly
 }
 \description{
-You must specify either an object in your environment (via \code{obj}), or one of \code{"current"}
-or \code{"historic"} (via \code{which}), but not both.
+You must specify either an object in your environment (via \code{obj}),
+or one of \code{"2yr"}, \code{"4yr"}, or \code{"historic"} (via \code{which}),
+but not both.
 }
 

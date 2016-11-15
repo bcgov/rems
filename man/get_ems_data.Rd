@@ -4,11 +4,11 @@
 \alias{get_ems_data}
 \title{get EMS data from BC Data Catalogue}
 \usage{
-get_ems_data(which = "current", n = Inf, cols = "wq", force = FALSE,
+get_ems_data(which = "2yr", n = Inf, cols = "wq", force = FALSE,
   ask = TRUE)
 }
 \arguments{
-\item{which}{Defaults to \code{"current"} (past 2 years) - this is the only option available right now.
+\item{which}{Defaults to \code{"2yr"} (past 2 years) - this is the only option available right now.
 If you want historic data, use the \code{\link{download_historic_data}} and
 \code{\link{read_historic_data}} functions.}
 
@@ -19,8 +19,7 @@ columns, \code{"wq"} (default) which returns a predefined subset of columns comm
 for water quality analysis, or a character vector of column names (see details below).}
 
 \item{force}{Default \code{FALSE}. Setting to \code{TRUE} will download new data even
-if it's not out of date on your computer.
-The 'current' dataset contains about 1 million rows.}
+if it's not out of date on your computer.}
 
 \item{ask}{should the function ask for your permission to cache data on your computer?
 Default \code{TRUE}}
@@ -31,8 +30,7 @@ a data frame
 \description{
 EMS data are distributed through the \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results}{BC Data Catalogue}
 under the \href{http://www.data.gov.bc.ca/local/dbc/docs/license/OGL-vbc2.0.pdf}{Open Government License - British Columbia}.
-This function downloads the chosen data ('historic' - 1964-2014, or 'current'
-- 2015 to now) and imports it into your R session. It also caches the data so
+This function downloads the chosen data ('historic' - 1964-2014, or '2yr' or '4yr') and imports it into your R session. It also caches the data so
 subsequent loads are much faster - if the data in the Data Catalogue are more
 current than that in your cache, you will be prompted to update it.
 }

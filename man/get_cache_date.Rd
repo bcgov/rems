@@ -7,7 +7,7 @@
 get_cache_date(which)
 }
 \arguments{
-\item{which}{The data for which you want to check it's cache date. "current" or "historic}
+\item{which}{The data for which you want to check it's cache date. "2yr" or "historic}
 }
 \value{
 The date the data was last updated (if it exists in your cache)
