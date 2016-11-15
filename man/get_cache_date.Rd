@@ -2,17 +2,17 @@
 % Please edit documentation in R/get_ems_data.R
 \name{get_cache_date}
 \alias{get_cache_date}
-\title{Get the date(s) when ems data was last updated.}
+\title{Get the date(s) when ems data was last updated locally.}
 \usage{
 get_cache_date(which)
 }
 \arguments{
-\item{which}{The data for which you want to check it's update date. "current" or "historic}
+\item{which}{The data for which you want to check it's cache date. "current" or "historic}
 }
 \value{
 The date the data was last updated (if it exists in your cache)
 }
 \description{
-Get the date(s) when ems data was last updated.
+Get the date(s) when ems data was last updated locally.
 }
 

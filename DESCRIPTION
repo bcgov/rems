@@ -1,7 +1,7 @@
 Package: rems
 Type: Package
 Title: Get Data From British Columbia's Environmental Monitoring System
-Version: 0.1.2
+Version: 0.2.0
 Authors@R: c(person("Andy", "Teucher", role = c("aut", "cre"),
                     email = "andy.teucher@gov.bc.ca"),
              person("Province of British Columbia", role = "cph"))
@@ -14,10 +14,10 @@ Imports:
   httr (>= 1.2.1),
   rappdirs (>= 0.3.1),
   storr (>= 1.0.1),
-  tibble (>= 1.1),
+  tibble (>= 1.2),
   dplyr (>= 0.5.0),
   RSQLite (>= 1.0.0),
-  DBI (>= 0.4.1),
+  DBI (>= 0.5-1),
   stringr (>= 1.1.0),
   xml2 (>= 1.0.0)
 RoxygenNote: 5.0.1
