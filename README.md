@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="http://bcdevexchange.org/badge/2.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a>
+<a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="http://bcdevexchange.org/badge/3.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
 
 [![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
 
@@ -36,7 +36,7 @@ current <- get_ems_data("current", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(current)
-#> [1] 1708896
+#> [1] 1710119
 head(current)
 #> # A tibble: 6 × 19
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -76,7 +76,7 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 download_historic_data(ask = FALSE)
 #> This is going to take a while...
 #> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
-#> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
+#> Saving historic data at C:\Users\shazlitt\AppData\Local\rems\rems/ems.sqlite
 #> |==========| 100%
 #> Successfully downloaded and stored the historic EMS data.
 #> You can access it with the 'read_historic_data' function
