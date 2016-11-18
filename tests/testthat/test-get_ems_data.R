@@ -12,7 +12,9 @@ test_that("reading metadata works", {
   # Test extracting for each
   expect_equal(nrow(get_file_metadata("historic")), 1L)
 
-  expect_equal(nrow(get_file_metadata("current")), 1L)
+  expect_equal(nrow(get_file_metadata("2yr")), 1L)
+
+  expect_equal(nrow(get_file_metadata("4yr")), 1L)
 
   expect_error(get_file_metadata("foo"), "'which' needs to be one of")
 })
