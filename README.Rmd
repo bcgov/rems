@@ -10,7 +10,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "fig/README-"
 )
-# rems::remove_data_cache("all")
+# library(rems)
+# remove_data_cache("all")
 ```
 
 
@@ -44,13 +45,14 @@ install_github("bcgov/rems")
 
 ### Usage
 
-You can use the `get_ems_data()` function to get current (last two years) of data:
+You can use the `get_ems_data()` function to get last two years of data (You can 
+also specify `which = "4yr"` to get the last four years of data):
 
 ```{r}
 library(rems)
-current <- get_ems_data("current", ask = FALSE)
-nrow(current)
-head(current)
+two_year <- get_ems_data(which = "2yr", ask = FALSE)
+nrow(two_year)
+head(two_year)
 ```
 
 By default, `get_ems_data` imports only a subset of columns that are useful for 
@@ -61,7 +63,7 @@ or a character vector of column names (see `?get_ems_data` for details).
 You can filter the data to just get the records you want:
 
 ```{r}
-filtered_current <- filter_ems_data(current, emsid = c("0121580", "0126400"), 
+filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"), 
                                  parameter = c("Aluminum Total", "Cadmium Total", 
                                                "Copper Total", " Zinc Total", 
                                                "Turbidity"),
@@ -90,10 +92,10 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
                                to_date = "2011/12/31")
 ```
 
-You can combine the previously imported historic and current data sets using `bind_ems_data`:
+You can combine the previously imported historic and two_year data sets using `bind_ems_data`:
 
 ```{r}
-all_data <- bind_ems_data(filtered_current, filtered_historic)
+all_data <- bind_ems_data(filtered_2yr, filtered_historic)
 nrow(all_data)
 ```
 
@@ -115,10 +117,10 @@ data available in the Catalogue, you will be prompted the next time you use
 `get_ems_data` or `download_historic_data`.
 
 If you want to remove the cached data, use the function `remove_data_cache`. You 
-can remove all the data, just the historic, or just the current:
+can remove all the data, or just the "historic", "2yr", or "4yr":
 
 ```{r}
-remove_data_cache("current")
+remove_data_cache("2yr")
 ```
 
 
