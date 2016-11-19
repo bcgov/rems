@@ -40,14 +40,14 @@ httr_progress <- function() {
 
 #' Remove cached EMS data from your computer
 #'
-#' @param which which data to remove? Either \code{"current"}, \code{"historic"},
-#' or \code{"all"}.
+#' @param which which data to remove? Either \code{"2yr"}, \code{"4yr"},
+#' \code{"historic"}, or \code{"all"}.
 #'
 #' @return NULL
 #' @export
 remove_data_cache <- function(which) {
-  if (!which %in% c("all", "current", "historic")) {
-    stop("'which' must be one of 'all', 'current', 'historic'")
+  if (!which %in% c("all", "2yr", "4yr", "historic")) {
+    stop("'which' must be one of 'all', '2yr', '4yr', 'historic'")
   }
   message("Removing ", which, " data from your local cache...")
   if (which == "all") {
@@ -66,7 +66,7 @@ remove_it <- function(which) {
     if (file.exists(fpath)) {
       file.remove(fpath)
     }
-  } else if (which == "current") {
+  } else if (which %in% c("2yr", "4yr")) {
     ._remsCache_$del(which)
   }
   set_cache_date(which, value = NULL)

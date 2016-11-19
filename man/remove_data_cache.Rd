@@ -7,8 +7,8 @@
 remove_data_cache(which)
 }
 \arguments{
-\item{which}{which data to remove? Either \code{"current"}, \code{"historic"},
-or \code{"all"}.}
+\item{which}{which data to remove? Either \code{"2yr"}, \code{"4yr"},
+\code{"historic"}, or \code{"all"}.}
 }
 \description{
 Remove cached EMS data from your computer

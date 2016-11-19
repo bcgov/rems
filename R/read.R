@@ -143,11 +143,12 @@ ems_tz <- function() {
 
 #' Save EMS data as a csv file
 #'
-#' You must specify either an object in your environment (via \code{obj}), or one of \code{"current"}
-#' or \code{"historic"} (via \code{which}), but not both.
+#' You must specify either an object in your environment (via \code{obj}),
+#' or one of \code{"2yr"}, \code{"4yr"}, or \code{"historic"} (via \code{which}),
+#' but not both.
 #'
 #' @param obj The name of an object in your environment
-#' @param which "current" or "historic"
+#' @param which "2yr", "4yr", or "historic"
 #' @param filename the name of the file you are writing to
 #' @param ... other options passed on to \code{read_csv}
 #'
@@ -163,8 +164,8 @@ save_ems_data <- function(obj = NULL, which = NULL, filename = NULL, ...) {
   if (is.null(filename)) stop("You must specify a filename")
 
   if (is.null(obj)) {
-    if (!which %in% c("current", "historic")) {
-      stop("which must be one of 'current' or 'historic'")
+    if (!which %in% c("2yr", "4yr", "historic")) {
+      stop("which must be one of '2yr', '4yr', or 'historic'")
     }
     obj <- get_ems_data(which)
   }

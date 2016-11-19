@@ -14,21 +14,19 @@
 #'
 #' EMS data are distributed through the \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results}{BC Data Catalogue}
 #' under the \href{http://www.data.gov.bc.ca/local/dbc/docs/license/OGL-vbc2.0.pdf}{Open Government License - British Columbia}.
-#' This function downloads the chosen data ('historic' - 1964-2014, or 'current'
-#' - 2015 to now) and imports it into your R session. It also caches the data so
+#' This function downloads the chosen data ('historic' - 1964-2014, or '2yr' or '4yr') and imports it into your R session. It also caches the data so
 #' subsequent loads are much faster - if the data in the Data Catalogue are more
 #' current than that in your cache, you will be prompted to update it.
 #'
-#' @param which Defaults to \code{"current"} (past 2 years) - this is the only option available right now.
-#' If you want historic data, use the \code{\link{download_historic_data}} and
-#' \code{\link{read_historic_data}} functions.
+#' @param which Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"
+#' to get the past four years of data. If you want historic data, use the
+#' \code{\link{download_historic_data}} and \code{\link{read_historic_data}} functions.
 #' @param n how many rows of the data do you want to load? Defaults to all (\code{n = Inf}).
 #' @param cols which subset of columns to read. Can be \code{"all"} which reads all
 #' columns, \code{"wq"} (default) which returns a predefined subset of columns common
 #' for water quality analysis, or a character vector of column names (see details below).
 #' @param force Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 #' if it's not out of date on your computer.
-#' The 'current' dataset contains about 1 million rows.
 #' @param ask should the function ask for your permission to cache data on your computer?
 #' Default \code{TRUE}
 #' @return a data frame
@@ -65,8 +63,8 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE, ask = TRUE) {
-  which <- match.arg(which, c("current"))
+get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE) {
+  which <- match.arg(which, c("2yr", "4yr"))
 
   update <- FALSE # Don't update by default
   if (force || !._remsCache_$exists(which)) {
@@ -90,8 +88,8 @@ get_ems_data <- function(which = "current", n = Inf, cols = "wq", force = FALSE,
 
   if (update) {
     if (ask) {
-    stop_for_permission(paste0("rems would like to store a copy of the current ems data at",
-                                          rems_data_dir(), ". Is that okay?"))
+    stop_for_permission(paste0("rems would like to store a copy of the ", which,
+                               " ems data at", rems_data_dir(), ". Is that okay?"))
     }
     ret <- update_cache(which = which, n = n, cols = cols)
   } else {
@@ -154,7 +152,7 @@ get_databc_metadata <- function() {
                            ifelse(grepl("historic", files_df[["filename"]]),
                                   "historic",
                                   ifelse(grepl("results_current", files_df[["filename"]]),
-                                         "current", "drop")))
+                                         "2yr", "drop")))
   files_df <- files_df[files_df$label != "drop", ]
   files_df$server_date <- as.POSIXct(files_df$server_date, format = "%m/%d/%Y %R %p")
   files_df
@@ -166,7 +164,7 @@ remove_zero_length <- function(l) {
 }
 
 get_file_metadata <- function(which) {
-  choices <- c("current", "historic", "4yr_current")
+  choices <- c("2yr", "historic", "4yr")
   if (!which %in% choices) {
     stop("'which' needs to be one of: ", paste(choices, collapse = ", "),
          call. = FALSE)
@@ -191,7 +189,7 @@ set_cache_date <- function(which, value) {
 
 #' Get the date(s) when ems data was last updated locally.
 #'
-#' @param which The data for which you want to check it's cache date. "current" or "historic
+#' @param which The data for which you want to check it's cache date. "2yr", "4yr", or "historic
 #'
 #' @return The date the data was last updated (if it exists in your cache)
 #' @export

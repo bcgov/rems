@@ -26,18 +26,18 @@ install_github("bcgov/rems")
 
 ### Usage
 
-You can use the `get_ems_data()` function to get current (last two years) of data:
+You can use the `get_ems_data()` function to get last two years of data (You can also specify `which = "4yr"` to get the last four years of data):
 
 ``` r
 library(rems)
-current <- get_ems_data("current", ask = FALSE)
-#> Downloading latest 'current' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_explained.csv)
+two_year <- get_ems_data(which = "2yr", ask = FALSE)
+#> Downloading latest '2yr' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_explained.csv)
 #> Reading data from file...
 #> Caching data on disk...
 #> Loading data...
-nrow(current)
-#> [1] 1710119
-head(current)
+nrow(two_year)
+#> [1] 1713305
+head(two_year)
 #> # A tibble: 6 × 19
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
 #>     <chr>                        <chr>    <dbl>     <dbl>
@@ -60,7 +60,7 @@ By default, `get_ems_data` imports only a subset of columns that are useful for 
 You can filter the data to just get the records you want:
 
 ``` r
-filtered_current <- filter_ems_data(current, emsid = c("0121580", "0126400"), 
+filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"), 
                                  parameter = c("Aluminum Total", "Cadmium Total", 
                                                "Copper Total", " Zinc Total", 
                                                "Turbidity"),
@@ -93,10 +93,10 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
                                to_date = "2011/12/31")
 ```
 
-You can combine the previously imported historic and current data sets using `bind_ems_data`:
+You can combine the previously imported historic and two\_year data sets using `bind_ems_data`:
 
 ``` r
-all_data <- bind_ems_data(filtered_current, filtered_historic)
+all_data <- bind_ems_data(filtered_2yr, filtered_historic)
 nrow(all_data)
 #> [1] 2716
 ```
@@ -117,11 +117,11 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
 
 When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data` or `download_historic_data`.
 
-If you want to remove the cached data, use the function `remove_data_cache`. You can remove all the data, just the historic, or just the current:
+If you want to remove the cached data, use the function `remove_data_cache`. You can remove all the data, or just the "historic", "2yr", or "4yr":
 
 ``` r
-remove_data_cache("current")
-#> Removing current data from your local cache...
+remove_data_cache("2yr")
+#> Removing 2yr data from your local cache...
 ```
 
 ### Project Status
