@@ -8,9 +8,9 @@ get_ems_data(which = "2yr", n = Inf, cols = "wq", force = FALSE,
   ask = TRUE)
 }
 \arguments{
-\item{which}{Defaults to \code{"2yr"} (past 2 years) - this is the only option available right now.
-If you want historic data, use the \code{\link{download_historic_data}} and
-\code{\link{read_historic_data}} functions.}
+\item{which}{Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"
+to get the past four years of data. If you want historic data, use the
+\code{\link{download_historic_data}} and \code{\link{read_historic_data}} functions.}
 
 \item{n}{how many rows of the data do you want to load? Defaults to all (\code{n = Inf}).}
 

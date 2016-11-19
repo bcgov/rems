@@ -18,9 +18,9 @@
 #' subsequent loads are much faster - if the data in the Data Catalogue are more
 #' current than that in your cache, you will be prompted to update it.
 #'
-#' @param which Defaults to \code{"2yr"} (past 2 years) - this is the only option available right now.
-#' If you want historic data, use the \code{\link{download_historic_data}} and
-#' \code{\link{read_historic_data}} functions.
+#' @param which Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"
+#' to get the past four years of data. If you want historic data, use the
+#' \code{\link{download_historic_data}} and \code{\link{read_historic_data}} functions.
 #' @param n how many rows of the data do you want to load? Defaults to all (\code{n = Inf}).
 #' @param cols which subset of columns to read. Can be \code{"all"} which reads all
 #' columns, \code{"wq"} (default) which returns a predefined subset of columns common
@@ -189,7 +189,7 @@ set_cache_date <- function(which, value) {
 
 #' Get the date(s) when ems data was last updated locally.
 #'
-#' @param which The data for which you want to check it's cache date. "2yr" or "historic
+#' @param which The data for which you want to check it's cache date. "2yr", "4yr", or "historic
 #'
 #' @return The date the data was last updated (if it exists in your cache)
 #' @export
