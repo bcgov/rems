@@ -102,3 +102,17 @@ pad_emsid <- function(x) {
   x <- sprintf("%07s", x) # On some systems pads with a space, so need the
   gsub("\\s", "0", x)     # gsub to put zeros in
 }
+
+## CReate a sha1 hash for a file for comparing
+make_file_hash <- function(file) {
+  file <- normalizePath(file, winslash = "/")
+  if (.Platform[["OS.type"]] == "windows") {
+    certutil_output <- system(sprintf("CertUtil -hashfile %s", file), intern = TRUE)
+    ret <- gsub("\\s+", "", certutil_output[2])
+  } else {
+    sha1sum_output <- system(sprintf("sha1sum %s", file))
+    ret <- strsplit(sha1sum_output, "\\s+")[[1]][1]
+  }
+  ret
+}
+

@@ -23,3 +23,7 @@ test_that("httr_progress works", {
   # Need to figure out a way to pretend in interactive mode
   expect_is(httr_progress(), "NULL")
 })
+
+test_that("making file hash works", {
+  expect_equal(make_file_hash("sha1test"), "84e7aab1fe267421a9291ded9793e6117f87f820")
+})
