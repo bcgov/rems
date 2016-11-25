@@ -59,3 +59,10 @@ make_file_hash <- function(file) {
   }
   ret
 }
+
+add_rems_type <- function(obj, which) {
+  if (!which %in% c("2yr", "4yr", "historic")) {
+    stop("Cannot add rems type ", which)
+  }
+  structure(obj, rems_type = which)
+}

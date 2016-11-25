@@ -96,7 +96,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
     message("Fetching data from cache...")
     ret <- ._remsCache_$get(which)[, cols]
   }
-  ret
+  add_rems_type(ret, which)
 }
 
 update_cache <- function(which, n, cols) {

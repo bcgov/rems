@@ -140,7 +140,8 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
   if (!is.null(res$COLLECTION_END))
     res$COLLECTION_END <- ems_posix_numeric(res$COLLECTION_END)
 
-  tibble::as_tibble(res)
+  ret <- tibble::as_tibble(res)
+  add_rems_type(res, "historic")
 
 }
 
