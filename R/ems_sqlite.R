@@ -164,14 +164,14 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#' foo <- load_historic_data()
+#' foo <- attach_historic_data()
 #' bar <- foo %>%
 #'   group_by(EMS_ID) %>%
 #'   summarise(max_date = max(COLLECTION_START))
 #' baz <- collect(bar)
 #' baz$max_date <- as.POSIXct(baz$max_date, origin = "1970/01/01", tz = "Etc/GMT+8")
 #' }
-load_historic_data <- function() {
+attach_historic_data <- function() {
   db_path <- write_db_path()
   if (!file.exists(db_path)) {
     stop("Please download the historic data with\n",
