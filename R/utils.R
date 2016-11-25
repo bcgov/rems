@@ -110,7 +110,7 @@ make_file_hash <- function(file) {
     certutil_output <- system(sprintf("CertUtil -hashfile %s", file), intern = TRUE)
     ret <- gsub("\\s+", "", certutil_output[2])
   } else {
-    sha1sum_output <- system(sprintf("sha1sum %s", file))
+    sha1sum_output <- system(sprintf("sha1sum %s", file), intern = TRUE)
     ret <- strsplit(sha1sum_output, "\\s+")[[1]][1]
   }
   ret
