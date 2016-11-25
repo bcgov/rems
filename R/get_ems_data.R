@@ -174,28 +174,3 @@ get_file_metadata <- function(which) {
 
   all_meta[all_meta$label == which, ]
 }
-
-set_cache_date <- function(which, value) {
-  if (._remsCache_$exists("cache_dates")) {
-    cache_dates <- ._remsCache_$get("cache_dates")
-  } else {
-    cache_dates <- list()
-  }
-  if (!is.null(value)) value <- as.numeric(value)
-  cache_dates[which] <- value # store time as a numeric value
-
-  ._remsCache_$set("cache_dates", cache_dates)
-}
-
-#' Get the date(s) when ems data was last updated locally.
-#'
-#' @param which The data for which you want to check it's cache date. "2yr", "4yr", or "historic
-#'
-#' @return The date the data was last updated (if it exists in your cache)
-#' @export
-get_cache_date <- function(which) {
-  if (!._remsCache_$exists("cache_dates")) return(-Inf)
-  cache_date <- ._remsCache_$get("cache_dates")[[which]]
-  if (is.null(cache_date)) return(-Inf)
-  as.POSIXct(cache_date, origin = "1970/01/01") # converted numeric to POSIXct
-}

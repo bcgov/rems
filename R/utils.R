@@ -10,66 +10,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-write_cache <- function() {
-  path <- rems_data_dir()
-  ._remsCache_ <<- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
-}
-
-rems_data_dir <- function() rappdirs::user_data_dir("rems")
-
-#' Destroy data cache
-#'
-#' Use this if you are getting odd errors when trying to get data or update dates
-#' from the cache
-#'
-#' @return TRUE
-#' @noRd
-burn_it_down <- function() {
-  if (file.exists(rems_data_dir())) {
-    ._remsCache_$destroy()
-  }
-  write_cache()
-  invisible(TRUE)
-}
-
 httr_progress <- function() {
   if (interactive()) {
     return(httr::progress("down"))
   }
-}
-
-#' Remove cached EMS data from your computer
-#'
-#' @param which which data to remove? Either \code{"2yr"}, \code{"4yr"},
-#' \code{"historic"}, or \code{"all"}.
-#'
-#' @return NULL
-#' @export
-remove_data_cache <- function(which) {
-  if (!which %in% c("all", "2yr", "4yr", "historic")) {
-    stop("'which' must be one of 'all', '2yr', '4yr', 'historic'")
-  }
-  message("Removing ", which, " data from your local cache...")
-  if (which == "all") {
-    remove_it("historic")
-    burn_it_down()
-  } else {
-    remove_it(which)
-  }
-
-  invisible(NULL)
-}
-
-remove_it <- function(which) {
-  if (which == "historic") {
-    fpath <- write_db_path()
-    if (file.exists(fpath)) {
-      file.remove(fpath)
-    }
-  } else if (which %in% c("2yr", "4yr")) {
-    ._remsCache_$del(which)
-  }
-  set_cache_date(which, value = NULL)
 }
 
 base_url <- function() {
@@ -115,4 +59,3 @@ make_file_hash <- function(file) {
   }
   ret
 }
-
