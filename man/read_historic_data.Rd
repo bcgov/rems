@@ -4,17 +4,19 @@
 \alias{read_historic_data}
 \title{Read historic ems data into R.}
 \usage{
-read_historic_data(emsid = NULL, parameter = NULL, from_date = NULL,
-  to_date = NULL, cols = "wq")
+read_historic_data(emsid = NULL, parameter = NULL, param_code = NULL,
+  from_date = NULL, to_date = NULL, cols = "wq")
 }
 \arguments{
-\item{emsid}{the EMS_ID(s) of the stations you want}
+\item{emsid}{A character vector of the ems id(s) of interest}
 
-\item{parameter}{the parameter(s) of the stations you want}
+\item{parameter}{a character vector of parameter names}
 
-\item{from_date}{start date}
+\item{param_code}{a character vector of parameter codes}
 
-\item{to_date}{end date}
+\item{from_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
+
+\item{to_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
 
 \item{cols}{colums. Default "wq". See \code{link{get_ems_data}} for further documentation.}
 }
