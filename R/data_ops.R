@@ -12,8 +12,8 @@
 
 #' Combine rows from different EMS data sets
 #'
-#' Mostly used to combine 'current' and 'historic' data obtained through
-#' \link{get_ems_data}
+#' Mostly used to combine '2yr' and 'historic' data obtained through
+#' \link{get_ems_data} and \link{read_historic_data}.
 #'
 #' @param ... the datasets you want to combine
 #'
@@ -29,14 +29,15 @@ bind_ems_data <- function(...) {
 #' @param x The ems data frame to filter
 #' @param emsid A character vector of the ems id(s) of interest
 #' @param parameter a character vector of parameter names
+#' @param param_code a character vector of parameter codes
 #' @param from_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #' @param to_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #'
 #' @return A filtered data frame
 #' @export
 #' @importFrom dplyr filter_
-filter_ems_data <- function(x, emsid = NULL, parameter = NULL, from_date = NULL,
-                            to_date = NULL) {
+filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL,
+                            from_date = NULL, to_date = NULL) {
   # See which arguments have been given a value
   argslist <- names(as.list(match.call()))[c(-1,-2)]
   if (!is.null(from_date)) from_date <- as.POSIXct(from_date, tz = ems_tz())
@@ -48,6 +49,7 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, from_date = NULL,
 
   dots <- list(emsid = ~EMS_ID %in% emsid,
                parameter = ~PARAMETER %in% parameter,
+               param_code = ~PARAMETER_CODE %in% param_code,
                from_date = ~COLLECTION_START >= from_date,
                to_date = ~COLLECTION_START <= to_date)
   dots <- unname(dots[argslist])

@@ -88,6 +88,7 @@ save_historic_data <- function(csv_file, db_path, n) {
     DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
   }
   cat("| 100%")
+
   invisible(TRUE)
 }
 
@@ -96,18 +97,19 @@ save_historic_data <- function(csv_file, db_path, n) {
 #' You will need to have run \code{\link{download_historic_data}} before you
 #' can use this function
 #'
-#' @param emsid the EMS_ID(s) of the stations you want
-#' @param parameter the parameter(s) of the stations you want
-#' @param from_date start date
-#' @param to_date end date
+#' @param emsid A character vector of the ems id(s) of interest
+#' @param parameter a character vector of parameter names
+#' @param param_code a character vector of parameter codes
+#' @param from_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
+#' @param to_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #' @param cols colums. Default "wq". See \code{link{get_ems_data}} for further documentation.
 #'
 #' @return a data frame of the results
 #' @export
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery
-read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
-                               to_date = NULL, cols = "wq") {
+read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL,
+                               from_date = NULL, to_date = NULL, cols = "wq") {
 
   file_meta <- get_file_metadata("historic")
   cache_date <- get_cache_date("historic")
@@ -127,8 +129,8 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
                  " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
-                                from_date = from_date, to_date = to_date,
-                                cols = cols)
+                                param_code = param_code, from_date = from_date,
+                                to_date = to_date, cols = cols)
 
   con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
   on.exit(DBI::dbDisconnect(con))
@@ -141,7 +143,8 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, from_date = NULL,
     res$COLLECTION_END <- ems_posix_numeric(res$COLLECTION_END)
 
   ret <- tibble::as_tibble(res)
-  add_rems_type(res, "historic")
+
+  add_rems_type(ret, "historic")
 
 }
 
@@ -182,9 +185,9 @@ attach_historic_data <- function() {
   tbl
 }
 
-construct_historic_sql <- function(emsid = NULL, parameter = NULL,
+construct_historic_sql <- function(emsid = NULL, parameter = NULL, param_code = NULL,
                                    from_date = NULL, to_date = NULL, cols = NULL) {
-  emsid_qry <- parameter_qry <- from_date_qry <- to_date_qry <- col_query <- NULL
+  emsid_qry <- parameter_qry <- param_cd_qry <- from_date_qry <- to_date_qry <- col_query <- NULL
   if (!is.null(emsid)) {
     emsid <- pad_emsid(emsid)
     emsid_qry <- sprintf("EMS_ID IN (%s)", stringify_vec(emsid))
@@ -192,6 +195,10 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL,
   if (!is.null(parameter)) {
     parameter_qry <- sprintf("PARAMETER IN (%s)", stringify_vec(parameter))
   }
+  if (!is.null(param_code)) {
+    param_cd_qry <- sprintf("PARAMETER_CODE IN (%s)", stringify_vec(param_code))
+  }
+
   if (!is.null(from_date)) {
     from_date <- as.integer(as.POSIXct(from_date, tz = ems_tz()))
     from_date_qry <- sprintf("COLLECTION_START >= %s", from_date)
@@ -200,7 +207,7 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL,
     to_date <- as.integer(as.POSIXct(to_date, tz = ems_tz()))
     to_date_qry <- sprintf("COLLECTION_START <= %s", to_date)
   }
-  row_query_vec <- c(emsid_qry, parameter_qry, from_date_qry, to_date_qry)
+  row_query_vec <- c(emsid_qry, parameter_qry, param_cd_qry, from_date_qry, to_date_qry)
   row_query_vec <- row_query_vec[!is.null(row_query_vec)]
   row_query <- paste(row_query_vec, collapse = " AND ")
 
