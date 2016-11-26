@@ -87,6 +87,22 @@ save_historic_data <- function(csv_file, db_path, n) {
   if (nrow(data) > 0 ) {
     DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
   }
+
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX ems_idx ON historic(EMS_ID)')
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX date_idx ON historic(COLLECTION_START)')
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX locpurp_idx ON historic(LOCATION_PURPOSE)')
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX smpl_cls_idx ON historic(SAMPLE_CLASS)')
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX smpl_st_idx ON historic(SAMPLE_STATE)')
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX param_idx ON historic(PARAMETER)')
+  cat("=")
+  DBI::dbSendQuery(con, 'CREATE INDEX pcode_idx ON historic(PARAMETER_CODE)')
+
   cat("| 100%")
 
   invisible(TRUE)
