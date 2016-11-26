@@ -45,11 +45,28 @@ test_that("read_ems_data works with options", {
   expect_is(test2, "data.frame")
   expect_equal(dim(test2), c(10,19))
   expect_equal(names(test2),
-               c("EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
-                 "COLLECTION_START", "LOCATION_PURPOSE", "SAMPLE_STATE", "PARAMETER_CODE",
-                 "PARAMETER", "ANALYTICAL_METHOD_CODE", "ANALYTICAL_METHOD", "RESULT_LETTER",
-                 "RESULT", "UNIT", "METHOD_DETECTION_LIMIT", "QA_INDEX_CODE",
-                 "UPPER_DEPTH", "LOWER_DEPTH"))
+               c("EMS_ID",
+                 "MONITORING_LOCATION",
+                 "LATITUDE",
+                 "LONGITUDE",
+                 "LOCATION_TYPE",
+                 "COLLECTION_START",
+                 "LOCATION_PURPOSE",
+                 "PERMIT",
+                 "SAMPLE_CLASS",
+                 "SAMPLE_STATE",
+                 "SAMPLE_DESCRIPTOR",
+                 "PARAMETER_CODE",
+                 "PARAMETER",
+                 "ANALYTICAL_METHOD_CODE",
+                 "ANALYTICAL_METHOD",
+                 "RESULT_LETTER",
+                 "RESULT",
+                 "UNIT",
+                 "METHOD_DETECTION_LIMIT",
+                 "QA_INDEX_CODE",
+                 "UPPER_DEPTH",
+                 "LOWER_DEPTH"))
 })
 
 test_that("read_ems_data fails correctly", {
