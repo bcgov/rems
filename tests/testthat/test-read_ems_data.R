@@ -43,7 +43,7 @@ test_that("read_ems_data works with options", {
 
   test2 <- read_ems_data("test_current.csv", cols = wq_cols())
   expect_is(test2, "data.frame")
-  expect_equal(dim(test2), c(10,19))
+  expect_equal(dim(test2), c(10,22))
   expect_equal(names(test2),
                c("EMS_ID",
                  "MONITORING_LOCATION",
