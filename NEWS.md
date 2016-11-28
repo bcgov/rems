@@ -1,3 +1,11 @@
+# rems 0.4.0
+
+* Added indexes to several key columns in the 'historic' sqlite database. This makes
+loading the data slower, but makes queries and the `read_historic_data` function much faster.
+* Added `param_code` argument to `filter_ems_data` and `read_historic_data`
+* Added PERMIT, SAMPLE_CLASS, SAMPLE_DESCRIPTOR to default `"wq"` columns
+* Renamed `load_histori_data()` to `attach_historic_data()`
+
 # rems 0.3.0
 
 * You can now dowload the four most recent years of data, in addition to the 

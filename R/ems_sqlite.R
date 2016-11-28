@@ -267,6 +267,8 @@ write_db_path <- function() {
 #' @param colname col on which to create an index
 #'
 #' @return NULL
+#'
+#' @noRd
 add_sql_index <- function(con, tbl = "historic", colname,
                           idxname = paste0(tolower(colname), "_idx")) {
   sql_str <- sprintf('CREATE INDEX %s ON %s(%s)', idxname, tbl, colname)
