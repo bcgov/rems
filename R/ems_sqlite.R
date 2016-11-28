@@ -89,19 +89,19 @@ save_historic_data <- function(csv_file, db_path, n) {
   }
 
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX ems_idx ON historic(EMS_ID)')
+  add_sql_index(con, colname = 'EMS_ID')
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX date_idx ON historic(COLLECTION_START)')
+  add_sql_index(con, colname = 'COLLECTION_START')
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX locpurp_idx ON historic(LOCATION_PURPOSE)')
+  add_sql_index(con, colname = 'LOCATION_PURPOSE')
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX smpl_cls_idx ON historic(SAMPLE_CLASS)')
+  add_sql_index(con, colname = 'SAMPLE_CLASS')
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX smpl_st_idx ON historic(SAMPLE_STATE)')
+  add_sql_index(con, colname = 'SAMPLE_STATE')
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX param_idx ON historic(PARAMETER)')
+  add_sql_index(con, colname = 'PARAMETER')
   cat("=")
-  DBI::dbSendQuery(con, 'CREATE INDEX pcode_idx ON historic(PARAMETER_CODE)')
+  add_sql_index(con, colname = 'PARAMETER_CODE')
 
   cat("| 100%")
 
@@ -257,4 +257,19 @@ stringify_vec <- function(vec) {
 
 write_db_path <- function() {
   file.path(rems_data_dir(), "ems.sqlite")
+}
+
+#' Add an index to a column in a sqlite database
+#'
+#' @param con sqlite connection
+#' @param idxname desired name for the index
+#' @param tblname table in the database
+#' @param colname col on which to create an index
+#'
+#' @return NULL
+add_sql_index <- function(con, tbl = "historic", colname,
+                          idxname = paste0(tolower(colname), "_idx")) {
+  sql_str <- sprintf('CREATE INDEX %s ON %s(%s)', idxname, tbl, colname)
+  DBI::dbClearResult(DBI::dbSendQuery(con, sql_str))
+  invisible(NULL)
 }
