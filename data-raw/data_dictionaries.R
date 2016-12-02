@@ -24,7 +24,7 @@ download_and_read_dict <- function(filename) {
 }
 
 trim_all_ws <- function(tbl) {
-  as_tibble(lapply(tbl, str_trim))
+  as_tibble(lapply(tbl, str_trim, side = "both"))
 }
 
 dict_alpha <- download_and_read_dict("dict-alpha.xls")
