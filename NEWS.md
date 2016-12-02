@@ -1,3 +1,7 @@
+# rems 0.4.0.9999
+
+* Added data dictionaries (lookup tables for parameters, sample classes, units, etc)
+
 # rems 0.4.0
 
 * Added indexes to several key columns in the 'historic' sqlite database. This makes
