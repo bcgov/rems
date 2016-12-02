@@ -9,6 +9,8 @@ Description: Download and parse data from B.C.s Environemtal Monitoring System.
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+  R (>= 3.3.0)
 Imports:
   readr (>= 1.0.0),
   httr (>= 1.2.1),
