@@ -101,6 +101,8 @@ devtools::use_data(
   ems_sample_classes,
   ems_location_samples,
   ems_species,
-  ems_units)
+  ems_units,
+  compress = "xz",
+  overwrite = TRUE)
 
 ## Documented in R/data_dictionaries.R
