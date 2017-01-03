@@ -125,6 +125,7 @@ download_ems_data <- function(url) {
   res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
   cat("\n")
   httr::stop_for_status(res)
+
   if (ext == ".zip") {
     ret <- unzip(res$request$output$path, exdir = tempdir())
   } else if (ext == ".csv") {
@@ -147,8 +148,7 @@ get_databc_metadata <- function() {
                          stringsAsFactors = FALSE)
   colnames(files_df) <- c("server_date", "size", "filename")
   # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
-  files_df <- files_df[grepl("4yr_current_exp.+\\.zip|results_current_exp.+\\.csv|historic_exp.+\\.zip",
-                             files_df[["filename"]]),]
+  files_df <- files_df[grepl("expanded", files_df[["filename"]]),]
   files_df$label <- ifelse(grepl("4yr", files_df[["filename"]]), "4yr",
                            ifelse(grepl("historic", files_df[["filename"]]),
                                   "historic",
