@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="http://bcdevexchange.org/badge/3.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+<a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
 
 [![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
 
@@ -31,24 +31,23 @@ You can use the `get_ems_data()` function to get last two years of data (You can
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Downloading latest '2yr' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_explained.csv)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
+#> Your version of 2yr is dated 2017-01-04 03:33:00 and there is a newer version available. Would you like to download it? (y/n)
+#> Fetching data from cache...
 nrow(two_year)
-#> [1] 1713305
+#> [1] 634100
 head(two_year)
-#> # A tibble: 6 × 19
+#> # A tibble: 6 × 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
 #>     <chr>                        <chr>    <dbl>     <dbl>
-#> 1 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 2 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 3 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 4 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 5 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 6 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> # ... with 15 more variables: LOCATION_TYPE <chr>,
-#> #   COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>, SAMPLE_STATE <chr>,
+#> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 2 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 3 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> # ... with 18 more variables: LOCATION_TYPE <chr>,
+#> #   COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>, PERMIT <chr>,
+#> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
 #> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
 #> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>,
 #> #   UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, QA_INDEX_CODE <chr>,
@@ -75,9 +74,9 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 ``` r
 download_historic_data(ask = FALSE)
 #> This is going to take a while...
-#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.zip)
-#> Saving historic data at C:\Users\shazlitt\AppData\Local\rems\rems/ems.sqlite
-#> |==========| 100%
+#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.csv)
+#> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
+#> |===================| 100%
 #> Successfully downloaded and stored the historic EMS data.
 #> You can access it with the 'read_historic_data' function
 ```
@@ -98,7 +97,7 @@ You can combine the previously imported historic and two\_year data sets using `
 ``` r
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
 nrow(all_data)
-#> [1] 2716
+#> [1] 2481
 ```
 
 For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
