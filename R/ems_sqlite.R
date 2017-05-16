@@ -39,7 +39,7 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE) {
   }
 
   if (ask) {
-    stop_for_permission(paste0("rems would like to store a copy of the historic ems data at",
+    stop_for_permission(paste0("rems would like to store a copy of the historic ems data at ",
                                               db_path, ". Is that okay?"))
   }
 
@@ -48,6 +48,8 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE) {
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest 'historic' EMS data from BC Data Catalogue (url:", url, ")")
   csv_file <- download_ems_data(url)
+  on.exit(unlink(csv_file))
+
   save_historic_data(csv_file, db_path, n)
 
   set_cache_date("historic", file_meta[["server_date"]])
@@ -61,7 +63,7 @@ save_historic_data <- function(csv_file, db_path, n) {
   message("Saving historic data at ", db_path)
   data <- read_ems_data(csv_file, n = n, cols = NULL, verbose = FALSE,
                         progress = FALSE)
-  col_names <- all_cols()
+  col_names <- col_specs("names_only")
 
   #setting up sqlite
 
@@ -75,7 +77,8 @@ save_historic_data <- function(csv_file, db_path, n) {
     cat("=")
     skip <- i * n + 1
     if (i == 1) {
-      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE)
+      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
+                        field.types = col_specs(type = "sql"))
     } else {
       DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE) #write to sqlite
     }
@@ -93,6 +96,8 @@ save_historic_data <- function(csv_file, db_path, n) {
   cat("=")
   add_sql_index(con, colname = 'COLLECTION_START')
   cat("=")
+  add_sql_index(con, colname = 'COLLECTION_END')
+  cat("=")
   add_sql_index(con, colname = 'LOCATION_PURPOSE')
   cat("=")
   add_sql_index(con, colname = 'SAMPLE_CLASS')
@@ -103,7 +108,7 @@ save_historic_data <- function(csv_file, db_path, n) {
   cat("=")
   add_sql_index(con, colname = 'PARAMETER_CODE')
 
-  cat("| 100%")
+  cat("| 100%\n")
 
   invisible(TRUE)
 }

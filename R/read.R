@@ -20,80 +20,10 @@ read_ems_data <- function(file, n = Inf, cols = NULL, verbose = TRUE, ...) {
   tibble::as_tibble(ret)
 }
 
+#' @importFrom readr cols_only
 col_spec <- function(subset = NULL) {
-
-  if (!is.null(subset)) {
-    diff_cols <- setdiff(subset, all_cols())
-    if (length(diff_cols) > 0 ) {
-      stop("Column(s): ", paste(diff_cols, collapse = ", "), " not in data file",
-           call. = FALSE)
-    }
-  }
-
-  spec <- readr::cols_only(
-    EMS_ID = col_character(),
-    MONITORING_LOCATION = col_character(),
-    LATITUDE = col_double(),
-    LONGITUDE = col_double(),
-    LOCATION_TYPE = col_character(),
-    COLLECTION_START = col_datetime(format = "%Y%m%d%H%M%S"),
-    COLLECTION_END = col_datetime(format = "%Y%m%d%H%M%S"),
-    LOCATION_PURPOSE = col_character(),
-    PERMIT = col_character(),
-    PERMIT_RELATIONSHIP = col_character(),
-    DISCHARGE_TO = col_character(),
-    REQUISITION_ID = col_character(),
-    SAMPLING_AGENCY = col_character(),
-    ANALYZING_AGENCY = col_character(),
-    COLLECTION_METHOD = col_character(),
-    SAMPLE_CLASS = col_character(),
-    SAMPLE_STATE = col_character(),
-    SAMPLE_DESCRIPTOR = col_character(),
-    PARAMETER_CODE = col_character(),
-    PARAMETER = col_character(),
-    ANALYTICAL_METHOD_CODE = col_character(),
-    ANALYTICAL_METHOD = col_character(),
-    RESULT_LETTER = col_character(),
-    RESULT = col_double(),
-    UNIT = col_character(),
-    METHOD_DETECTION_LIMIT = col_double(),
-    QA_INDEX_CODE = col_character(),
-    UPPER_DEPTH = col_double(),
-    LOWER_DEPTH = col_double(),
-    TIDE = col_character(),
-    AIR_FILTER_SIZE = col_double(),
-    AIR_FLOW_VOLUME = col_double(),
-    FLOW_UNIT = col_character(),
-    COMPOSITE_ITEMS = col_double(),
-    CONTINUOUS_AVERAGE = col_double(),
-    CONTINUOUS_MAXIMUM = col_double(),
-    CONTINUOUS_MINIMUM = col_double(),
-    CONTINUOUS_UNIT_CODE = col_character(),
-    CONTINUOUS_DURATION = col_double(),
-    CONTINUOUS_DURATION_UNIT = col_character(),
-    CONTINUOUS_DATA_POINTS = col_double(),
-    TISSUE_TYPE = col_character(),
-    SAMPLE_SPECIES = col_character(),
-    SEX = col_character(),
-    LIFE_STAGE = col_character(),
-    BIO_SAMPLE_VOLUME = col_double(),
-    VOLUME_UNIT = col_character(),
-    BIO_SAMPLE_AREA = col_double(),
-    AREA_UNIT = col_character(),
-    BIO_SIZE_FROM = col_double(),
-    BIO_SIZE_TO = col_double(),
-    SIZE_UNIT = col_character(),
-    BIO_SAMPLE_WEIGHT = col_double(),
-    WEIGHT_UNIT = col_character(),
-    BIO_SAMPLE_WEIGHT_FROM = col_double(),
-    BIO_SAMPLE_WEIGHT_TO = col_double(),
-    WEIGHT_UNIT_1 = col_character(),
-    SPECIES = col_character(),
-    RESULT_LIFE_STAGE = col_character()
-  )
-  if (!is.null(subset)) {
-    spec$cols <- spec$cols[subset]
-  }
+  cols <- col_specs("readr", subset = subset)
+  spec <- do.call("cols_only", cols)
   spec
 }
 
@@ -122,22 +52,94 @@ wq_cols <- function() {
     "LOWER_DEPTH")
 }
 
-all_cols <- function() {
-  c("EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE",
-    "LOCATION_TYPE", "COLLECTION_START", "COLLECTION_END", "LOCATION_PURPOSE",
-    "PERMIT", "PERMIT_RELATIONSHIP", "DISCHARGE_TO", "REQUISITION_ID",
-    "SAMPLING_AGENCY", "ANALYZING_AGENCY", "COLLECTION_METHOD",
-    "SAMPLE_CLASS", "SAMPLE_STATE", "SAMPLE_DESCRIPTOR", "PARAMETER_CODE",
-    "PARAMETER", "ANALYTICAL_METHOD_CODE", "ANALYTICAL_METHOD", "RESULT_LETTER",
-    "RESULT", "UNIT", "METHOD_DETECTION_LIMIT", "QA_INDEX_CODE", "UPPER_DEPTH",
-    "LOWER_DEPTH", "TIDE", "AIR_FILTER_SIZE", "AIR_FLOW_VOLUME", "FLOW_UNIT",
-    "COMPOSITE_ITEMS", "CONTINUOUS_AVERAGE", "CONTINUOUS_MAXIMUM",
-    "CONTINUOUS_MINIMUM", "CONTINUOUS_UNIT_CODE", "CONTINUOUS_DURATION",
-    "CONTINUOUS_DURATION_UNIT", "CONTINUOUS_DATA_POINTS", "TISSUE_TYPE",
-    "SAMPLE_SPECIES", "SEX", "LIFE_STAGE", "BIO_SAMPLE_VOLUME", "VOLUME_UNIT",
-    "BIO_SAMPLE_AREA", "AREA_UNIT", "BIO_SIZE_FROM", "BIO_SIZE_TO", "SIZE_UNIT",
-    "BIO_SAMPLE_WEIGHT", "WEIGHT_UNIT", "BIO_SAMPLE_WEIGHT_FROM",
-    "BIO_SAMPLE_WEIGHT_TO", "WEIGHT_UNIT_1", "SPECIES", "RESULT_LIFE_STAGE")
+col_specs <- function(type = c("readr", "sql", "all", "names_only"), subset = NULL) {
+
+  type = match.arg(type)
+
+  specs <- list(
+    "EMS_ID" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "MONITORING_LOCATION" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "LATITUDE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "LONGITUDE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "LOCATION_TYPE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "COLLECTION_START" = list(readr_fun = col_datetime(format = "%Y%m%d%H%M%S"), sql_type = "INT"),
+    "COLLECTION_END" = list(readr_fun = col_datetime(format = "%Y%m%d%H%M%S"), sql_type = "INT"),
+    "LOCATION_PURPOSE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "PERMIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "PERMIT_RELATIONSHIP" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "DISCHARGE_TO" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "REQUISITION_ID" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SAMPLING_AGENCY" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "ANALYZING_AGENCY" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "COLLECTION_METHOD" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SAMPLE_CLASS" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SAMPLE_STATE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SAMPLE_DESCRIPTOR" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "PARAMETER_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "PARAMETER" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "ANALYTICAL_METHOD_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "ANALYTICAL_METHOD" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "RESULT_LETTER" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "RESULT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "METHOD_DETECTION_LIMIT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "QA_INDEX_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "UPPER_DEPTH" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "LOWER_DEPTH" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "TIDE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "AIR_FILTER_SIZE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "AIR_FLOW_VOLUME" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "FLOW_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "COMPOSITE_ITEMS" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "CONTINUOUS_AVERAGE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "CONTINUOUS_MAXIMUM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "CONTINUOUS_MINIMUM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "CONTINUOUS_UNIT_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "CONTINUOUS_DURATION" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "CONTINUOUS_DURATION_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "CONTINUOUS_DATA_POINTS" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "TISSUE_TYPE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SAMPLE_SPECIES" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SEX" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "LIFE_STAGE" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "BIO_SAMPLE_VOLUME" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "VOLUME_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "BIO_SAMPLE_AREA" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "AREA_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "BIO_SIZE_FROM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "BIO_SIZE_TO" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "SIZE_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "BIO_SAMPLE_WEIGHT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "WEIGHT_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "BIO_SAMPLE_WEIGHT_FROM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "BIO_SAMPLE_WEIGHT_TO" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "WEIGHT_UNIT_1" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "SPECIES" = list(readr_fun = col_character(), sql_type = "TEXT"),
+    "RESULT_LIFE_STAGE" = list(readr_fun = col_character(), sql_type = "TEXT")
+  )
+
+  if (type == "readr") {
+    ret <- lapply(specs, `[[`, "readr_fun")
+  } else if (type == "sql") {
+    ret <- vapply(specs, `[[`, "sql_type", FUN.VALUE = character(1))
+  } else {
+    ret <- specs
+  }
+
+  if (!is.null(subset)) {
+    diff_cols <- setdiff(subset, names(specs))
+    if (length(diff_cols) > 0 ) {
+      stop("Column(s): ", paste(diff_cols, collapse = ", "), " not in data file",
+           call. = FALSE)
+    }
+    ret <- ret[subset]
+  }
+
+  if (type == "names_only") {
+    ret <- names(ret)
+  }
+
+  ret
 }
 
 ems_tz <- function() {

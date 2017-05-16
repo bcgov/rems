@@ -77,7 +77,7 @@ test_that("read_ems_data fails correctly", {
 test_that("col_spec and friends work", {
   expect_equal_to_reference(col_spec()$cols, "col_struct.RDS")
   expect_equal_to_reference(col_spec(wq_cols())$cols, "wq_col_struct.RDS")
-  expect_equal(col_spec(), col_spec(all_cols()))
+  expect_equal(col_spec(), col_spec(col_specs("names_only")))
 })
 
 test_that("ems_tz works", {

@@ -84,7 +84,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
   if (cols == "wq") {
     cols <- wq_cols()
   } else if (cols == "all") {
-    cols <- all_cols()
+    cols <- col_specs("names_only")
   }
 
   if (update) {
