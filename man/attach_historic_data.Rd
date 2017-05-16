@@ -32,4 +32,3 @@ baz <- collect(bar)
 baz$max_date <- as.POSIXct(baz$max_date, origin = "1970/01/01", tz = "Etc/GMT+8")
 }
 }
-

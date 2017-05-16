@@ -4,9 +4,9 @@
 \name{data_dictionaries}
 \alias{data_dictionaries}
 \alias{ems_coll_methods}
-\alias{ems_location_samples}
 \alias{ems_parameters}
 \alias{ems_sample_classes}
+\alias{ems_location_samples}
 \alias{ems_species}
 \alias{ems_units}
 \title{Data Dictionaries for EMS data}
@@ -31,4 +31,3 @@ ems_units
 Various data dictionaries (lookup tables)
 }
 \keyword{datasets}
-

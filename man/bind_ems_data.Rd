@@ -16,4 +16,3 @@ a data frame with rows of inputs combined
 Mostly used to combine '2yr' and 'historic' data obtained through
 \link{get_ems_data} and \link{read_historic_data}.
 }
-

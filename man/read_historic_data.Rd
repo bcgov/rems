@@ -27,4 +27,3 @@ a data frame of the results
 You will need to have run \code{\link{download_historic_data}} before you
 can use this function
 }
-

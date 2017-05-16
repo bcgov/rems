@@ -31,12 +31,14 @@ You can use the `get_ems_data()` function to get last two years of data (You can
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Your version of 2yr is dated 2017-01-04 03:33:00 and there is a newer version available. Would you like to download it? (y/n)
-#> Fetching data from cache...
+#> Downloading latest '2yr' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
 nrow(two_year)
-#> [1] 634100
+#> [1] 928271
 head(two_year)
-#> # A tibble: 6 × 22
+#> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
 #>     <chr>                        <chr>    <dbl>     <dbl>
 #> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
@@ -73,12 +75,7 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 
 ``` r
 download_historic_data(ask = FALSE)
-#> This is going to take a while...
-#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.csv)
-#> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
-#> |===================| 100%
-#> Successfully downloaded and stored the historic EMS data.
-#> You can access it with the 'read_historic_data' function
+#> It appears that you already have the most up-to date version of the historic ems data.
 ```
 
 1.  Next, read in the historic data, supplying constraints to only import the records you want:

@@ -13,4 +13,3 @@ remove_data_cache(which)
 \description{
 Remove cached EMS data from your computer
 }
-

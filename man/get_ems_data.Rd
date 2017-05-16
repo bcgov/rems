@@ -63,4 +63,3 @@ frame with the following columns:
 "RESULT", "UNIT", "METHOD_DETECTION_LIMIT", "QA_INDEX_CODE", "UPPER_DEPTH",
 "LOWER_DEPTH"}
 }
-

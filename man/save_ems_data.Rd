@@ -23,4 +23,3 @@ You must specify either an object in your environment (via \code{obj}),
 or one of \code{"2yr"}, \code{"4yr"}, or \code{"historic"} (via \code{which}),
 but not both.
 }
-

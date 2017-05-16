@@ -15,4 +15,3 @@ The date the data was last updated (if it exists in your cache)
 \description{
 Get the date(s) when ems data was last updated locally.
 }
-

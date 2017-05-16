@@ -26,4 +26,3 @@ A filtered data frame
 \description{
 Simple filtering of ems data by emsid and or dates.
 }
-

@@ -20,4 +20,3 @@ The path where the sqlite database is stored (invisibly).
 \description{
 Download and store the large historic ems dataset
 }
-
