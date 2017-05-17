@@ -5,7 +5,7 @@
 \title{get EMS data from BC Data Catalogue}
 \usage{
 get_ems_data(which = "2yr", n = Inf, cols = "wq", force = FALSE,
-  ask = TRUE)
+  ask = TRUE, dont_update = FALSE)
 }
 \arguments{
 \item{which}{Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"
@@ -23,6 +23,9 @@ if it's not out of date on your computer.}
 
 \item{ask}{should the function ask for your permission to cache data on your computer?
 Default \code{TRUE}}
+
+\item{dont_update}{should the function avoid updating the data even if there is a newer
+version available? Default \code{FALSE}}
 }
 \value{
 a data frame

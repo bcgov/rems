@@ -16,6 +16,8 @@
 #' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
 #' @param ask should the function ask for your permission to cache data on your computer?
 #' Default \code{TRUE}
+#' @param dont_update should the function avoid updating the data even if there is a newer
+#' version available? Default \code{FALSE}
 #'
 #' @return The path where the sqlite database is stored (invisibly).
 #' @export
@@ -25,17 +27,25 @@
 #'
 
 
-download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE) {
+download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_update = FALSE) {
 
   file_meta <- get_file_metadata("historic")
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
 
-  if (cache_date >= file_meta[["server_date"]] && file.exists(db_path) && !force) {
-    message("It appears that you already have the most up-to date version of the",
-            " historic ems data.")
-    return(invisible(db_path))
+  if (file.exists(db_path) && !force) {
+    if (cache_date >= file_meta[["server_date"]]) {
+      message("It appears that you already have the most up-to date version of the",
+              " historic ems data.")
+      return(invisible(db_path))
+    }
+
+    if (dont_update) {
+      warning("There is a newer version of the historic ems data ",
+              ", however you have asked not to update it by setting 'dont_update' to TRUE.")
+      return(invisible(db_path))
+    }
   }
 
   if (ask) {

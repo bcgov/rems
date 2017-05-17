@@ -29,6 +29,8 @@
 #' if it's not out of date on your computer.
 #' @param ask should the function ask for your permission to cache data on your computer?
 #' Default \code{TRUE}
+#' @param dont_update should the function avoid updating the data even if there is a newer
+#' version available? Default \code{FALSE}
 #' @return a data frame
 #' @details cols can specify any of the following column names as a character vector:
 #'
@@ -64,7 +66,7 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE) {
+get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE, dont_update = FALSE) {
   which <- match.arg(which, c("2yr", "4yr"))
 
   update <- FALSE # Don't update by default
@@ -75,9 +77,15 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
     file_meta <- get_file_metadata(which)
 
     if (cache_date < file_meta[["server_date"]]) {
-      ans <- readline(paste0("Your version of ", which, " is dated ",
-                             cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
-      if (tolower(ans) == "y") update <- TRUE
+      if (dont_update) {
+        update <- FALSE
+        warning("There is a newer version of ", which,
+                ", however you have asked not to update it by setting 'dont_update' to TRUE.")
+      } else {
+        ans <- readline(paste0("Your version of ", which, " is dated ",
+                               cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
+        if (tolower(ans) == "y") update <- TRUE
+      }
     }
   }
 
@@ -89,8 +97,8 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
 
   if (update) {
     if (ask) {
-    stop_for_permission(paste0("rems would like to store a copy of the ", which,
-                               " ems data at", rems_data_dir(), ". Is that okay?"))
+      stop_for_permission(paste0("rems would like to store a copy of the ", which,
+                                 " ems data at", rems_data_dir(), ". Is that okay?"))
     }
     ret <- update_cache(which = which, n = n, cols = cols)
   } else {
@@ -104,7 +112,7 @@ update_cache <- function(which, n, cols) {
   file_meta <- get_file_metadata(which)
   url <- paste(base_url(), file_meta[["filename"]], sep = "/")
   message("Downloading latest '", which,
-          "' EMS data from BC Data Catalogue (url:", url, ")")
+          "' EMS data from BC Data Catalogue (url: ", url, ")")
   csv_file <- download_ems_data(url)
   data_obj <- read_ems_data(csv_file, n = n, cols = NULL)
 
