@@ -76,7 +76,7 @@ filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
 You can also get the entire historic dataset, which has records back to 1964. This needs to be done in two steps: 
 
 1. First download the dataset using `download_historic_data`, which downloads 
-the data and stores it in a `sqlite` database:
+the data and stores it in a `SQLite` database:
 
 ```{r}
 download_historic_data(ask = FALSE)
@@ -92,6 +92,38 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
                                from_date = "2001/02/05",
                                to_date = "2011/12/31")
 ```
+
+You can also query the sqlite database using `dplyr`, which ultimately gives you more flexibility than using `read_historic_data`:
+
+First, attach the database to your R session. This creates an object which behaves like a data frame, which you can query with dplyr.  The advantage is that the computation is done in the database rather than importing all of the records into R (which would likely be impossible).
+
+```{r}
+library(dplyr)
+hist_db <- attach_historic_data()
+```
+
+You can then query this object with dplyr:
+
+```{r}
+filtered_historic2 <- hist_db %>% 
+  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>% 
+  filter(EMS_ID %in% c("0121580", "0126400"), 
+         PARAMETER %in% c("Aluminum Total", "Cadmium Total",
+                          "Copper Total", " Zinc Total",
+                          "Turbidity"))
+```
+
+
+Finally, to get the results into your R session as a regular data frame, you must `collect()` it. 
+Note that date/times are stored in the `SQLite` database as integers, so you must convert them back to 
+`POSIXct`. There is a shortcut function to do this: `ems_posix_numeric`:
+
+```{r}
+filtered_historic2 <- collect(filtered_historic2) %>% 
+  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+glimpse(filtered_historic2)
+```
+
 
 You can combine the previously imported historic and two_year data sets using `bind_ems_data`:
 

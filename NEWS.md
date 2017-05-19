@@ -1,6 +1,10 @@
 # rems 0.4.0.9999
 
 * Added data dictionaries (lookup tables for parameters, sample classes, units, etc)
+* Added `dont_update` argument to `get_ems_data()` and `download_historic_data()` to 
+bypass the prompt to update data (#21).
+* (Backend) Store datetime columns as `INTEGER` rather than `REAL` - this seems to make querying the database on dates faster (#24).
+
 
 # rems 0.4.0
 
