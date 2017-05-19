@@ -25,8 +25,6 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom RSQLite SQLite
 #'
-
-
 download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_update = FALSE) {
 
   file_meta <- get_file_metadata("historic")
@@ -65,7 +63,9 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_upda
   set_cache_date("historic", file_meta[["server_date"]])
 
   message("Successfully downloaded and stored the historic EMS data.\n",
-          "You can access it with the 'read_historic_data' function")
+          "You can access and subset it with the 'read_historic_data' function, or
+          attach it as a remote data.frame with 'attach_historic_data()'
+          which you can then query with dplyr")
   invisible(db_path)
 }
 

@@ -3,6 +3,7 @@
 export(attach_historic_data)
 export(bind_ems_data)
 export(download_historic_data)
+export(ems_posix_numeric)
 export(filter_ems_data)
 export(get_cache_date)
 export(get_ems_data)

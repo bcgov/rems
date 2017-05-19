@@ -20,6 +20,12 @@ base_url <- function() {
   "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659"
 }
 
+#' Convert an integer representing a Unix date/time to POSIXct (R date/time) class
+#'
+#' @param x Datetime integer
+#'
+#' @return POSIXct vector
+#' @export
 ems_posix_numeric <- function(x) {
   as.POSIXct(x, origin = "1970/01/01", tz = ems_tz())
 }
