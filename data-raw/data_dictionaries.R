@@ -32,21 +32,21 @@ dict_numeric <- download_and_read_dict("dict-num.xls")
 
 dict_alpha %<>%
   select(PARAMETER_CODE = `Parameter Code`,
-         PARAMETER_ABBR = `Parameter Name`,
-         ANALYTICAL_METHOD = `Method Name`,
-         ANALYTICAL_METHOD_CODE = `Method Code`,
-         METHOD_DETECTION_LIMIT = `Method Detect Limit`,
-         UNIT = Units,
+         PARAMETER_ABBR = `Parameter`,
+         ANALYTICAL_METHOD = `Analytical Method`,
+         ANALYTICAL_METHOD_CODE = `Analytical Method Code`,
+         METHOD_DETECTION_LIMIT = `Method Detection Limit`,
+         UNIT = Unit,
          UNIT_CODE = `Unit Code`) %>%
   trim_all_ws()
 
 dict_numeric %<>%
   select(PARAMETER_CODE = `Parameter Code`,
-         PARAMETER = `Parameter Name`,
-         ANALYTICAL_METHOD = `Method Name`,
-         ANALYTICAL_METHOD_CODE = `Method Code`,
-         METHOD_DETECTION_LIMIT = `Method Detect Limit`,
-         UNIT = Units,
+         PARAMETER = `Parameter`,
+         ANALYTICAL_METHOD = `Analytical Method`,
+         ANALYTICAL_METHOD_CODE = `Analytical Method Code`,
+         METHOD_DETECTION_LIMIT = `Method Detection Limit`,
+         UNIT = Unit,
          UNIT_CODE = `Unit Code`) %>%
   trim_all_ws()
 
@@ -57,42 +57,40 @@ ems_parameters <- left_join(dict_alpha, dict_numeric) %>%
 dict_units <- download_and_read_dict("units-alpha.xls")
 
 ems_units <- dict_units %>%
-  select(UNIT_CODE = Code,
-         UNIT = `Short Name`,
-         UNIT_DESCRIPTION = Description) %>%
+  select(UNIT_CODE = `UNIT CODE`, UNIT, UNIT_DESCRIPTION = `MEASUREMENT UNIT DESCRIPTION`) %>%
   trim_all_ws()
 
 st_sd_dict <- download_and_read_dict("type-st-ds.xls")
 
 ems_location_samples <- st_sd_dict %>%
-  select(LOCATION_TYPE_CODE = `Site Type Code`,
-         LOCATION_TYPE = `Site Type Description`,
-         SAMPLE_STATE_CODE = `Sample State Code`,
-         SAMPLE_STATE = `Sample State Description`,
-         SAMPLE_DESCRIPTOR_CODE = `Sample Descriptor Code`,
-         SAMPLE_DESCRIPTOR = `Sample Descriptor Description`) %>%
+  select(LOCATION_TYPE_CODE = `LOCATION TYPE CODE`,
+         LOCATION_TYPE = `LOCATION TYPE`,
+         SAMPLE_STATE_CODE = `SAMPLE STATE CODE`,
+         SAMPLE_STATE = `SAMPLE STATE DESCRIPTION`,
+         SAMPLE_DESCRIPTOR_CODE = `SAMPLE DESCRIPTOR CODE`,
+         SAMPLE_DESCRIPTOR = `SAMPLE DESCRIPTOR`) %>%
   trim_all_ws()
 
 col_method_dict <- download_and_read_dict("col-method.xls")
 
 ems_coll_methods <- col_method_dict %>%
   select(COLLECTION_METHOD_CODE = CODE,
-         COLLECTION_METHOD = DESCRIPTION) %>%
+         COLLECTION_METHOD = `COLLECTION METHOD`) %>%
   trim_all_ws()
 
 class_dict <- download_and_read_dict("class.xls")
 
 ems_sample_classes <- class_dict %>%
-  select(SAMPLE_CLASS_CODE = Code,
-         SAMPLE_CLASS = Description) %>%
+  select(SAMPLE_CLASS_CODE = CODE,
+         SAMPLE_CLASS = DESCRIPTION) %>%
   trim_all_ws()
 
 species_dict <- download_and_read_dict("species.xls")
 
 ems_species <- species_dict %>%
   select(SPECIES_CODE = CODE,
-         SPECIES = DESCRIPTION,
-         SPECIES_CLASSIFICATION_LEVEL = CLASSIFICATION_LEVEL) %>%
+         SPECIES = `SPECIES DESCRIPTION`,
+         SPECIES_CLASSIFICATION_LEVEL = `CLASSIFICATION LEVEL`) %>%
   trim_all_ws()
 
 devtools::use_data(
