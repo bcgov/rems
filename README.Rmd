@@ -164,7 +164,7 @@ The package is under active development.
 ### Getting Help or Reporting an Issue
 
 To report bugs/issues/feature requests, please file an 
-[issue](https://github.com/bcgov/rcaaqs/issues/).
+[issue](https://github.com/bcgov/rems/issues).
 
 ### How to Contribute
 
