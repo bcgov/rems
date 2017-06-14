@@ -31,9 +31,12 @@ You can use the `get_ems_data()` function to get last two years of data (You can
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Fetching data from cache...
+#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
 nrow(two_year)
-#> [1] 928550
+#> [1] 973543
 head(two_year)
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -165,7 +168,7 @@ The package is under active development.
 
 ### Getting Help or Reporting an Issue
 
-To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/rcaaqs/issues/).
+To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/rems/issues).
 
 ### How to Contribute
 
