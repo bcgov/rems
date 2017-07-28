@@ -9,9 +9,9 @@
 rems
 ====
 
-An [R](https://www.r-project.org) package to download, import, and filter data from [BC's Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
+An [R](https://www.r-project.org) package to download, import, and filter data from [B.C.'s Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
-The package pulls data from the [BC Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licensed under the [Open Government License - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
+The package pulls data from the [B.C. Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licenced under the [Open Government Licence - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
 ### Installation
 
@@ -31,12 +31,10 @@ You can use the `get_ems_data()` function to get last two years of data (You can
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
+#> Your version of 2yr is dated 2017-07-05 03:35:00 and there is a newer version available. Would you like to download it? (y/n)
+#> Fetching data from cache...
 nrow(two_year)
-#> [1] 973543
+#> [1] 1001458
 head(two_year)
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -153,7 +151,7 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
 
 ![](fig/README-unnamed-chunk-12-1.png)
 
-When the data are downloaded from the BC Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data` or `download_historic_data`.
+When the data are downloaded from the B.C. Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data` or `download_historic_data`.
 
 If you want to remove the cached data, use the function `remove_data_cache`. You can remove all the data, or just the "historic", "2yr", or "4yr":
 

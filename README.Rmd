@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 
 ```{r, echo=FALSE, results='asis'}
-envreportutils::devex_badge("delivery")
+bcgovr::devex_badge("delivery")
 ```
 
 [![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
@@ -26,9 +26,9 @@ envreportutils::devex_badge("delivery")
 
 # rems
 
-An [R](https://www.r-project.org) package to download, import, and filter data from [BC's Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
+An [R](https://www.r-project.org) package to download, import, and filter data from [B.C.'s Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
-The package pulls data from the [BC Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licensed under the [Open Government License - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
+The package pulls data from the [B.C. Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licenced under the [Open Government Licence - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
 ### Installation
 
@@ -144,7 +144,7 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
-When the data are downloaded from the BC Data Catalogue, they are cached so that 
+When the data are downloaded from the B.C. Data Catalogue, they are cached so that 
 you don't have to download it every time you want to use it. If there is newer 
 data available in the Catalogue, you will be prompted the next time you use 
 `get_ems_data` or `download_historic_data`.
