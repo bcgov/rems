@@ -1,19 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
-
-[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
-
-------------------------------------------------------------------------
-
 rems
 ====
+
+<a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+
+Overview
+--------
 
 An [R](https://www.r-project.org) package to download, import, and filter data from [B.C.'s Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
 The package pulls data from the [B.C. Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licenced under the [Open Government Licence - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
-### Installation
+Installation
+------------
 
 The package is not available on CRAN, but can be installed using the [devtools](https://github.com/hadley/devtools) package:
 
@@ -24,24 +24,27 @@ library(devtools)
 install_github("bcgov/rems")
 ```
 
-### Usage
+Usage
+-----
 
 You can use the `get_ems_data()` function to get last two years of data (You can also specify `which = "4yr"` to get the last four years of data):
 
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Your version of 2yr is dated 2017-07-05 03:35:00 and there is a newer version available. Would you like to download it? (y/n)
-#> Fetching data from cache...
+#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
 nrow(two_year)
-#> [1] 1001458
+#> [1] 1174086
 head(two_year)
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
 #>     <chr>                        <chr>    <dbl>     <dbl>
-#> 1 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 2 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 3 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 1 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 2 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 3 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
 #> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
 #> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
@@ -149,7 +152,7 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
-![](fig/README-unnamed-chunk-12-1.png)
+![](fig/README-unnamed-chunk-11-1.png)
 
 When the data are downloaded from the B.C. Data Catalogue, they are cached so that you don't have to download it every time you want to use it. If there is newer data available in the Catalogue, you will be prompted the next time you use `get_ems_data` or `download_historic_data`.
 
@@ -160,21 +163,25 @@ remove_data_cache("2yr")
 #> Removing 2yr data from your local cache...
 ```
 
-### Project Status
+Project Status
+--------------
 
 The package is under active development.
 
-### Getting Help or Reporting an Issue
+Getting Help or Reporting an Issue
+----------------------------------
 
 To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/rems/issues).
 
-### How to Contribute
+How to Contribute
+-----------------
 
 If you would like to contribute to the package, please see our [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-### License
+License
+-------
 
     Copyright 2016 Province of British Columbia
 

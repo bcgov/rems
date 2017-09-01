@@ -1,6 +1,6 @@
 ---
 output: github_document
-html_preveiw: true
+html_preview: true
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -15,22 +15,19 @@ knitr::opts_chunk$set(
 # remove_data_cache("all")
 ```
 
-
-```{r, echo=FALSE, results='asis'}
-bcgovr::devex_badge("delivery")
-```
-
-[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
-
----
-
 # rems
+
+<div id="devex-badge"><a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)</div>
+
+
+
+## Overview
 
 An [R](https://www.r-project.org) package to download, import, and filter data from [B.C.'s Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
 
 The package pulls data from the [B.C. Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licenced under the [Open Government Licence - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
-### Installation
+## Installation
 
 The package is not available on CRAN, but can be installed using
 the [devtools](https://github.com/hadley/devtools) package:
@@ -44,7 +41,7 @@ install_github("bcgov/rems")
 ```
 
 
-### Usage
+## Usage
 
 You can use the `get_ems_data()` function to get last two years of data (You can 
 also specify `which = "4yr"` to get the last four years of data):
@@ -157,23 +154,23 @@ remove_data_cache("2yr")
 ```
 
 
-### Project Status
+## Project Status
 
 The package is under active development.
 
-### Getting Help or Reporting an Issue
+## Getting Help or Reporting an Issue
 
 To report bugs/issues/feature requests, please file an 
 [issue](https://github.com/bcgov/rems/issues).
 
-### How to Contribute
+## How to Contribute
 
 If you would like to contribute to the package, please see our 
 [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-### License
+## License
 
     Copyright 2016 Province of British Columbia
 
