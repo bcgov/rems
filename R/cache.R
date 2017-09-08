@@ -15,9 +15,13 @@ write_cache <- function() {
   ._remsCache_ <<- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
 }
 
+cache_exists <- function() exists("._remsCache_")
+
 rems_data_dir <- function() rappdirs::user_data_dir("rems")
 
 set_cache_date <- function(which, value) {
+  stopifnot(cache_exists())
+
   if (._remsCache_$exists("cache_dates")) {
     cache_dates <- ._remsCache_$get("cache_dates")
   } else {
@@ -36,6 +40,8 @@ set_cache_date <- function(which, value) {
 #' @return The date the data was last updated (if it exists in your cache)
 #' @export
 get_cache_date <- function(which) {
+  stopifnot(cache_exists())
+
   if (!._remsCache_$exists("cache_dates")) return(-Inf)
   cache_date <- ._remsCache_$get("cache_dates")[[which]]
   if (is.null(cache_date)) return(-Inf)
@@ -50,10 +56,11 @@ get_cache_date <- function(which) {
 #' @return TRUE
 #' @noRd
 burn_it_down <- function() {
-  if (file.exists(rems_data_dir())) {
+  if (file.exists(rems_data_dir()) && cache_exists()) {
     ._remsCache_$destroy()
+  } else {
+    write_cache()
   }
-  write_cache()
   invisible(TRUE)
 }
 
@@ -86,6 +93,7 @@ remove_it <- function(which) {
       file.remove(fpath)
     }
   } else if (which %in% c("2yr", "4yr")) {
+    stopifnot(cache_exists())
     ._remsCache_$del(which)
   }
   set_cache_date(which, value = NULL)
