@@ -27,6 +27,8 @@ install_github("bcgov/rems")
 Usage
 -----
 
+**NOTE:** If you are using Windows, you must be running the 64-bit version of R, as the 32-bit version cannot handle the size of the ems data. In RStudio, click on Tools -&gt; Global Options and ensure the 64 bit version is chosen in the *R version* box.
+
 You can use the `get_ems_data()` function to get last two years of data (You can also specify `which = "4yr"` to get the last four years of data):
 
 ``` r
@@ -37,7 +39,7 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 1174086
+#> [1] 1178074
 head(two_year)
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -45,9 +47,9 @@ head(two_year)
 #> 1 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
 #> 2 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
 #> 3 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 4 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 5 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
-#> 6 0121580 ENGLISHMAN R. AT HIGHWAY 19A  49.3011 -124.2756
+#> 4 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 5 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
+#> 6 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
 #> # ... with 18 more variables: LOCATION_TYPE <chr>,
 #> #   COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>, PERMIT <chr>,
 #> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
@@ -76,7 +78,14 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 
 ``` r
 download_historic_data(ask = FALSE)
-#> It appears that you already have the most up-to date version of the historic ems data.
+#> This is going to take a while...
+#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.csv)
+#> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
+#> |====================| 100%
+#> Successfully downloaded and stored the historic EMS data.
+#> You can access and subset it with the 'read_historic_data' function, or
+#>           attach it as a remote data.frame with 'attach_historic_data()'
+#>           which you can then query with dplyr
 ```
 
 1.  Next, read in the historic data, supplying constraints to only import the records you want:
