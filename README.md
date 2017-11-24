@@ -3,7 +3,7 @@
 rems
 ====
 
-<a rel="Delivery" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+<a rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
 
 Overview
 --------
@@ -34,12 +34,9 @@ You can use the `get_ems_data()` function to get last two years of data (You can
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
+#> Fetching data from cache...
 nrow(two_year)
-#> [1] 1178074
+#> [1] 1375295
 head(two_year)
 #> # A tibble: 6 x 22
 #>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
@@ -80,7 +77,7 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 download_historic_data(ask = FALSE)
 #> This is going to take a while...
 #> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.csv)
-#> Saving historic data at C:\Users\ateucher\AppData\Local\rems\rems/ems.sqlite
+#> Saving historic data at /Users/shazlitt/Library/Application Support/rems/ems.sqlite
 #> |====================| 100%
 #> Successfully downloaded and stored the historic EMS data.
 #> You can access and subset it with the 'read_historic_data' function, or
