@@ -56,10 +56,14 @@ pad_emsid <- function(x) {
 ## CReate a sha1 hash for a file for comparing
 make_file_hash <- function(file) {
   file <- normalizePath(file, winslash = "/")
-  if (.Platform[["OS.type"]] == "windows") {
+  os <- find_os()
+  if (os == "windows") {
     certutil_output <- system(sprintf("CertUtil -hashfile %s", file), intern = TRUE)
     ret <- gsub("\\s+", "", certutil_output[2])
-  } else {
+  } else if (os == "osx")  {
+    shasum_output <- system(sprintf("shasum %s", file), intern = TRUE)
+    ret <- strsplit(shasum_output, "\\s+")[[1]][1]
+  } else if (os == "unix") {
     sha1sum_output <- system(sprintf("sha1sum %s", file), intern = TRUE)
     ret <- strsplit(sha1sum_output, "\\s+")[[1]][1]
   }
@@ -71,4 +75,16 @@ add_rems_type <- function(obj, which) {
     stop("Cannot add rems type ", which)
   }
   structure(obj, rems_type = which)
+}
+
+find_os <- function() {
+  if (.Platform$OS.type == "windows") {
+    "windows"
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    "osx"
+  } else if (.Platform$OS.type == "unix") {
+    "unix"
+  } else {
+    stop("Could not find oprating system")
+  }
 }
