@@ -148,7 +148,7 @@ get_databc_metadata <- function() {
   url <- base_url()
   html <- xml2::read_html(url)
   ## Convert xml to list and only extract the portion with the information
-  res <- xml2::as_list(html)[["body"]][["pre"]]
+  res <- xml2::as_list(xml2::xml_find_first(html, "//pre"))
   res <- remove_zero_length(res[2:length(res)])
   res <- unname(unlist(res))
   res <- unlist(strsplit(res, "\\s{3,}"))
