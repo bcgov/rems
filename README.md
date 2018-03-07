@@ -27,9 +27,9 @@ install_github("bcgov/rems")
 Usage
 -----
 
-**NOTE:** If you are using Windows, you must be running the 64-bit version of R, as the 32-bit version cannot handle the size of the ems data. In RStudio, click on Tools -&gt; Global Options and ensure the 64 bit version is chosen in the *R version* box.
+**NOTE:** If you are using Windows, you must be running the 64-bit version of R, as the 32-bit version cannot handle the size of the EMS data. In RStudio, click on Tools -&gt; Global Options and ensure the 64 bit version is chosen in the *R version* box.
 
-You can use the `get_ems_data()` function to get last two years of data (You can also specify `which = "4yr"` to get the last four years of data):
+You can use the `get_ems_data()` function to get last two years of data (you can also specify `which = "4yr"` to get the last four years of data):
 
 ``` r
 library(rems)
@@ -56,7 +56,7 @@ head(two_year)
 #> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 
-By default, `get_ems_data` imports only a subset of columns that are useful for water quality analysis. This is controlled by the `cols` argumnet, which has a default value of `"wq"`. This can be set to `"all"` to download all of the columns, or a character vector of column names (see `?get_ems_data` for details).
+By default, `get_ems_data` imports only a subset of columns that are useful for water quality analysis. This is controlled by the `cols` argument, which has a default value of `"wq"`. This can be set to `"all"` to download all of the columns, or a character vector of column names (see `?get_ems_data` for details).
 
 You can filter the data to just get the records you want:
 
