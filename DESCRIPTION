@@ -5,7 +5,7 @@ Version: 0.4.0.9999
 Authors@R: c(person("Andy", "Teucher", role = c("aut", "cre"),
                     email = "andy.teucher@gov.bc.ca"),
              person("Province of British Columbia", role = "cph"))
-Description: Download and parse data from B.C.s Environemtal Monitoring System.
+Description: Download and parse data from B.C.'s Environmental Monitoring System.
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
