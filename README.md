@@ -36,21 +36,21 @@ library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Fetching data from cache...
 nrow(two_year)
-#> [1] 1375295
+#> [1] 861094
 head(two_year)
 #> # A tibble: 6 x 22
-#>    EMS_ID          MONITORING_LOCATION LATITUDE LONGITUDE
-#>     <chr>                        <chr>    <dbl>     <dbl>
-#> 1 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 2 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 3 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 4 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 5 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> 6 0120802 COWICHAN RIVER AT HIGHWAY #1  48.7719 -123.6964
-#> # ... with 18 more variables: LOCATION_TYPE <chr>,
-#> #   COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>, PERMIT <chr>,
-#> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
-#> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
+#>   EMS_ID  MONITORING_LOCATION       LATITUDE LONGITUDE LOCATION_TYPE      
+#>   <chr>   <chr>                        <dbl>     <dbl> <chr>              
+#> 1 0120802 COWICHAN RIVER AT HIGHWA…     48.8     -124. RIVER,STREAM OR CR…
+#> 2 0120802 COWICHAN RIVER AT HIGHWA…     48.8     -124. RIVER,STREAM OR CR…
+#> 3 0120802 COWICHAN RIVER AT HIGHWA…     48.8     -124. RIVER,STREAM OR CR…
+#> 4 0120802 COWICHAN RIVER AT HIGHWA…     48.8     -124. RIVER,STREAM OR CR…
+#> 5 0120802 COWICHAN RIVER AT HIGHWA…     48.8     -124. RIVER,STREAM OR CR…
+#> 6 0120802 COWICHAN RIVER AT HIGHWA…     48.8     -124. RIVER,STREAM OR CR…
+#> # ... with 17 more variables: COLLECTION_START <dttm>,
+#> #   LOCATION_PURPOSE <chr>, PERMIT <chr>, SAMPLE_CLASS <chr>,
+#> #   SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>,
+#> #   PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
 #> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>,
 #> #   UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, QA_INDEX_CODE <chr>,
 #> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
@@ -75,14 +75,6 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 
 ``` r
 download_historic_data(ask = FALSE)
-#> This is going to take a while...
-#> Downloading latest 'historic' EMS data from BC Data Catalogue (url:https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.csv)
-#> Saving historic data at /Users/shazlitt/Library/Application Support/rems/ems.sqlite
-#> |====================| 100%
-#> Successfully downloaded and stored the historic EMS data.
-#> You can access and subset it with the 'read_historic_data' function, or
-#>           attach it as a remote data.frame with 'attach_historic_data()'
-#>           which you can then query with dplyr
 ```
 
 1.  Next, read in the historic data, supplying constraints to only import the records you want:
@@ -130,12 +122,12 @@ Finally, to get the results into your R session as a regular data frame, you mus
 filtered_historic2 <- collect(filtered_historic2) %>% 
   mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
 glimpse(filtered_historic2)
-#> Observations: 4,884
+#> Observations: 4,953
 #> Variables: 4
 #> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "...
-#> $ PARAMETER        <chr> "Turbidity", "Copper Total", "Cadmium Total",...
-#> $ COLLECTION_START <dttm> 2004-05-06 16:00:00, 2004-10-18 11:35:00, 20...
-#> $ RESULT           <dbl> 0.260000, 0.000560, 0.000010, 0.000930, 1.300...
+#> $ PARAMETER        <chr> "Aluminum Total", "Cadmium Total", "Copper To...
+#> $ COLLECTION_START <dttm> 1999-05-19 08:15:00, 1999-05-19 08:15:00, 20...
+#> $ RESULT           <dbl> 0.068000, 0.000010, 0.000480, 0.350000, 0.414...
 ```
 
 You can combine the previously imported historic and two\_year data sets using `bind_ems_data`:

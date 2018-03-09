@@ -77,7 +77,7 @@ You can also get the entire historic dataset, which has records back to 1964. Th
 1. First download the dataset using `download_historic_data`, which downloads 
 the data and stores it in a `SQLite` database:
 
-```{r}
+```{r, eval=!file.exists(rems:::write_db_path())}
 download_historic_data(ask = FALSE)
 ```
 
