@@ -17,9 +17,9 @@ library(magrittr)
 library(stringr)
 
 download_and_read_dict <- function(filename) {
-  base_url <- "http://www2.gov.bc.ca/assets/gov/environment/research-monitoring-and-reporting/reporting/reporting-documents/environmental-monitoring-docs/"
+  base_url <- "https://www2.gov.bc.ca/assets/gov/environment/research-monitoring-and-reporting/reporting/reporting-documents/environmental-monitoring-docs"
   dest_file <- tempfile(fileext = ".xls")
-  download.file(paste0(base_url, filename), destfile = dest_file, mode = "wb")
+  download.file(file.path(base_url, filename), destfile = dest_file, mode = "wb")
   read_excel(dest_file)
 }
 
@@ -27,20 +27,9 @@ trim_all_ws <- function(tbl) {
   as_tibble(lapply(tbl, str_trim, side = "both"))
 }
 
-dict_alpha <- download_and_read_dict("dict-alpha.xls")
-dict_numeric <- download_and_read_dict("dict-num.xls")
+ems_parameters <- download_and_read_dict("dict-num.xls")
 
-dict_alpha %<>%
-  select(PARAMETER_CODE = `Parameter Code`,
-         PARAMETER_ABBR = `Parameter`,
-         ANALYTICAL_METHOD = `Analytical Method`,
-         ANALYTICAL_METHOD_CODE = `Analytical Method Code`,
-         METHOD_DETECTION_LIMIT = `Method Detection Limit`,
-         UNIT = Unit,
-         UNIT_CODE = `Unit Code`) %>%
-  trim_all_ws()
-
-dict_numeric %<>%
+ems_parameters %<>%
   select(PARAMETER_CODE = `Parameter Code`,
          PARAMETER = `Parameter`,
          ANALYTICAL_METHOD = `Analytical Method`,
@@ -49,10 +38,6 @@ dict_numeric %<>%
          UNIT = Unit,
          UNIT_CODE = `Unit Code`) %>%
   trim_all_ws()
-
-ems_parameters <- left_join(dict_alpha, dict_numeric) %>%
-  mutate(PARAMETER = ifelse(is.na(PARAMETER), PARAMETER_ABBR, PARAMETER)) %>%
-  select(PARAMETER, everything())
 
 dict_units <- download_and_read_dict("units-alpha.xls")
 
