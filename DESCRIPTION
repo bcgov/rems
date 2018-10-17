@@ -23,5 +23,6 @@ Imports:
   DBI (>= 0.5-1),
   stringr (>= 1.1.0),
   xml2 (>= 1.0.0)
-RoxygenNote: 6.0.1
 Suggests: testthat
+RoxygenNote: 6.1.0
+
