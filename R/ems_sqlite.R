@@ -53,7 +53,7 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_upda
 
   message("This is going to take a while...")
 
-  url <- paste(base_url(), file_meta[["filename"]], sep = "/")
+  url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest 'historic' EMS data from BC Data Catalogue (url:", url, ")")
   csv_file <- download_ems_data(url)
   on.exit(unlink(csv_file))

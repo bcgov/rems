@@ -110,7 +110,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
 
 update_cache <- function(which, n, cols) {
   file_meta <- get_file_metadata(which)
-  url <- paste(base_url(), file_meta[["filename"]], sep = "/")
+  url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
           "' EMS data from BC Data Catalogue (url: ", url, ")")
   csv_file <- download_ems_data(url)
