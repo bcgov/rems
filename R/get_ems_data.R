@@ -158,7 +158,7 @@ get_databc_metadata <- function() {
   res <- unname(unlist(res))
   res <- stringr::str_trim(res, side = "both")
   # Extract only elements with filename or dates
-  res <- res[grepl("^ems_sample_results.+\\.(csv|zip)$|[0-9]{4}(-|/)[0-9]{2}(-|/)[0-9]{2}", res)]
+  res <- res[grepl("ems_sample_results.+\\.(csv|zip)$|[0-9]{4}(-|/)[0-9]{2}(-|/)[0-9]{2}", res)]
   # Remove file size
   res <- gsub("\\s+[0-9]{1,3}(\\.[0-9]{1,})?(G|M)$", "", res)
   files_df <- data.frame(matrix(res, ncol = 2, byrow = TRUE),
@@ -166,11 +166,12 @@ get_databc_metadata <- function() {
   colnames(files_df) <- c("filename", "server_date")
   # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
   files_df <- files_df[grepl("expanded", files_df[["filename"]]),]
-  files_df$label <- ifelse(grepl("4yr", files_df[["filename"]]), "4yr",
-                           ifelse(grepl("historic", files_df[["filename"]]),
-                                  "historic",
-                                  ifelse(grepl("results_current", files_df[["filename"]]),
-                                         "2yr", "drop")))
+  files_df$label <- dplyr::case_when(
+    grepl("^te?mp", files_df[["filename"]]) ~ "drop",
+    grepl("4yr", files_df[["filename"]]) ~ "4yr",
+    grepl("historic", files_df[["filename"]]) ~ "historic",
+    grepl("results_current", files_df[["filename"]]) ~ "2yr",
+    TRUE ~ "drop")
   files_df <- files_df[files_df$label != "drop", ]
   files_df$server_date <- as.POSIXct(files_df$server_date, format = "%Y-%m-%d %R")
   files_df
