@@ -1,4 +1,4 @@
-context("sqlite")
+context("utils")
 
 test_that("ems_posix_numeric works with integer, integer64, numeric", {
   dt <- as.POSIXct("2018-02-05 14:35", tz = "Etc/GMT+8")
