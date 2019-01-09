@@ -27,7 +27,7 @@ base_url <- function() {
 #' @return POSIXct vector
 #' @export
 ems_posix_numeric <- function(x) {
-  as.POSIXct(x, origin = "1970/01/01", tz = ems_tz())
+  as.POSIXct(as.numeric(x), origin = "1970/01/01", tz = ems_tz())
 }
 
 stop_for_permission <- function(question) {
