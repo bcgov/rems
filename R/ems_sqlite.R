@@ -287,6 +287,6 @@ write_db_path <- function() {
 add_sql_index <- function(con, tbl = "historic", colname,
                           idxname = paste0(tolower(colname), "_idx")) {
   sql_str <- sprintf('CREATE INDEX %s ON %s(%s)', idxname, tbl, colname)
-  DBI::dbClearResult(DBI::dbSendQuery(con, sql_str))
+  DBI::dbExecute(con, sql_str)
   invisible(NULL)
 }
