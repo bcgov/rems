@@ -5,7 +5,7 @@
 \title{get EMS data from BC Data Catalogue}
 \usage{
 get_ems_data(which = "2yr", n = Inf, cols = "wq", force = FALSE,
-  ask = TRUE, dont_update = FALSE)
+  ask = TRUE, dont_update = FALSE, dont_get = FALSE)
 }
 \arguments{
 \item{which}{Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"
@@ -26,9 +26,11 @@ Default \code{TRUE}}
 
 \item{dont_update}{should the function avoid updating the data even if there is a newer
 version available? Default \code{FALSE}}
+
+\item{dont_get}{should the function avoid retrieving the data from the cache? Default \code{FALSE}}
 }
 \value{
-a data frame
+a data frame or NULL if dont_get = TRUE
 }
 \description{
 EMS data are distributed through the \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results}{BC Data Catalogue}
