@@ -134,30 +134,33 @@ save_historic_data <- function(csv_file, db_path, n) {
 #' @param from_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #' @param to_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #' @param cols colums. Default "wq". See \code{link{get_ems_data}} for further documentation.
+#' @param check_exists should the function check for cached data or updates? Default \code{TRUE}.
 #'
 #' @return a data frame of the results
 #' @export
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery
 read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL,
-                               from_date = NULL, to_date = NULL, cols = "wq") {
+                               from_date = NULL, to_date = NULL, cols = "wq", check_exists = TRUE) {
 
   file_meta <- get_file_metadata("historic")
   cache_date <- get_cache_date("historic")
   db_path <- write_db_path()
 
   ## Check for missing or outdated historic database
-  exit_fun <- FALSE
-  if (!file.exists(db_path)) {
-    exit_fun <- TRUE
-  } else if (cache_date < file_meta[["server_date"]] && file.exists(db_path)) {
-    ans <- readline(paste("Your version of the historic dataset is out of date.",
-                          "Would you like to continue with the version you have (y/n)? ",
-                          sep = "\n"))
-    if (tolower(ans) != "y") exit_fun <- TRUE
+  if(check_exists){
+    exit_fun <- FALSE
+    if (!file.exists(db_path)) {
+      exit_fun <- TRUE
+    } else if (cache_date < file_meta[["server_date"]] && file.exists(db_path)) {
+      ans <- readline(paste("Your version of the historic dataset is out of date.",
+                            "Would you like to continue with the version you have (y/n)? ",
+                            sep = "\n"))
+      if (tolower(ans) != "y") exit_fun <- TRUE
+    }
+    if (exit_fun) stop("Please download the historic data with\n",
+                       " the 'download_historic_data' function.")
   }
-  if (exit_fun) stop("Please download the historic data with\n",
-                 " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
                                 param_code = param_code, from_date = from_date,

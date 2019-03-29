@@ -5,7 +5,7 @@
 \title{Read historic ems data into R.}
 \usage{
 read_historic_data(emsid = NULL, parameter = NULL, param_code = NULL,
-  from_date = NULL, to_date = NULL, cols = "wq")
+  from_date = NULL, to_date = NULL, cols = "wq", ask = TRUE)
 }
 \arguments{
 \item{emsid}{A character vector of the ems id(s) of interest}
@@ -19,6 +19,8 @@ read_historic_data(emsid = NULL, parameter = NULL, param_code = NULL,
 \item{to_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
 
 \item{cols}{colums. Default "wq". See \code{link{get_ems_data}} for further documentation.}
+
+\item{ask}{should the function check for cached data or updates? Default \code{TRUE}.}
 }
 \value{
 a data frame of the results
