@@ -31,8 +31,8 @@
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
-#' @param dont_get should the function avoid retrieving the data from the cache? Default \code{FALSE}
-#' @return a data frame or NULL if dont_get = TRUE
+#' @param check_only should the function retrieve the data from the cache or just check it's existence and currency? Default \code{FALSE}
+#' @return a data frame or NULL if check_only = TRUE
 #' @details cols can specify any of the following column names as a character vector:
 #'
 #' \code{"EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
@@ -67,7 +67,7 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE, dont_update = FALSE, dont_get = FALSE) {
+get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE, dont_update = FALSE, check_only = FALSE) {
   which <- match.arg(which, c("2yr", "4yr"))
 
   update <- FALSE # Don't update by default
@@ -102,10 +102,10 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
                                  " ems data at", rems_data_dir(), ". Is that okay?"))
     }
     ret <- update_cache(which = which, n = n, cols = cols)
-    if(dont_get) return(NULL)
+    if(check_only) return(NULL)
     return(add_rems_type(ret, which))
   }
-  if(dont_get) return(NULL)
+  if(check_only) return(NULL)
   message("Fetching data from cache...")
   ret <- ._remsCache_$get(which)[, cols]
   add_rems_type(ret, which)
