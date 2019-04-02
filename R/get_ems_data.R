@@ -96,18 +96,18 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
     cols <- col_specs("names_only")
   }
 
+  if(check_only) return(TRUE)
+
   if (update) {
     if (ask) {
       stop_for_permission(paste0("rems would like to store a copy of the ", which,
                                  " ems data at", rems_data_dir(), ". Is that okay?"))
     }
     ret <- update_cache(which = which, n = n, cols = cols)
-    if(check_only) return(NULL)
-    return(add_rems_type(ret, which))
+  } else {
+    message("Fetching data from cache...")
+    ret <- ._remsCache_$get(which)[, cols]
   }
-  if(check_only) return(NULL)
-  message("Fetching data from cache...")
-  ret <- ._remsCache_$get(which)[, cols]
   add_rems_type(ret, which)
 }
 
