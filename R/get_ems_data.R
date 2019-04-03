@@ -31,7 +31,8 @@
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
-#' @return a data frame
+#' @param check_only should the function retrieve the data from the cache or just check it's existence and currency? Default \code{FALSE}
+#' @return a data frame or NULL if check_only = TRUE
 #' @details cols can specify any of the following column names as a character vector:
 #'
 #' \code{"EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
@@ -66,7 +67,7 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE, dont_update = FALSE) {
+get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE, dont_update = FALSE, check_only = FALSE) {
   which <- match.arg(which, c("2yr", "4yr"))
 
   update <- FALSE # Don't update by default
@@ -94,6 +95,8 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask
   } else if (cols == "all") {
     cols <- col_specs("names_only")
   }
+
+  if(check_only) return(TRUE)
 
   if (update) {
     if (ask) {
