@@ -1,7 +1,7 @@
 Package: rems
 Type: Package
 Title: Get Data From British Columbia's Environmental Monitoring System
-Version: 0.4.0.9999
+Version: 0.4.1
 Authors@R: c(person("Andy", "Teucher", role = c("aut", "cre"),
                     email = "andy.teucher@gov.bc.ca"),
              person("Province of British Columbia", role = "cph"))

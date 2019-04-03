@@ -31,7 +31,7 @@ load the data from the cache? Default \code{FALSE}}
 just check it's existence and currency? Default \code{FALSE}}
 }
 \value{
-a data frame or NULL if check_only = TRUE
+a data frame or \code{TRUE} if \code{check_only = TRUE}
 }
 \description{
 EMS data are distributed through the \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results}{BC Data Catalogue}

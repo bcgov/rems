@@ -1,9 +1,13 @@
-# rems 0.4.0.9999
+# rems 0.4.1
 
 * Added data dictionaries (lookup tables for parameters, sample classes, units, etc)
 * Added `dont_update` argument to `get_ems_data()` and `download_historic_data()` to 
-bypass the prompt to update data (#21).
-* (Backend) Store datetime columns as `INTEGER` rather than `REAL` - this seems to make querying the database on dates faster (#24).
+bypass the check to update data (#21).
+* Added `lt_lake_sites()` function t get the EMS_IDs of all of the long-term lake monitoring sites (ac34dbd)
+* Added `check_only` argument (default `FALSE`) to `get_ems_data()` to allow just checking the currency 
+of a rems dataset (#35 @sebdalgarno)
+* Added `check_db` argument (default `TRUE`) to `read_historic_data()` so that
+a user can skip checking the currency of the historic dataset (#35 @sebdalgarno)
 
 
 # rems 0.4.0
