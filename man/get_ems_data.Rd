@@ -24,10 +24,11 @@ if it's not out of date on your computer.}
 \item{ask}{should the function ask for your permission to cache data on your computer?
 Default \code{TRUE}}
 
-\item{dont_update}{should the function avoid updating the data even if there is a newer
-version available? Default \code{FALSE}}
+\item{dont_update}{should the function checking for updates to the data and simply
+load the data from the cache? Default \code{FALSE}}
 
-\item{check_only}{should the function retrieve the data from the cache or just check it's existence and currency? Default \code{FALSE}}
+\item{check_only}{should the function retrieve the data from the cache or
+just check it's existence and currency? Default \code{FALSE}}
 }
 \value{
 a data frame or NULL if check_only = TRUE
