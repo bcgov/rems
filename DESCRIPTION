@@ -23,5 +23,6 @@ Imports:
   DBI (>= 0.5-1),
   stringr (>= 1.1.0),
   xml2 (>= 1.0.0)
-Suggests: testthat
+Suggests: testthat,
+  bit64
 RoxygenNote: 6.1.1
