@@ -1,3 +1,8 @@
+# rems 0.4.0.9999
+
+* Added new `MDL_UNIT` column to denote the units of the minimum detection limit.
+* 
+
 # rems 0.4.1
 
 * Added data dictionaries (lookup tables for parameters, sample classes, units, etc)
