@@ -10,11 +10,13 @@ meta <- rems:::get_databc_metadata()
 
 ## Make a test csv of current and historic data
 test_current_csv <- rems:::download_ems_data(paste0(rems:::base_url(),
-                                            meta$filename[meta$label == "current"]))
+                                            meta$filename[meta$label == "2yr"]))
 
-read_lines(test_current_csv, n_max = 11) %>% write_lines("tests/testthat/test_current.csv")
+read_lines(test_current_csv, n_max = 11) %>%
+  write_lines("tests/testthat/test_current.csv")
 
 test_historic_csv <- rems:::download_ems_data(paste0(rems:::base_url(),
                                                     meta$filename[meta$label == "historic"]))
 
-read_lines(test_historic_csv, n_max = 11) %>% write_lines("tests/testthat/test_historic.csv")
+read_lines(test_historic_csv, n_max = 11) %>%
+  write_lines("tests/testthat/test_historic.csv")
