@@ -1,7 +1,6 @@
-# rems 0.4.0.9999
+# rems 0.4.2
 
 * Added new `MDL_UNIT` column to denote the units of the minimum detection limit.
-* 
 
 # rems 0.4.1
 
