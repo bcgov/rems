@@ -276,8 +276,9 @@ stringify_vec <- function(vec) {
   paste(shQuote(vec, "sh"), collapse = ",")
 }
 
-write_db_path <- function() {
-  file.path(rems_data_dir(), "ems.sqlite")
+write_db_path <- function(path = getOption("rems.historic.path",
+                                           default = rems_data_dir())) {
+  file.path(path, "ems.sqlite")
 }
 
 #' Add an index to a column in a sqlite database
