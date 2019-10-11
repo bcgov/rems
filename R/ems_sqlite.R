@@ -25,7 +25,7 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom RSQLite SQLite
 #'
-download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_update = FALSE) {
+download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE) {
 
   file_meta <- get_file_metadata("historic")
   cache_date <- get_cache_date("historic")
