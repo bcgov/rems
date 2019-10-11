@@ -5,7 +5,7 @@ csv_file <- rems:::download_ems_data(url)
 db_file <- path.expand("~/ems_historic.sqlite")
 rems:::save_historic_data(csv_file, db_file, 1e6)
 zip(paste0(db_file, ".zip"), db_file)
-# Then manually attach to release
+# Then manually attach to release (can change to doing it via api a la bcmapsdata)
 
 
 # Test getting it

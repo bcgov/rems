@@ -27,7 +27,8 @@
 #'
 download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE) {
 
-  file_meta <- get_file_metadata("historic")
+  ## TODO: Adjust to download sqlite from gh release
+  file_meta <- get_file_metadata("historic") # Get from gh release
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
