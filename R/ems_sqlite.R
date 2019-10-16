@@ -149,6 +149,11 @@ save_historic_data <- function(csv_file, db_path, n) {
 #' @export
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery
+#' @examples
+#' \dontrun{
+#' read_historic_data(emsid = "0400203", from_date = as.Date("1984-11-20"),
+#'                    to_date = as.Date("1991-05-11"))
+#' }
 read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL,
                                from_date = NULL, to_date = NULL, cols = "wq", check_db = TRUE) {
 
@@ -159,7 +164,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
   }
 
   ## Check for missing or outdated historic database
-  if(check_db){
+  if (check_db) {
     file_meta <- get_file_metadata("historic")
     cache_date <- get_cache_date("historic")
      if (cache_date < file_meta[["server_date"]] && file.exists(db_path)) {
