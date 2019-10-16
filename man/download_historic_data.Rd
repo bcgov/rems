@@ -5,7 +5,7 @@
 \title{Download and store the large historic ems dataset}
 \usage{
 download_historic_data(force = FALSE, ask = TRUE,
-  dont_update = FALSE)
+  dont_update = FALSE, httr_config = list())
 }
 \arguments{
 \item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}
@@ -15,6 +15,9 @@ Default \code{TRUE}}
 
 \item{dont_update}{should the function avoid updating the data even if there is a newer
 version available? Default \code{FALSE}}
+
+\item{httr_config}{configuration settings passed on to [httr::GET()],
+such as [httr::timeout()]}
 }
 \value{
 The path where the sqlite database is stored (invisibly).

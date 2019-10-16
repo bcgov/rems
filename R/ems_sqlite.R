@@ -17,6 +17,8 @@
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
+#' @param httr_config configuration settings passed on to [httr::GET()],
+#' such as [httr::timeout()]
 #'
 #' @return The path where the sqlite database is stored (invisibly).
 #' @export
@@ -24,7 +26,7 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom RSQLite SQLite
 #'
-download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE) {
+download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
 
   sqlite_gh_date <- get_sqlite_gh_date() # Get from gh release
   cache_date <- get_cache_date("historic")
@@ -55,7 +57,8 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   on.exit(unlink(zipfile))
 
   message("Downloading latest 'historic' EMS data")
-  download_file_from_release("ems_historic.sqlite.zip", zipfile)
+  download_file_from_release("ems_historic.sqlite.zip", zipfile,
+                             httr_config = httr_config)
 
   exdir <- dirname(db_path)
   files_in_zip <- zip::zip_list(zipfile)$filename

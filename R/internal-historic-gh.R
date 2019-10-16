@@ -10,7 +10,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-download_file_from_release <- function(file, path, release = "latest", force = FALSE) {
+download_file_from_release <- function(file, path, release = "latest",
+                                       force = FALSE, httr_config = list()) {
   the_release <- get_gh_release(release)
   assets <- the_release$assets
 
@@ -49,7 +50,7 @@ download_file_from_release <- function(file, path, release = "latest", force = F
     # write the github release asset id to a file for checking version
     cat(the_asset_id,
         file = asset_id_file)
-    download_release_asset(the_asset_url, path)
+    download_release_asset(the_asset_url, path, httr_config = httr_config)
   } else {
     message("Loading file from cache...\n")
   }
@@ -70,8 +71,9 @@ get_gh_release <- function(release = "latest") {
                      simplifyMatrix = FALSE, flatten = FALSE)
 }
 
-download_release_asset <- function(asset_url, path) {
+download_release_asset <- function(asset_url, path, httr_config = list()) {
   resp <- httr::GET(auth_url(asset_url),
+                    config = httr_config,
                     httr::add_headers(Accept = "application/octet-stream"),
                     httr::write_disk(path, overwrite = TRUE),
                     httr::progress("down"))
