@@ -58,21 +58,16 @@ download_file_from_release <- function(file, path, release = "latest", force = F
 
 get_gh_release <- function(release = "latest") {
   # List releases
-  rels_resp <- httr::GET(auth_url(gh_base_url()))
+  sep <- ifelse(release == "latest", "/", "/tags/")
+  url <- paste(gh_base_url(), release, sep = sep)
+  rels_resp <- httr::GET(auth_url(url))
   httr::stop_for_status(rels_resp)
 
-  rels <- jsonlite::fromJSON(httr::content(rels_resp, as = "text",
-                                           type = "application/json",
-                                           encoding = "UTF-8"),
-                             simplifyVector = FALSE, simplifyDataFrame = FALSE,
-                             simplifyMatrix = FALSE, flatten = FALSE)
-
-  # Most recent release
-  if (release == "latest") {
-    rels[[1]]
-  } else {
-    rels[vapply(rels, function(x) x$tag_name == as.character(release), FUN.VALUE = logical(1))][[1]]
-  }
+  jsonlite::fromJSON(httr::content(rels_resp, as = "text",
+                                   type = "application/json",
+                                   encoding = "UTF-8"),
+                     simplifyVector = FALSE, simplifyDataFrame = FALSE,
+                     simplifyMatrix = FALSE, flatten = FALSE)
 }
 
 download_release_asset <- function(asset_url, path) {
