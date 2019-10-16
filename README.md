@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.4.2
+# rems 0.4.2.0009
 
 <!-- badges: start -->
 
@@ -56,17 +56,17 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 1015830
+#> [1] 1404516
 head(two_year)
 #> # A tibble: 6 x 23
 #>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>  <chr>               <dbl>     <dbl> <chr>        
-#> 1 01215… ENGLISHMAN R. A…     49.3     -124. RIVER,STREAM…
-#> 2 01215… ENGLISHMAN R. A…     49.3     -124. RIVER,STREAM…
-#> 3 01215… ENGLISHMAN R. A…     49.3     -124. RIVER,STREAM…
-#> 4 01215… ENGLISHMAN R. A…     49.3     -124. RIVER,STREAM…
-#> 5 01215… ENGLISHMAN R. A…     49.3     -124. RIVER,STREAM…
-#> 6 01215… ENGLISHMAN R. A…     49.3     -124. RIVER,STREAM…
+#> 1 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
+#> 2 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
+#> 3 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
+#> 4 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
+#> 5 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
+#> 6 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
 #> # … with 18 more variables: COLLECTION_START <dttm>,
 #> #   LOCATION_PURPOSE <chr>, PERMIT <chr>, SAMPLE_CLASS <chr>,
 #> #   SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>,
@@ -163,9 +163,9 @@ glimpse(filtered_historic2)
 #> Observations: 5,194
 #> Variables: 4
 #> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "01…
-#> $ PARAMETER        <chr> "Turbidity", "Copper Total", "Aluminum Total", …
-#> $ COLLECTION_START <dttm> 1996-02-26 15:30:00, 2002-04-10 08:30:00, 2004…
-#> $ RESULT           <dbl> 0.800000, 0.000050, 0.010600, 0.000790, 0.00001…
+#> $ PARAMETER        <chr> "Cadmium Total", "Copper Total", "Copper Total"…
+#> $ COLLECTION_START <dttm> 2003-08-26 08:15:00, 2003-10-27 11:55:00, 2004…
+#> $ RESULT           <dbl> 1.00e-05, 9.30e-04, 1.12e-03, 8.40e-01, 3.00e-0…
 ```
 
 You can combine the previously imported historic and two\_year data sets
@@ -184,11 +184,6 @@ Then you can plot your data with ggplot2:
 
 ``` r
 library(ggplot2)
-#> Registered S3 methods overwritten by 'ggplot2':
-#>   method         from 
-#>   [.quosures     rlang
-#>   c.quosures     rlang
-#>   print.quosures rlang
 
 ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) + 
   geom_point() + 
@@ -211,6 +206,25 @@ If you want to remove the cached data, use the function
 remove_data_cache("2yr")
 #> Removing 2yr data from your local cache...
 ```
+
+## Developing
+
+### Releasing a new version
+
+As of version 0.5.0 the historic data will be provided as a sqlite
+database attached to the GitHub release, as such the release workflow is
+as follows:
+
+1.  Create a ‘draft’ release on GitHub with the new version number
+2.  Run the script `inst/create_historic_sqlite.R`
+3.  Upload `ems_historic.sqlite.zip` to the draft release
+4.  Edit release to create full release.
+
+### Updating `ems_historic.sqlite` without releasing a new version of rems:
+
+1.  Run the script `inst/create_historic_sqlite.R`
+2.  Upload `ems_historic.sqlite.zip` to the latest release, overwriting
+    the old file
 
 ## Project Status
 

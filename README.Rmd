@@ -159,6 +159,24 @@ remove_data_cache("2yr")
 ```
 
 
+## Developing
+
+### Releasing a new version
+
+As of version 0.5.0 the historic data will be provided as a sqlite database
+attached to the GitHub release, as such the release workflow is as follows:
+
+1. Create a 'draft' release on GitHub with the new version number
+2. Run the script `inst/create_historic_sqlite.R` 
+3. Upload `ems_historic.sqlite.zip` to the draft release
+4. Edit release to create full release.
+
+### Updating `ems_historic.sqlite` without releasing a new version of rems:
+
+1. Run the script `inst/create_historic_sqlite.R` 
+2. Upload `ems_historic.sqlite.zip` to the latest release, overwriting the old file
+
+
 ## Project Status
 
 Under development, but stable. Unlikely to break or change substantially.
