@@ -34,7 +34,7 @@ download_file_from_release <- function(file, path, release = "latest", force = F
       # the current one on disk is the same asset as on GH so don't download again
       download <- FALSE
     } else {
-      ans <- ask(paste0("There is a newer version of ", basename(file),
+      ans <- utils::askYesNo(paste0("There is a newer version of ", basename(file),
                         " available. Would you like to download it and store it at ",
                         path, "?"))
       download <- ans

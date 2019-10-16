@@ -15,8 +15,6 @@ Default \code{TRUE}}
 
 \item{dont_update}{should the function avoid updating the data even if there is a newer
 version available? Default \code{FALSE}}
-
-\item{n}{the chunk size to use to iteratively read and store the historic data (default 1 million)}
 }
 \value{
 The path where the sqlite database is stored (invisibly).

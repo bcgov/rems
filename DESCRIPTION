@@ -10,8 +10,9 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
-  R (>= 3.3.0)
+  R (>= 3.5.0)
 Imports:
+  utils,
   readr (>= 1.0.0),
   httr (>= 1.2.1),
   rappdirs (>= 0.3.1),
@@ -23,8 +24,10 @@ Imports:
   DBI (>= 0.5-1),
   stringr (>= 1.1.0),
   xml2 (>= 1.0.0), 
-  zip (>= 2.0.4)
+  zip (>= 2.0.4),
+  jsonlite (>= 1.6)
 Suggests: 
   testthat,
+  devtools,
   bit64
 RoxygenNote: 6.1.1

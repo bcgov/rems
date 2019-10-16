@@ -12,7 +12,6 @@
 
 #' Download and store the large historic ems dataset
 #'
-#' @param n the chunk size to use to iteratively read and store the historic data (default 1 million)
 #' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
 #' @param ask should the function ask for your permission to cache data on your computer?
 #' Default \code{TRUE}
