@@ -10,6 +10,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
+## To update the sqlite database you must have write access to
+## https://github.com/bcgov/rems, and have a GitHub personal access token (with
+## necessary scope) saved as an environment variable (preferably GITHUB_PAT)
+
 # Download csv, create sqlite, and zip it.
 url <- "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_historic_expanded.csv"
 csv_file <- rems:::download_ems_data(url)
