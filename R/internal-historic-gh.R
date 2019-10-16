@@ -84,7 +84,8 @@ download_release_asset <- function(asset_url, path, httr_config = list()) {
 }
 
 auth_url <- function(url) {
-  pat <- Sys.getenv("GITHUB_PAT")
+  pat <- Sys.getenv("GITHUB_PAT", "")
+  if (!nzchar(pat)) pat <- Sys.getenv("GITHUB_TOKEN", "")
   if (nzchar(pat)) {
     return(paste0(url, "?access_token=", pat))
   }
