@@ -27,14 +27,13 @@
 #'
 download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE) {
 
-  ## TODO: Adjust to download sqlite from gh release
-  file_meta <- get_file_metadata("historic") # Get from gh release
+  sqlite_gh_date <- get_sqlite_gh_date() # Get from gh release
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
 
   if (file.exists(db_path) && !force) {
-    if (cache_date >= file_meta[["server_date"]]) {
+    if (cache_date >= sqlite_gh_date) {
       message("It appears that you already have the most up-to date version of the",
               " historic ems data.")
       return(invisible(db_path))
@@ -53,15 +52,24 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   }
 
   message("This is going to take a while...")
+  zipfile <- tempfile(fileext = ".zip")
+  on.exit(unlink(zipfile))
 
-  url <- paste0(base_url(), file_meta[["filename"]])
-  message("Downloading latest 'historic' EMS data from BC Data Catalogue (url:", url, ")")
-  csv_file <- download_ems_data(url)
-  on.exit(unlink(csv_file))
+  message("Downloading latest 'historic' EMS data")
+  download_file_from_release("ems_historic.sqlite.zip", zipfile)
 
-  save_historic_data(csv_file, db_path, n)
+  exdir <- dirname(db_path)
+  files_in_zip <- zip::zip_list(zipfile)$filename
+  sqlite_filename <- files_in_zip[grepl("ems_historic.*\\.sqlite$", files_in_zip)]
 
-  set_cache_date("historic", file_meta[["server_date"]])
+  zip::unzip(zipfile, files = sqlite_filename, junkpaths = TRUE, exdir = exdir)
+  extracted_sqlite <- file.path(exdir, sqlite_filename)
+
+  if (!extracted_sqlite == db_path) {
+    file.rename(extracted_sqlite, db_path)
+  }
+
+  set_cache_date("historic", sqlite_gh_date)
 
   message("Successfully downloaded and stored the historic EMS data.\n",
           "You can access and subset it with the 'read_historic_data' function, or
@@ -279,7 +287,7 @@ stringify_vec <- function(vec) {
 
 write_db_path <- function(path = getOption("rems.historic.path",
                                            default = rems_data_dir())) {
-  file.path(path, "ems.sqlite")
+  file.path(path, "ems_historic.sqlite")
 }
 
 #' Add an index to a column in a sqlite database
