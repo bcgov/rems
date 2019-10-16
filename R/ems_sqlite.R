@@ -78,59 +78,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   invisible(db_path)
 }
 
-save_historic_data <- function(csv_file, db_path, n) {
-  message("Saving historic data at ", db_path)
-  data <- read_ems_data(csv_file, n = n, cols = NULL, verbose = FALSE,
-                        progress = FALSE)
-  col_names <- col_specs("names_only")
 
-  #setting up sqlite
-
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
-  on.exit(DBI::dbDisconnect(con))
-  tbl_name <- "historic"
-
-  i <- 1
-  cat("|")
-  while (nrow(data) == n) { # if not reached the end of line
-    cat("=")
-    skip <- i * n + 1
-    if (i == 1) {
-      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
-                        field.types = col_specs(type = "sql"))
-    } else {
-      DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE) #write to sqlite
-    }
-    data <- read_ems_data(csv_file, n = n, cols = col_names, verbose = FALSE, skip = skip,
-                          col_names = col_names, progress = FALSE)
-    i <- i + 1
-  }
-
-  if (nrow(data) > 0 ) {
-    DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
-  }
-
-  cat("=")
-  add_sql_index(con, colname = 'EMS_ID')
-  cat("=")
-  add_sql_index(con, colname = 'COLLECTION_START')
-  cat("=")
-  add_sql_index(con, colname = 'COLLECTION_END')
-  cat("=")
-  add_sql_index(con, colname = 'LOCATION_PURPOSE')
-  cat("=")
-  add_sql_index(con, colname = 'SAMPLE_CLASS')
-  cat("=")
-  add_sql_index(con, colname = 'SAMPLE_STATE')
-  cat("=")
-  add_sql_index(con, colname = 'PARAMETER')
-  cat("=")
-  add_sql_index(con, colname = 'PARAMETER_CODE')
-
-  cat("| 100%\n")
-
-  invisible(TRUE)
-}
 
 #' Read historic ems data into R.
 #'
