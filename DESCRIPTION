@@ -22,7 +22,8 @@ Imports:
   RSQLite (>= 1.0.0),
   DBI (>= 0.5-1),
   stringr (>= 1.1.0),
-  xml2 (>= 1.0.0)
+  xml2 (>= 1.0.0), 
+  zip (>= 2.0.4)
 Suggests: 
   testthat,
   bit64
