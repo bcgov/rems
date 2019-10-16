@@ -94,4 +94,26 @@ auth_url <- function(url) {
   url
 }
 
+get_sqlite_gh_date <- function(release = "latest") {
+  rel <- get_gh_release(release)
+  as.POSIXct(rel$assets[[1]]$updated_at)
+}
+
+upload_release_asset <- function(files, release_url = get_gh_release()$url) {
+  stopifnot(requireNamespace("httr"))
+  stopifnot(requireNamespace("devtools"))
+
+  for (f in path.expand(files)) {
+    message("uploading ", f)
+    r <- httr::POST(gsub("\\{.+\\}$", "", release_url),
+                    query = list(name = basename(f)),
+                    body = httr::upload_file(f),
+                    httr::authenticate(devtools::github_pat(), ""),
+                    httr::progress("up"))
+
+    httr::stop_for_status(r, task = paste0("upload ", f))
+  }
+  invisible(TRUE)
+}
+
 gh_base_url <- function() "https://api.github.com/repos/bcgov/rems/releases"
