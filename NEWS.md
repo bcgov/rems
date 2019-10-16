@@ -1,3 +1,11 @@
+# rems 0.4.2.00009
+
+* The historic sqlite database is now available as a direct download from a rems
+release on GitHub, which should be much faster and more reliable for the user.
+* User can now specify/customize the location of the sqlite database via an
+option `rems.historic.path`. This is best set in your `.Rprofile` file as
+`options(rems.historic.path = "path_to_file")`
+
 # rems 0.4.2
 
 * Added new `MDL_UNIT` column to denote the units of the minimum detection limit.
