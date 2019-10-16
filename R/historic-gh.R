@@ -56,13 +56,14 @@ download_file_from_release <- function(file, path, release = "latest", force = F
   invisible(path)
 }
 
-get_gh_release <- function(release) {
+get_gh_release <- function(release = "latest") {
   # List releases
   rels_resp <- httr::GET(auth_url(gh_base_url()))
   httr::stop_for_status(rels_resp)
 
   rels <- jsonlite::fromJSON(httr::content(rels_resp, as = "text",
-                                           type = "application/json"),
+                                           type = "application/json",
+                                           encoding = "UTF-8"),
                              simplifyVector = FALSE, simplifyDataFrame = FALSE,
                              simplifyMatrix = FALSE, flatten = FALSE)
 
