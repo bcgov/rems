@@ -29,3 +29,9 @@ a data frame of the results
 You will need to have run \code{\link{download_historic_data}} before you
 can use this function
 }
+\examples{
+\dontrun{
+read_historic_data(emsid = "0400203", from_date = as.Date("1984-11-20"),
+                   to_date = as.Date("1991-05-11"))
+}
+}
