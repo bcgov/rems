@@ -150,8 +150,9 @@ download_ems_data <- function(url) {
 
   if (ext == ".zip") {
     exdir <- tempdir()
+    zipfile <- res$request$output$path
     files_in_zip <- zip::zip_list(zipfile)$filename
-    zip::unzip(res$request$output$path, exdir = exdir)
+    zip::unzip(zipfile, exdir = exdir)
     ret <- file.path(exdir, files_in_zip)
   } else if (ext == ".csv") {
     ret <- res$request$output$path
