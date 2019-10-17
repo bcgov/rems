@@ -72,11 +72,12 @@ get_gh_release <- function(release = "latest") {
 }
 
 download_release_asset <- function(asset_url, path, httr_config = list()) {
-  resp <- httr::GET(auth_url(asset_url),
-                    config = httr_config,
-                    httr::add_headers(Accept = "application/octet-stream"),
-                    httr::write_disk(path, overwrite = TRUE),
-                    httr::progress("down"))
+  resp <- httr::RETRY("GET",
+                      url = auth_url(asset_url),
+                      config = httr_config,
+                      httr::add_headers(Accept = "application/octet-stream"),
+                      httr::write_disk(path, overwrite = TRUE),
+                      httr::progress("down"))
 
   httr::stop_for_status(resp)
 
