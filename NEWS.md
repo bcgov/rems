@@ -1,7 +1,5 @@
 # rems 0.5.0
 
-# rems 0.4.2.00009
-
 * The historic sqlite database is now available as a direct download from a rems
 release on GitHub, which should be much faster and more reliable for the user.
 * User can now specify/customize the location of the sqlite database via an
