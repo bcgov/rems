@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.4.2.0009
+# rems 0.5.0
 
 <!-- badges: start -->
 
@@ -56,7 +56,7 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 1404516
+#> [1] 1412317
 head(two_year)
 #> # A tibble: 6 x 23
 #>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE
