@@ -98,21 +98,32 @@ get_sqlite_gh_date <- function(release = "latest") {
   as.POSIXct(rel$assets[[1]]$updated_at)
 }
 
-upload_release_asset <- function(files, release_url = get_gh_release()$url) {
-  stopifnot(requireNamespace("httr"))
+upload_release_asset <- function(files, release_url = get_gh_release()$upload_url) {
   stopifnot(requireNamespace("devtools"))
+  stopifnot(requireNamespace("gh"))
+
+  upload_url <- gsub("\\{[^\\}]+}", "", release_url)
 
   for (f in path.expand(files)) {
     message("uploading ", f)
-    r <- httr::POST(gsub("\\{.+\\}$", "", release_url),
-                    query = list(name = basename(f)),
-                    body = httr::upload_file(f),
-                    httr::authenticate(devtools::github_pat(), ""),
-                    httr::progress("up"))
 
-    httr::stop_for_status(r, task = paste0("upload ", f))
+    gh::gh(
+      paste0("POST ", upload_url, "?name=", basename(f)),
+      readBin(f, raw(), file.info(f)$size),
+      .send_headers = c("Content-Type" = "application/zip")
+    )
   }
   invisible(TRUE)
+}
+
+delete_release_asset <- function(asset_id) {
+  stopifnot(requireNamespace("gh"))
+
+  gh::gh("DELETE /repos/:owner/:repo/releases/assets/:asset_id",
+     owner = "bcgov",
+     repo = "rems",
+     asset_id = asset_id
+     )
 }
 
 gh_base_url <- function() "https://api.github.com/repos/bcgov/rems/releases"

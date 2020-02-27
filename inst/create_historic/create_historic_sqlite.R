@@ -22,9 +22,13 @@ rems:::save_historic_data(csv_file, db_file, 1e6)
 zipfile <- paste0(db_file, ".zip")
 zip::zipr(zipfile, db_file, include_directories = FALSE)
 
-# Then manually attach to release (can change to doing it via api a la bcmapsdata)
-# This isn't working as errors with 413 (file too large)
-rems:::upload_release_asset(zipfile)
+# Then delete the old (if replacing on an existing release)
+release <- get_gh_release("latest")
+asset_id <- release$assets[[1]]$id[release$assets[[1]]$name == basename(zipfile)]
+delete_release_asset(asset_id)
+
+# And upload the new one
+upload_release_asset(zipfile)
 
 # Test getting it
 rems:::download_file_from_release("ems_historic.sqlite.zip",
