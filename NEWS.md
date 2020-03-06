@@ -1,9 +1,25 @@
-# rems 0.4.0.9999
+# rems 0.5.0
+
+* The historic sqlite database is now available as a direct download from a rems
+release on GitHub, which should be much faster and more reliable for the user.
+* User can now specify/customize the location of the sqlite database via an
+option `rems.historic.path`. This is best set in your `.Rprofile` file as
+`options(rems.historic.path = "path_to_file")`
+
+# rems 0.4.2
+
+* Added new `MDL_UNIT` column to denote the units of the minimum detection limit.
+
+# rems 0.4.1
 
 * Added data dictionaries (lookup tables for parameters, sample classes, units, etc)
 * Added `dont_update` argument to `get_ems_data()` and `download_historic_data()` to 
-bypass the prompt to update data (#21).
-* (Backend) Store datetime columns as `INTEGER` rather than `REAL` - this seems to make querying the database on dates faster (#24).
+bypass the check to update data (#21).
+* Added `lt_lake_sites()` function t get the EMS_IDs of all of the long-term lake monitoring sites (ac34dbd)
+* Added `check_only` argument (default `FALSE`) to `get_ems_data()` to allow just checking the currency 
+of a rems dataset (#35 @sebdalgarno)
+* Added `check_db` argument (default `TRUE`) to `read_historic_data()` so that
+a user can skip checking the currency of the historic dataset (#35 @sebdalgarno)
 
 
 # rems 0.4.0

@@ -47,6 +47,7 @@ wq_cols <- function() {
     "RESULT",
     "UNIT",
     "METHOD_DETECTION_LIMIT",
+    "MDL_UNIT",
     "QA_INDEX_CODE",
     "UPPER_DEPTH",
     "LOWER_DEPTH")
@@ -83,6 +84,7 @@ col_specs <- function(type = c("readr", "sql", "all", "names_only"), subset = NU
     "RESULT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
     "UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
     "METHOD_DETECTION_LIMIT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
+    "MDL_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
     "QA_INDEX_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
     "UPPER_DEPTH" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
     "LOWER_DEPTH" = list(readr_fun = col_double(), sql_type = "DOUBLE"),

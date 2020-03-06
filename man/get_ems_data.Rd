@@ -5,7 +5,7 @@
 \title{get EMS data from BC Data Catalogue}
 \usage{
 get_ems_data(which = "2yr", n = Inf, cols = "wq", force = FALSE,
-  ask = TRUE, dont_update = FALSE)
+  ask = TRUE, dont_update = FALSE, check_only = FALSE)
 }
 \arguments{
 \item{which}{Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"
@@ -24,11 +24,14 @@ if it's not out of date on your computer.}
 \item{ask}{should the function ask for your permission to cache data on your computer?
 Default \code{TRUE}}
 
-\item{dont_update}{should the function avoid updating the data even if there is a newer
-version available? Default \code{FALSE}}
+\item{dont_update}{should the function checking for updates to the data and simply
+load the data from the cache? Default \code{FALSE}}
+
+\item{check_only}{should the function retrieve the data from the cache or
+just check it's existence and currency? Default \code{FALSE}}
 }
 \value{
-a data frame
+a data frame or \code{TRUE} if \code{check_only = TRUE}
 }
 \description{
 EMS data are distributed through the \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results}{BC Data Catalogue}
@@ -46,6 +49,7 @@ cols can specify any of the following column names as a character vector:
 "ANALYZING_AGENCY", "COLLECTION_METHOD", "SAMPLE_CLASS", "SAMPLE_STATE",
 "SAMPLE_DESCRIPTOR", "PARAMETER_CODE", "PARAMETER", "ANALYTICAL_METHOD_CODE",
 "ANALYTICAL_METHOD", "RESULT_LETTER", "RESULT", "UNIT", "METHOD_DETECTION_LIMIT",
+"MDL_UNIT",
 "QA_INDEX_CODE", "UPPER_DEPTH", "LOWER_DEPTH", "TIDE", "AIR_FILTER_SIZE",
 "AIR_FLOW_VOLUME", "FLOW_UNIT", "COMPOSITE_ITEMS", "CONTINUOUS_AVERAGE",
 "CONTINUOUS_MAXIMUM", "CONTINUOUS_MINIMUM", "CONTINUOUS_UNIT_CODE",

@@ -12,12 +12,13 @@
 
 #' Download and store the large historic ems dataset
 #'
-#' @param n the chunk size to use to iteratively read and store the historic data (default 1 million)
 #' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
 #' @param ask should the function ask for your permission to cache data on your computer?
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
+#' @param httr_config configuration settings passed on to [httr::GET()],
+#' such as [httr::timeout()]
 #'
 #' @return The path where the sqlite database is stored (invisibly).
 #' @export
@@ -25,15 +26,15 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom RSQLite SQLite
 #'
-download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_update = FALSE) {
+download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
 
-  file_meta <- get_file_metadata("historic")
+  sqlite_gh_date <- get_sqlite_gh_date() # Get from gh release
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
 
   if (file.exists(db_path) && !force) {
-    if (cache_date >= file_meta[["server_date"]]) {
+    if (cache_date >= sqlite_gh_date) {
       message("It appears that you already have the most up-to date version of the",
               " historic ems data.")
       return(invisible(db_path))
@@ -52,15 +53,25 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_upda
   }
 
   message("This is going to take a while...")
+  zipfile <- tempfile(fileext = ".zip")
+  on.exit(unlink(zipfile))
 
-  url <- paste0(base_url(), file_meta[["filename"]])
-  message("Downloading latest 'historic' EMS data from BC Data Catalogue (url:", url, ")")
-  csv_file <- download_ems_data(url)
-  on.exit(unlink(csv_file))
+  message("Downloading latest 'historic' EMS data")
+  download_file_from_release("ems_historic.sqlite.zip", zipfile,
+                             httr_config = httr_config)
 
-  save_historic_data(csv_file, db_path, n)
+  exdir <- dirname(db_path)
+  files_in_zip <- zip::zip_list(zipfile)$filename
+  sqlite_filename <- files_in_zip[grepl("ems_historic.*\\.sqlite$", files_in_zip)]
 
-  set_cache_date("historic", file_meta[["server_date"]])
+  zip::unzip(zipfile, files = sqlite_filename, junkpaths = TRUE, exdir = exdir)
+  extracted_sqlite <- file.path(exdir, sqlite_filename)
+
+  if (!extracted_sqlite == db_path) {
+    file.rename(extracted_sqlite, db_path)
+  }
+
+  set_cache_date("historic", sqlite_gh_date)
 
   message("Successfully downloaded and stored the historic EMS data.\n",
           "You can access and subset it with the 'read_historic_data' function, or
@@ -69,59 +80,7 @@ download_historic_data <- function(n = 1e6, force = FALSE, ask = TRUE, dont_upda
   invisible(db_path)
 }
 
-save_historic_data <- function(csv_file, db_path, n) {
-  message("Saving historic data at ", db_path)
-  data <- read_ems_data(csv_file, n = n, cols = NULL, verbose = FALSE,
-                        progress = FALSE)
-  col_names <- col_specs("names_only")
 
-  #setting up sqlite
-
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
-  on.exit(DBI::dbDisconnect(con))
-  tbl_name <- "historic"
-
-  i <- 1
-  cat("|")
-  while (nrow(data) == n) { # if not reached the end of line
-    cat("=")
-    skip <- i * n + 1
-    if (i == 1) {
-      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
-                        field.types = col_specs(type = "sql"))
-    } else {
-      DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE) #write to sqlite
-    }
-    data <- read_ems_data(csv_file, n = n, cols = col_names, verbose = FALSE, skip = skip,
-                          col_names = col_names, progress = FALSE)
-    i <- i + 1
-  }
-
-  if (nrow(data) > 0 ) {
-    DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
-  }
-
-  cat("=")
-  add_sql_index(con, colname = 'EMS_ID')
-  cat("=")
-  add_sql_index(con, colname = 'COLLECTION_START')
-  cat("=")
-  add_sql_index(con, colname = 'COLLECTION_END')
-  cat("=")
-  add_sql_index(con, colname = 'LOCATION_PURPOSE')
-  cat("=")
-  add_sql_index(con, colname = 'SAMPLE_CLASS')
-  cat("=")
-  add_sql_index(con, colname = 'SAMPLE_STATE')
-  cat("=")
-  add_sql_index(con, colname = 'PARAMETER')
-  cat("=")
-  add_sql_index(con, colname = 'PARAMETER_CODE')
-
-  cat("| 100%\n")
-
-  invisible(TRUE)
-}
 
 #' Read historic ems data into R.
 #'
@@ -134,30 +93,41 @@ save_historic_data <- function(csv_file, db_path, n) {
 #' @param from_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #' @param to_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #' @param cols colums. Default "wq". See \code{link{get_ems_data}} for further documentation.
+#' @param check_db should the function check for cached data or updates? Default \code{TRUE}.
 #'
 #' @return a data frame of the results
 #' @export
 #'
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery
+#' @examples
+#' \dontrun{
+#' read_historic_data(emsid = "0400203", from_date = as.Date("1984-11-20"),
+#'                    to_date = as.Date("1991-05-11"))
+#' }
 read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL,
-                               from_date = NULL, to_date = NULL, cols = "wq") {
+                               from_date = NULL, to_date = NULL, cols = "wq", check_db = TRUE) {
 
-  file_meta <- get_file_metadata("historic")
-  cache_date <- get_cache_date("historic")
   db_path <- write_db_path()
-
-  ## Check for missing or outdated historic database
   exit_fun <- FALSE
   if (!file.exists(db_path)) {
     exit_fun <- TRUE
-  } else if (cache_date < file_meta[["server_date"]] && file.exists(db_path)) {
-    ans <- readline(paste("Your version of the historic dataset is out of date.",
-                          "Would you like to continue with the version you have (y/n)? ",
-                          sep = "\n"))
-    if (tolower(ans) != "y") exit_fun <- TRUE
   }
+
+  ## Check for missing or outdated historic database
+  if (check_db) {
+    file_meta <- get_file_metadata("historic")
+    cache_date <- get_cache_date("historic")
+     if (cache_date < file_meta[["server_date"]] && file.exists(db_path)) {
+      ans <- readline(paste("Your version of the historic dataset is out of date.",
+                            "Would you like to continue with the version you have (y/n)? ",
+                            sep = "\n"))
+      if (tolower(ans) != "y")
+        exit_fun <- TRUE
+    }
+  }
+
   if (exit_fun) stop("Please download the historic data with\n",
-                 " the 'download_historic_data' function.")
+                     " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
                                 param_code = param_code, from_date = from_date,
@@ -270,8 +240,9 @@ stringify_vec <- function(vec) {
   paste(shQuote(vec, "sh"), collapse = ",")
 }
 
-write_db_path <- function() {
-  file.path(rems_data_dir(), "ems.sqlite")
+write_db_path <- function(path = getOption("rems.historic.path",
+                                           default = rems_data_dir())) {
+  file.path(path, "ems_historic.sqlite")
 }
 
 #' Add an index to a column in a sqlite database

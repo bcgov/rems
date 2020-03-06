@@ -58,6 +58,7 @@ get_cache_date <- function(which) {
 burn_it_down <- function() {
   if (file.exists(rems_data_dir()) && cache_exists()) {
     ._remsCache_$destroy()
+    message("Removed rems cache. Please restart R and reload rems before continuing.")
   } else {
     write_cache()
   }

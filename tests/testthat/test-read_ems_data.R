@@ -3,7 +3,7 @@ context("read_ems_data")
 test_that("read_ems_data works with current", {
   test <- read_ems_data("test_current.csv")
   expect_is(test, "data.frame")
-  expect_equal(dim(test), c(10,59))
+  expect_equal(dim(test), c(10,60))
   expect_equal(names(test),
                c("EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
                  "COLLECTION_START", "COLLECTION_END", "LOCATION_PURPOSE", "PERMIT",
@@ -11,6 +11,7 @@ test_that("read_ems_data works with current", {
                  "ANALYZING_AGENCY", "COLLECTION_METHOD", "SAMPLE_CLASS", "SAMPLE_STATE",
                  "SAMPLE_DESCRIPTOR", "PARAMETER_CODE", "PARAMETER", "ANALYTICAL_METHOD_CODE",
                  "ANALYTICAL_METHOD", "RESULT_LETTER", "RESULT", "UNIT", "METHOD_DETECTION_LIMIT",
+                 "MDL_UNIT",
                  "QA_INDEX_CODE", "UPPER_DEPTH", "LOWER_DEPTH", "TIDE", "AIR_FILTER_SIZE",
                  "AIR_FLOW_VOLUME", "FLOW_UNIT", "COMPOSITE_ITEMS", "CONTINUOUS_AVERAGE",
                  "CONTINUOUS_MAXIMUM", "CONTINUOUS_MINIMUM", "CONTINUOUS_UNIT_CODE",
@@ -26,7 +27,7 @@ test_that("read_ems_data works with current", {
                     "character", "character", "character", "character", "character",
                     "character", "character", "character", "character", "character",
                     "character", "character", "character", "character", "character",
-                    "numeric", "character", "numeric", "character", "numeric",
+                    "numeric", "character", "numeric", "character", "character", "numeric",
                     "numeric", "character", "numeric", "numeric", "character",
                     "numeric", "numeric", "numeric", "numeric", "character",
                     "numeric", "character", "numeric", "character", "character",
@@ -39,11 +40,11 @@ test_that("read_ems_data works with current", {
 test_that("read_ems_data works with options", {
   test <- read_ems_data("test_current.csv", n = 1)
   expect_is(test, "data.frame")
-  expect_equal(dim(test), c(1,59))
+  expect_equal(dim(test), c(1,60))
 
   test2 <- read_ems_data("test_current.csv", cols = wq_cols())
   expect_is(test2, "data.frame")
-  expect_equal(dim(test2), c(10,22))
+  expect_equal(dim(test2), c(10,23))
   expect_equal(names(test2),
                c("EMS_ID",
                  "MONITORING_LOCATION",
@@ -64,6 +65,7 @@ test_that("read_ems_data works with options", {
                  "RESULT",
                  "UNIT",
                  "METHOD_DETECTION_LIMIT",
+                 "MDL_UNIT",
                  "QA_INDEX_CODE",
                  "UPPER_DEPTH",
                  "LOWER_DEPTH"))

@@ -15,11 +15,14 @@ knitr::opts_chunk$set(
 # remove_data_cache("all")
 ```
 
-# rems
+# rems `r as.character(read.dcf("DESCRIPTION", "Version"))`
 
-<a rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-
+<!-- badges: start -->
+<a rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+[![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
+<!-- badges: end -->
 
 ## Overview
 
@@ -156,9 +159,27 @@ remove_data_cache("2yr")
 ```
 
 
+## Developing
+
+### Releasing a new version
+
+As of version 0.5.0 the historic data will be provided as a sqlite database
+attached to the GitHub release, as such the release workflow is as follows:
+
+1. Create a 'draft' release on GitHub with the new version number
+2. Run the script `inst/create_historic_sqlite.R` 
+3. Upload `ems_historic.sqlite.zip` to the draft release
+4. Edit release to create full release.
+
+### Updating `ems_historic.sqlite` without releasing a new version of rems:
+
+1. Run the script `inst/create_historic_sqlite.R` 
+2. Upload `ems_historic.sqlite.zip` to the latest release, overwriting the old file
+
+
 ## Project Status
 
-The package is under active development.
+Under development, but stable. Unlikely to break or change substantially.
 
 ## Getting Help or Reporting an Issue
 

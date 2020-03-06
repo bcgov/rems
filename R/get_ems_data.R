@@ -29,9 +29,11 @@
 #' if it's not out of date on your computer.
 #' @param ask should the function ask for your permission to cache data on your computer?
 #' Default \code{TRUE}
-#' @param dont_update should the function avoid updating the data even if there is a newer
-#' version available? Default \code{FALSE}
-#' @return a data frame
+#' @param dont_update should the function checking for updates to the data and simply
+#' load the data from the cache? Default \code{FALSE}
+#' @param check_only should the function retrieve the data from the cache or
+#' just check it's existence and currency? Default \code{FALSE}
+#' @return a data frame or \code{TRUE} if \code{check_only = TRUE}
 #' @details cols can specify any of the following column names as a character vector:
 #'
 #' \code{"EMS_ID", "MONITORING_LOCATION", "LATITUDE", "LONGITUDE", "LOCATION_TYPE",
@@ -40,6 +42,7 @@
 #' "ANALYZING_AGENCY", "COLLECTION_METHOD", "SAMPLE_CLASS", "SAMPLE_STATE",
 #' "SAMPLE_DESCRIPTOR", "PARAMETER_CODE", "PARAMETER", "ANALYTICAL_METHOD_CODE",
 #' "ANALYTICAL_METHOD", "RESULT_LETTER", "RESULT", "UNIT", "METHOD_DETECTION_LIMIT",
+#' "MDL_UNIT",
 #' "QA_INDEX_CODE", "UPPER_DEPTH", "LOWER_DEPTH", "TIDE", "AIR_FILTER_SIZE",
 #' "AIR_FLOW_VOLUME", "FLOW_UNIT", "COMPOSITE_ITEMS", "CONTINUOUS_AVERAGE",
 #' "CONTINUOUS_MAXIMUM", "CONTINUOUS_MINIMUM", "CONTINUOUS_UNIT_CODE",
@@ -66,46 +69,57 @@
 #' @import readr
 #' @import storr
 #' @import rappdirs
-get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE, ask = TRUE, dont_update = FALSE) {
+get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
+                         ask = TRUE, dont_update = FALSE, check_only = FALSE) {
   which <- match.arg(which, c("2yr", "4yr"))
 
+  which_exists <- ._remsCache_$exists(which)
+
+  cols <- if (cols == "wq") {
+    wq_cols()
+  } else if (cols == "all") {
+    col_specs("names_only")
+  }
+
+  if (dont_update) {
+    if (!which_exists) {
+      stop("You have requested to not check for updates, but the ", which,
+           " data is not currently cached.")
+    }
+    message("Fetching data from cache...")
+    return(rems_data_from_cache(which, cols))
+  }
+
   update <- FALSE # Don't update by default
-  if (force || !._remsCache_$exists(which)) {
+  if (force || !which_exists) {
     update <- TRUE
   } else if (._remsCache_$exists("cache_dates")) {
     cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
     if (cache_date < file_meta[["server_date"]]) {
-      if (dont_update) {
-        update <- FALSE
-        warning("There is a newer version of ", which,
-                ", however you have asked not to update it by setting 'dont_update' to TRUE.")
-      } else {
         ans <- readline(paste0("Your version of ", which, " is dated ",
                                cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
         if (tolower(ans) == "y") update <- TRUE
-      }
     }
   }
 
-  if (cols == "wq") {
-    cols <- wq_cols()
-  } else if (cols == "all") {
-    cols <- col_specs("names_only")
-  }
+  if (check_only) return(TRUE)
 
   if (update) {
     if (ask) {
       stop_for_permission(paste0("rems would like to store a copy of the ", which,
                                  " ems data at", rems_data_dir(), ". Is that okay?"))
     }
-    ret <- update_cache(which = which, n = n, cols = cols)
-  } else {
-    message("Fetching data from cache...")
-    ret <- ._remsCache_$get(which)[, cols]
+    return(update_cache(which = which, n = n, cols = cols))
   }
-  add_rems_type(ret, which)
+
+  message("Fetching data from cache...")
+  rems_data_from_cache(which, cols)
+}
+
+rems_data_from_cache <- function(which, cols) {
+  add_rems_type(._remsCache_$get(which)[, cols], which)
 }
 
 update_cache <- function(which, n, cols) {
@@ -121,7 +135,7 @@ update_cache <- function(which, n, cols) {
   set_cache_date(which = which, value = file_meta[["server_date"]])
 
   message("Loading data...")
-  data_obj[, cols]
+  add_rems_type(data_obj[, cols], which)
 }
 
 #' @importFrom utils unzip
@@ -135,7 +149,11 @@ download_ems_data <- function(url) {
   httr::stop_for_status(res)
 
   if (ext == ".zip") {
-    ret <- unzip(res$request$output$path, exdir = tempdir())
+    exdir <- tempdir()
+    zipfile <- res$request$output$path
+    files_in_zip <- zip::zip_list(zipfile)$filename
+    zip::unzip(zipfile, exdir = exdir)
+    ret <- file.path(exdir, files_in_zip)
   } else if (ext == ".csv") {
     ret <- res$request$output$path
   }
