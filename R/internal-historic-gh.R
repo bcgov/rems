@@ -95,7 +95,8 @@ auth_url <- function(url) {
 
 get_sqlite_gh_date <- function(release = "latest") {
   rel <- get_gh_release(release)
-  as.POSIXct(rel$assets[[1]]$updated_at)
+  asset <- rel$assets[[vapply(rel$assets, function(x) x$name == "ems_historic.sqlite.zip", FUN.VALUE = logical(1))]]
+  as.POSIXct(asset$updated_at)
 }
 
 upload_release_asset <- function(files, release_url = get_gh_release()$upload_url) {
