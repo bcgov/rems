@@ -18,8 +18,9 @@ knitr::opts_chunk$set(
 # rems `r as.character(read.dcf("DESCRIPTION", "Version"))`
 
 <!-- badges: start -->
-<a rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+[![BCDevExchange Status](https://assets.bcdevexchange.org/images/badges/delivery.svg)](https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md)
 [![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+[![Codecov test coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 <!-- badges: end -->
@@ -92,7 +93,8 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
                                              "Copper Total", " Zinc Total",
                                              "Turbidity"),
                                from_date = "2001/02/05",
-                               to_date = "2011/12/31")
+                               to_date = "2011/12/31", 
+                               check_db = FALSE)
 ```
 
 You can also query the sqlite database using `dplyr`, which ultimately gives you more flexibility than using `read_historic_data`:

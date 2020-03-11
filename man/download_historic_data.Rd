@@ -4,8 +4,12 @@
 \alias{download_historic_data}
 \title{Download and store the large historic ems dataset}
 \usage{
-download_historic_data(force = FALSE, ask = TRUE,
-  dont_update = FALSE, httr_config = list())
+download_historic_data(
+  force = FALSE,
+  ask = TRUE,
+  dont_update = FALSE,
+  httr_config = list()
+)
 }
 \arguments{
 \item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}

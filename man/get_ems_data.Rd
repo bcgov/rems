@@ -4,8 +4,15 @@
 \alias{get_ems_data}
 \title{get EMS data from BC Data Catalogue}
 \usage{
-get_ems_data(which = "2yr", n = Inf, cols = "wq", force = FALSE,
-  ask = TRUE, dont_update = FALSE, check_only = FALSE)
+get_ems_data(
+  which = "2yr",
+  n = Inf,
+  cols = "wq",
+  force = FALSE,
+  ask = TRUE,
+  dont_update = FALSE,
+  check_only = FALSE
+)
 }
 \arguments{
 \item{which}{Defaults to \code{"2yr"} (past 2 years). You can also specify "4yr"

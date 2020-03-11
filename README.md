@@ -5,9 +5,12 @@
 
 <!-- badges: start -->
 
-<a rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+[![BCDevExchange
+Status](https://assets.bcdevexchange.org/images/badges/delivery.svg)](https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md)
 [![Travis-CI Build
 Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+[![Codecov test
+coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
@@ -56,24 +59,23 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 1412317
+#> [1] 923562
 head(two_year)
 #> # A tibble: 6 x 23
-#>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE
-#>   <chr>  <chr>               <dbl>     <dbl> <chr>        
-#> 1 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
-#> 2 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
-#> 3 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
-#> 4 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
-#> 5 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
-#> 6 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM…
-#> # … with 18 more variables: COLLECTION_START <dttm>,
-#> #   LOCATION_PURPOSE <chr>, PERMIT <chr>, SAMPLE_CLASS <chr>,
-#> #   SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>,
-#> #   PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
-#> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>,
-#> #   UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
-#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+#>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
+#>   <chr>  <chr>               <dbl>     <dbl> <chr>         <dttm>             
+#> 1 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2019-01-07 09:00:00
+#> 2 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2019-01-07 09:00:00
+#> 3 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2019-01-07 09:00:00
+#> 4 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2019-01-07 09:00:00
+#> 5 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2019-01-07 09:00:00
+#> 6 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2019-01-07 09:00:00
+#> # … with 17 more variables: LOCATION_PURPOSE <chr>, PERMIT <chr>,
+#> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
+#> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
+#> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
+#> #   METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>, QA_INDEX_CODE <chr>,
+#> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 
 By default, `get_ems_data` imports only a subset of columns that are
@@ -82,7 +84,8 @@ argument, which has a default value of `"wq"`. This can be set to
 `"all"` to download all of the columns, or a character vector of column
 names (see `?get_ems_data` for details).
 
-You can filter the data to just get the records you want:
+You can filter the data to just get the records you
+want:
 
 ``` r
 filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"), 
@@ -116,7 +119,8 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
                                              "Copper Total", " Zinc Total",
                                              "Turbidity"),
                                from_date = "2001/02/05",
-                               to_date = "2011/12/31")
+                               to_date = "2011/12/31", 
+                               check_db = FALSE)
 ```
 
 You can also query the sqlite database using `dplyr`, which ultimately
@@ -160,12 +164,12 @@ is a shortcut function to do this: `ems_posix_numeric`:
 filtered_historic2 <- collect(filtered_historic2) %>% 
   mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
 glimpse(filtered_historic2)
-#> Observations: 5,194
+#> Observations: 5,444
 #> Variables: 4
-#> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "01…
-#> $ PARAMETER        <chr> "Cadmium Total", "Copper Total", "Copper Total"…
-#> $ COLLECTION_START <dttm> 2003-08-26 08:15:00, 2003-10-27 11:55:00, 2004…
-#> $ RESULT           <dbl> 1.00e-05, 9.30e-04, 1.12e-03, 8.40e-01, 3.00e-0…
+#> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "0121580…
+#> $ PARAMETER        <chr> "Cadmium Total", "Copper Total", "Copper Total", "Tu…
+#> $ COLLECTION_START <dttm> 2003-08-26 08:15:00, 2003-10-27 11:55:00, 2004-11-0…
+#> $ RESULT           <dbl> 1.00e-05, 9.30e-04, 1.12e-03, 8.40e-01, 3.00e-01, 4.…
 ```
 
 You can combine the previously imported historic and two\_year data sets
@@ -218,7 +222,8 @@ as follows:
 1.  Create a ‘draft’ release on GitHub with the new version number
 2.  Run the script `inst/create_historic_sqlite.R`
 3.  Upload `ems_historic.sqlite.zip` to the draft release
-4.  Edit release to create full release.
+4.  Edit release to create full
+release.
 
 ### Updating `ems_historic.sqlite` without releasing a new version of rems:
 

@@ -25,9 +25,10 @@ Imports:
   stringr (>= 1.1.0),
   xml2 (>= 1.0.0), 
   zip (>= 2.0.4),
-  jsonlite (>= 1.6)
+  jsonlite (>= 1.6),
+  covr
 Suggests: 
   testthat,
   devtools,
   bit64
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
