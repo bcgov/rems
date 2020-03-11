@@ -4,8 +4,15 @@
 \alias{read_historic_data}
 \title{Read historic ems data into R.}
 \usage{
-read_historic_data(emsid = NULL, parameter = NULL, param_code = NULL,
-  from_date = NULL, to_date = NULL, cols = "wq", check_db = TRUE)
+read_historic_data(
+  emsid = NULL,
+  parameter = NULL,
+  param_code = NULL,
+  from_date = NULL,
+  to_date = NULL,
+  cols = "wq",
+  check_db = TRUE
+)
 }
 \arguments{
 \item{emsid}{A character vector of the ems id(s) of interest}

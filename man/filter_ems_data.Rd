@@ -4,8 +4,14 @@
 \alias{filter_ems_data}
 \title{Simple filtering of ems data by emsid and or dates.}
 \usage{
-filter_ems_data(x, emsid = NULL, parameter = NULL, param_code = NULL,
-  from_date = NULL, to_date = NULL)
+filter_ems_data(
+  x,
+  emsid = NULL,
+  parameter = NULL,
+  param_code = NULL,
+  from_date = NULL,
+  to_date = NULL
+)
 }
 \arguments{
 \item{x}{The ems data frame to filter}

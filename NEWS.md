@@ -1,3 +1,7 @@
+# rems 0.5.1
+
+* Fixed bug where currency of the historic sqlite database was checked against the wrong date
+
 # rems 0.5.0
 
 * The historic sqlite database is now available as a direct download from a rems
