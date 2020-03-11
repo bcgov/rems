@@ -84,7 +84,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
   if (dont_update) {
     if (!which_exists) {
       stop("You have requested to not check for updates, but the ", which,
-           " data is not currently cached.")
+        " data is not currently cached.")
     }
     message("Fetching data from cache...")
     return(rems_data_from_cache(which, cols))
@@ -98,9 +98,9 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
     file_meta <- get_file_metadata(which)
 
     if (cache_date < file_meta[["server_date"]]) {
-        ans <- readline(paste0("Your version of ", which, " is dated ",
-                               cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
-        if (tolower(ans) == "y") update <- TRUE
+      ans <- readline(paste0("Your version of ", which, " is dated ",
+        cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
+      if (tolower(ans) == "y") update <- TRUE
     }
   }
 
@@ -109,7 +109,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
   if (update) {
     if (ask) {
       stop_for_permission(paste0("rems would like to store a copy of the ", which,
-                                 " ems data at", rems_data_dir(), ". Is that okay?"))
+        " ems data at", rems_data_dir(), ". Is that okay?"))
     }
     return(update_cache(which = which, n = n, cols = cols))
   }
@@ -126,7 +126,7 @@ update_cache <- function(which, n, cols) {
   file_meta <- get_file_metadata(which)
   url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
-          "' EMS data from BC Data Catalogue (url: ", url, ")")
+    "' EMS data from BC Data Catalogue (url: ", url, ")")
   csv_file <- download_ems_data(url)
   data_obj <- read_ems_data(csv_file, n = n, cols = NULL)
 
@@ -180,10 +180,10 @@ get_databc_metadata <- function() {
   # Remove file size
   res <- gsub("\\s+[0-9]{1,3}(\\.[0-9]{1,})?(G|M)$", "", res)
   files_df <- data.frame(matrix(res, ncol = 2, byrow = TRUE),
-                         stringsAsFactors = FALSE)
+    stringsAsFactors = FALSE)
   colnames(files_df) <- c("filename", "server_date")
   # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
-  files_df <- files_df[grepl("expanded", files_df[["filename"]]),]
+  files_df <- files_df[grepl("expanded", files_df[["filename"]]), ]
   files_df$label <- dplyr::case_when(
     grepl("^te?mp", files_df[["filename"]]) ~ "drop",
     grepl("4yr", files_df[["filename"]]) ~ "4yr",
@@ -204,7 +204,7 @@ get_file_metadata <- function(which) {
   choices <- c("2yr", "historic", "4yr")
   if (!which %in% choices) {
     stop("'which' needs to be one of: ", paste(choices, collapse = ", "),
-         call. = FALSE)
+      call. = FALSE)
   }
 
   all_meta <- get_databc_metadata()
