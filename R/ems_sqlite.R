@@ -36,20 +36,20 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   if (file.exists(db_path) && !force) {
     if (cache_date >= sqlite_gh_date) {
       message("It appears that you already have the most up-to date version of the",
-              " historic ems data.")
+        " historic ems data.")
       return(invisible(db_path))
     }
 
     if (dont_update) {
       warning("There is a newer version of the historic ems data ",
-              ", however you have asked not to update it by setting 'dont_update' to TRUE.")
+        ", however you have asked not to update it by setting 'dont_update' to TRUE.")
       return(invisible(db_path))
     }
   }
 
   if (ask) {
     stop_for_permission(paste0("rems would like to store a copy of the historic ems data at ",
-                                              db_path, ". Is that okay?"))
+      db_path, ". Is that okay?"))
   }
 
   message("This is going to take a while...")
@@ -58,7 +58,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
 
   message("Downloading latest 'historic' EMS data")
   download_file_from_release("ems_historic.sqlite.zip", zipfile,
-                             httr_config = httr_config)
+    httr_config = httr_config)
 
   exdir <- dirname(db_path)
   files_in_zip <- zip::zip_list(zipfile)$filename
@@ -74,7 +74,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   set_cache_date("historic", sqlite_gh_date)
 
   message("Successfully downloaded and stored the historic EMS data.\n",
-          "You can access and subset it with the 'read_historic_data' function, or
+    "You can access and subset it with the 'read_historic_data' function, or
           attach it as a remote data.frame with 'attach_historic_data()'
           which you can then query with dplyr")
   invisible(db_path)
@@ -102,7 +102,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
 #' @examples
 #' \dontrun{
 #' read_historic_data(emsid = "0400203", from_date = as.Date("1984-11-20"),
-#'                    to_date = as.Date("1991-05-11"))
+#'   to_date = as.Date("1991-05-11"))
 #' }
 read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL,
                                from_date = NULL, to_date = NULL, cols = "wq", check_db = TRUE) {
@@ -119,19 +119,19 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     cache_date <- get_cache_date("historic")
      if (cache_date < gh_date && file.exists(db_path)) {
       ans <- readline(paste("Your version of the historic dataset is out of date.",
-                            "Would you like to continue with the version you have (y/n)? ",
-                            sep = "\n"))
+        "Would you like to continue with the version you have (y/n)? ",
+        sep = "\n"))
       if (tolower(ans) != "y")
         exit_fun <- TRUE
     }
   }
 
   if (exit_fun) stop("Please download the historic data with\n",
-                     " the 'download_historic_data' function.")
+    " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
-                                param_code = param_code, from_date = from_date,
-                                to_date = to_date, cols = cols)
+    param_code = param_code, from_date = from_date,
+    to_date = to_date, cols = cols)
 
   con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
   on.exit(DBI::dbDisconnect(con))
@@ -179,7 +179,7 @@ attach_historic_data <- function() {
   db_path <- write_db_path()
   if (!file.exists(db_path)) {
     stop("Please download the historic data with\n",
-         " the 'download_historic_data' function.", call. = FALSE)
+      " the 'download_historic_data' function.", call. = FALSE)
   }
   db <- dplyr::src_sqlite(db_path)
   tbl <- dplyr::tbl(db, "historic")
@@ -241,7 +241,7 @@ stringify_vec <- function(vec) {
 }
 
 write_db_path <- function(path = getOption("rems.historic.path",
-                                           default = rems_data_dir())) {
+                            default = rems_data_dir())) {
   file.path(path, "ems_historic.sqlite")
 }
 
@@ -257,7 +257,7 @@ write_db_path <- function(path = getOption("rems.historic.path",
 #' @noRd
 add_sql_index <- function(con, tbl = "historic", colname,
                           idxname = paste0(tolower(colname), "_idx")) {
-  sql_str <- sprintf('CREATE INDEX %s ON %s(%s)', idxname, tbl, colname)
+  sql_str <- sprintf("CREATE INDEX %s ON %s(%s)", idxname, tbl, colname)
   DBI::dbExecute(con, sql_str)
   invisible(NULL)
 }

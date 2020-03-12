@@ -31,12 +31,12 @@ ems_parameters <- download_and_read_dict("dict-num.xls")
 
 ems_parameters %<>%
   select(PARAMETER_CODE = `Parameter Code`,
-         PARAMETER = `Parameter`,
-         ANALYTICAL_METHOD = `Analytical Method`,
-         ANALYTICAL_METHOD_CODE = `Analytical Method Code`,
-         METHOD_DETECTION_LIMIT = `Method Detection Limit`,
-         UNIT = Unit,
-         UNIT_CODE = `Unit Code`) %>%
+    PARAMETER = `Parameter`,
+    ANALYTICAL_METHOD = `Analytical Method`,
+    ANALYTICAL_METHOD_CODE = `Analytical Method Code`,
+    METHOD_DETECTION_LIMIT = `Method Detection Limit`,
+    UNIT = Unit,
+    UNIT_CODE = `Unit Code`) %>%
   trim_all_ws()
 
 dict_units <- download_and_read_dict("units-alpha.xls")
@@ -49,33 +49,33 @@ st_sd_dict <- download_and_read_dict("type-st-ds.xls")
 
 ems_location_samples <- st_sd_dict %>%
   select(LOCATION_TYPE_CODE = `LOCATION TYPE CODE`,
-         LOCATION_TYPE = `LOCATION TYPE`,
-         SAMPLE_STATE_CODE = `SAMPLE STATE CODE`,
-         SAMPLE_STATE = `SAMPLE STATE DESCRIPTION`,
-         SAMPLE_DESCRIPTOR_CODE = `SAMPLE DESCRIPTOR CODE`,
-         SAMPLE_DESCRIPTOR = `SAMPLE DESCRIPTOR`) %>%
+    LOCATION_TYPE = `LOCATION TYPE`,
+    SAMPLE_STATE_CODE = `SAMPLE STATE CODE`,
+    SAMPLE_STATE = `SAMPLE STATE DESCRIPTION`,
+    SAMPLE_DESCRIPTOR_CODE = `SAMPLE DESCRIPTOR CODE`,
+    SAMPLE_DESCRIPTOR = `SAMPLE DESCRIPTOR`) %>%
   trim_all_ws()
 
 col_method_dict <- download_and_read_dict("col-method.xls")
 
 ems_coll_methods <- col_method_dict %>%
   select(COLLECTION_METHOD_CODE = CODE,
-         COLLECTION_METHOD = `COLLECTION METHOD`) %>%
+    COLLECTION_METHOD = `COLLECTION METHOD`) %>%
   trim_all_ws()
 
 class_dict <- download_and_read_dict("class.xls")
 
 ems_sample_classes <- class_dict %>%
   select(SAMPLE_CLASS_CODE = CODE,
-         SAMPLE_CLASS = DESCRIPTION) %>%
+    SAMPLE_CLASS = DESCRIPTION) %>%
   trim_all_ws()
 
 species_dict <- download_and_read_dict("species.xls")
 
 ems_species <- species_dict %>%
   select(SPECIES_CODE = CODE,
-         SPECIES = `SPECIES DESCRIPTION`,
-         SPECIES_CLASSIFICATION_LEVEL = `CLASSIFICATION LEVEL`) %>%
+    SPECIES = `SPECIES DESCRIPTION`,
+    SPECIES_CLASSIFICATION_LEVEL = `CLASSIFICATION LEVEL`) %>%
   trim_all_ws()
 
 devtools::use_data(
