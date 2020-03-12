@@ -60,7 +60,7 @@ make_file_hash <- function(file) {
   if (os == "windows") {
     certutil_output <- system(sprintf("CertUtil -hashfile %s", file), intern = TRUE)
     ret <- gsub("\\s+", "", certutil_output[2])
-  } else if (os == "osx")  {
+  } else if (os == "osx") {
     shasum_output <- system(sprintf("shasum %s", file), intern = TRUE)
     ret <- strsplit(shasum_output, "\\s+")[[1]][1]
   } else if (os == "unix") {

@@ -18,8 +18,9 @@ knitr::opts_chunk$set(
 # rems `r as.character(read.dcf("DESCRIPTION", "Version"))`
 
 <!-- badges: start -->
-<a rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+[![BCDevExchange Status](https://assets.bcdevexchange.org/images/badges/delivery.svg)](https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md)
 [![Travis-CI Build Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
+[![Codecov test coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 <!-- badges: end -->
@@ -40,7 +41,6 @@ the [devtools](https://github.com/hadley/devtools) package:
 
 library(devtools)
 install_github("bcgov/rems")
-
 ```
 
 
@@ -66,12 +66,12 @@ or a character vector of column names (see `?get_ems_data` for details).
 You can filter the data to just get the records you want:
 
 ```{r}
-filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"), 
-                                 parameter = c("Aluminum Total", "Cadmium Total", 
-                                               "Copper Total", " Zinc Total", 
-                                               "Turbidity"),
-                                 from_date = "2011/02/06", 
-                                 to_date = "2015/12/31")
+filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"),
+  from_date = "2011/02/06",
+  to_date = "2015/12/31")
 ```
 
 
@@ -88,11 +88,12 @@ download_historic_data(ask = FALSE)
 
 ```{r}
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
-                               parameter = c("Aluminum Total", "Cadmium Total",
-                                             "Copper Total", " Zinc Total",
-                                             "Turbidity"),
-                               from_date = "2001/02/05",
-                               to_date = "2011/12/31")
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"),
+  from_date = "2001/02/05",
+  to_date = "2011/12/31",
+  check_db = FALSE)
 ```
 
 You can also query the sqlite database using `dplyr`, which ultimately gives you more flexibility than using `read_historic_data`:
@@ -107,12 +108,12 @@ hist_db <- attach_historic_data()
 You can then query this object with dplyr:
 
 ```{r}
-filtered_historic2 <- hist_db %>% 
-  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>% 
-  filter(EMS_ID %in% c("0121580", "0126400"), 
-         PARAMETER %in% c("Aluminum Total", "Cadmium Total",
-                          "Copper Total", " Zinc Total",
-                          "Turbidity"))
+filtered_historic2 <- hist_db %>%
+  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
+  filter(EMS_ID %in% c("0121580", "0126400"),
+    PARAMETER %in% c("Aluminum Total", "Cadmium Total",
+      "Copper Total", " Zinc Total",
+      "Turbidity"))
 ```
 
 
@@ -121,7 +122,7 @@ Note that date/times are stored in the `SQLite` database as integers, so you mus
 `POSIXct`. There is a shortcut function to do this: `ems_posix_numeric`:
 
 ```{r}
-filtered_historic2 <- collect(filtered_historic2) %>% 
+filtered_historic2 <- collect(filtered_historic2) %>%
   mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
 glimpse(filtered_historic2)
 ```
@@ -141,8 +142,8 @@ Then you can plot your data with ggplot2:
 ```{r fig.height=6, fig.width=6}
 library(ggplot2)
 
-ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) + 
-  geom_point() + 
+ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
+  geom_point() +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 

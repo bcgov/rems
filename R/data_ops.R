@@ -39,7 +39,7 @@ bind_ems_data <- function(...) {
 filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL,
                             from_date = NULL, to_date = NULL) {
   # See which arguments have been given a value
-  argslist <- names(as.list(match.call()))[c(-1,-2)]
+  argslist <- names(as.list(match.call()))[c(-1, -2)]
   if (!is.null(from_date)) from_date <- as.POSIXct(from_date, tz = ems_tz())
   if (!is.null(to_date)) to_date <- as.POSIXct(to_date, ems_tz())
   # Create the dots objects to be passed in to filter_, then remove the elements
@@ -47,11 +47,11 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
 
   emsid <- pad_emsid(emsid)
 
-  dots <- list(emsid = ~EMS_ID %in% emsid,
-               parameter = ~PARAMETER %in% parameter,
-               param_code = ~PARAMETER_CODE %in% param_code,
-               from_date = ~COLLECTION_START >= from_date,
-               to_date = ~COLLECTION_START <= to_date)
+  dots <- list(emsid = ~ EMS_ID %in% emsid,
+    parameter = ~ PARAMETER %in% parameter,
+    param_code = ~ PARAMETER_CODE %in% param_code,
+    from_date = ~ COLLECTION_START >= from_date,
+    to_date = ~ COLLECTION_START <= to_date)
   dots <- unname(dots[argslist])
 
   dplyr::filter_(x, .dots = dots)

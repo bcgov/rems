@@ -15,7 +15,7 @@ read_ems_data <- function(file, n = Inf, cols = NULL, verbose = TRUE, ...) {
   if (verbose) message("Reading data from file...")
 
   ret <- readr::read_csv(file, col_types = col_spec(cols), n_max = n,
-                         locale = readr::locale(tz = ems_tz()), ...)
+    locale = readr::locale(tz = ems_tz()), ...)
   readr::stop_for_problems(ret)
   tibble::as_tibble(ret)
 }
@@ -55,7 +55,7 @@ wq_cols <- function() {
 
 col_specs <- function(type = c("readr", "sql", "all", "names_only"), subset = NULL) {
 
-  type = match.arg(type)
+  type <- match.arg(type)
 
   specs <- list(
     "EMS_ID" = list(readr_fun = col_character(), sql_type = "TEXT"),
@@ -130,9 +130,9 @@ col_specs <- function(type = c("readr", "sql", "all", "names_only"), subset = NU
 
   if (!is.null(subset)) {
     diff_cols <- setdiff(subset, names(specs))
-    if (length(diff_cols) > 0 ) {
+    if (length(diff_cols) > 0) {
       stop("Column(s): ", paste(diff_cols, collapse = ", "), " not in data file",
-           call. = FALSE)
+        call. = FALSE)
     }
     ret <- ret[subset]
   }
