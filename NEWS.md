@@ -1,6 +1,7 @@
 # rems 0.5.1
 
 * Fixed bug where currency of the historic sqlite database was checked against the wrong date
+* `filter_ems_data` can now take many more forms of date-like inputs for `from_date` and `to_date` (`Date`, `POSIXct`, `POSIXlt`, `character`, `numeric`; #42)
 
 # rems 0.5.0
 
