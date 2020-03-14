@@ -30,8 +30,8 @@ bind_ems_data <- function(...) {
 #' @param emsid A character vector of the ems id(s) of interest
 #' @param parameter a character vector of parameter names
 #' @param param_code a character vector of parameter codes
-#' @param from_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
-#' @param to_date A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")
+#' @param from_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., "YYYY/MM/DD")
+#' @param to_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., "YYYY/MM/DD")
 #'
 #' @return A filtered data frame
 #' @export
@@ -40,8 +40,9 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
                             from_date = NULL, to_date = NULL) {
   # See which arguments have been given a value
   argslist <- names(as.list(match.call()))[c(-1, -2)]
-  if (!is.null(from_date)) from_date <- as.POSIXct(from_date, tz = ems_tz())
-  if (!is.null(to_date)) to_date <- as.POSIXct(to_date, ems_tz())
+  # convert
+  if (!is.null(from_date)) from_date <- ems_posixct(from_date)
+  if (!is.null(to_date)) to_date <- ems_posixct(to_date)
   # Create the dots objects to be passed in to filter_, then remove the elements
   # didn't get passed a value, and remove names
 
@@ -55,4 +56,34 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
   dots <- unname(dots[argslist])
 
   dplyr::filter_(x, .dots = dots)
+}
+
+ems_posixct <- function(x) {
+  UseMethod("ems_posixct")
+}
+
+ems_posixct.default <- function(x) {
+  stop("No ems_posixct method defined for objects of class '", class(x), "'",
+       call. = FALSE)
+}
+
+ems_posixct.Date <- function(x) {
+  ems_posixct(as.character(x))
+}
+
+ems_posixct.character <- function(x) {
+  as.POSIXct(x, tz = ems_tz())
+}
+
+ems_posixct.POSIXct <- function(x) {
+  attr(x, "tzone") <- ems_tz()
+  x
+}
+
+ems_posixct.POSIXlt <- function(x) {
+  ems_posixct(as.POSIXct(x))
+}
+
+ems_posixct.numeric <- function(x) {
+  as.POSIXct(as.numeric(x), origin = "1970/01/01", tz = ems_tz())
 }
