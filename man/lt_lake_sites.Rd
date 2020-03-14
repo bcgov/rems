@@ -7,8 +7,8 @@
 lt_lake_sites(which = c("all", "active", "inactive"))
 }
 \arguments{
-\item{which}{which sites do you want returned? One of `"all"` (default),
-`"active"`, or `"inactive"`?}
+\item{which}{which sites do you want returned? One of \code{"all"} (default),
+\code{"active"}, or \code{"inactive"}?}
 }
 \value{
 a character vector of site ids (EMS IDs)
