@@ -1,35 +1,42 @@
-Package: rems
 Type: Package
-Title: Get Data From British Columbia's Environmental Monitoring System
+Package: rems
+Title: Get Data From British Columbia's Environmental Monitoring
+    System
 Version: 0.5.1
-Authors@R: c(person("Andy", "Teucher", role = c("aut", "cre"),
-                    email = "andy.teucher@gov.bc.ca"),
-             person("Province of British Columbia", role = "cph"))
-Description: Download and parse data from B.C.'s Environmental Monitoring System.
+Authors@R: 
+    c(person(given = "Andy",
+             family = "Teucher",
+             role = c("aut", "cre"),
+             email = "andy.teucher@gov.bc.ca"),
+      person(given = "Province of British Columbia",
+             role = "cph"))
+Description: Download and parse data from B.C.'s Environmental
+    Monitoring System.
 License: file LICENSE
+Depends:
+    R (>= 3.5.0)
+Imports:
+    covr,
+    DBI (>= 0.5-1),
+    dbplyr (>= 1.1.0),
+    dplyr (>= 0.7.0),
+    httr (>= 1.2.1),
+    jsonlite (>= 1.6),
+    rappdirs (>= 0.3.1),
+    readr (>= 1.0.0),
+    RSQLite (>= 1.0.0),
+    storr (>= 1.0.1),
+    stringr (>= 1.1.0),
+    tibble (>= 1.2),
+    utils,
+    xml2 (>= 1.0.0),
+    zip (>= 2.0.4)
+Suggests: 
+    bit64,
+    devtools,
+    gh,
+    testthat
 Encoding: UTF-8
 LazyData: true
-Depends:
-  R (>= 3.5.0)
-Imports:
-  utils,
-  readr (>= 1.0.0),
-  httr (>= 1.2.1),
-  rappdirs (>= 0.3.1),
-  storr (>= 1.0.1),
-  tibble (>= 1.2),
-  dplyr (>= 0.7.0),
-  dbplyr (>= 1.1.0),
-  RSQLite (>= 1.0.0),
-  DBI (>= 0.5-1),
-  stringr (>= 1.1.0),
-  xml2 (>= 1.0.0), 
-  zip (>= 2.0.4),
-  jsonlite (>= 1.6),
-  covr
-Suggests: 
-  testthat,
-  devtools,
-  bit64,
-  gh
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)

@@ -30,8 +30,8 @@ bind_ems_data <- function(...) {
 #' @param emsid A character vector of the ems id(s) of interest
 #' @param parameter a character vector of parameter names
 #' @param param_code a character vector of parameter codes
-#' @param from_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., "YYYY/MM/DD")
-#' @param to_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., "YYYY/MM/DD")
+#' @param from_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., `"YYYY/MM/DD"`)
+#' @param to_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., `"YYYY/MM/DD"`)
 #'
 #' @return A filtered data frame
 #' @export

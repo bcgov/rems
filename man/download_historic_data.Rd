@@ -20,8 +20,8 @@ Default \code{TRUE}}
 \item{dont_update}{should the function avoid updating the data even if there is a newer
 version available? Default \code{FALSE}}
 
-\item{httr_config}{configuration settings passed on to [httr::GET()],
-such as [httr::timeout()]}
+\item{httr_config}{configuration settings passed on to \code{\link[httr:GET]{httr::GET()}},
+such as \code{\link[httr:timeout]{httr::timeout()}}}
 }
 \value{
 The path where the sqlite database is stored (invisibly).
