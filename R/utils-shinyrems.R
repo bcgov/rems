@@ -13,6 +13,7 @@
 #' \code{"EMS_ID", "MONITORING_LOCATION", "PERMIT", "PARAMETER_CODE", "PARAMETER",
 #' "LONGITUDE" "LATITUDE", "FROM_DATE", "TO_DATE"}
 #' @export
+#' @keywords internal
 get_ems_lookup <- function(which = "2yr", ask = TRUE){
 
   if(!(which %in% c("2yr", "4yr")))
@@ -76,5 +77,4 @@ update_lookup_cache <- function(which, data){
   ._remsCache_$set(which_lup, data)
   set_cache_date(which = which_lup, value = file_meta[["server_date"]])
 }
-
 
