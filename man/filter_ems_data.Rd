@@ -22,9 +22,9 @@ filter_ems_data(
 
 \item{param_code}{a character vector of parameter codes}
 
-\item{from_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
+\item{from_date}{A \code{Date}, \code{POSIXct}, \code{POSIXlt}, or a \code{character} string in a standard unambiguous format (e.g., \code{"YYYY/MM/DD"})}
 
-\item{to_date}{A date string in a standard unambiguous format (e.g., "YYYY/MM/DD")}
+\item{to_date}{A \code{Date}, \code{POSIXct}, \code{POSIXlt}, or a \code{character} string in a standard unambiguous format (e.g., \code{"YYYY/MM/DD"})}
 }
 \value{
 A filtered data frame

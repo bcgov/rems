@@ -13,6 +13,7 @@
 #' \code{"EMS_ID", "MONITORING_LOCATION", "PERMIT", "PARAMETER_CODE", "PARAMETER",
 #' "LONGITUDE" "LATITUDE", "FROM_DATE", "TO_DATE"}
 #' @export
+#' @keywords internal
 get_ems_lookup <- function(which = "2yr", ask = TRUE) {
 
   if(!(which %in% c("2yr", "4yr")))
