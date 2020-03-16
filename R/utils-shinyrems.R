@@ -22,17 +22,10 @@ get_ems_lookup <- function(which = "2yr", ask = TRUE) {
   which_lup <- lookup_which(which)
   which_exists <- ._remsCache_$exists(which_lup)
 
-  update <- FALSE
-  if(!which_exists) {
-    update <- TRUE
-  }
-
   lup_cache_date <- get_cache_date(which_lup)
   data_cache_date <- get_cache_date(which)
 
-  if (lup_cache_date < data_cache_date) {
-    update <- TRUE
-  }
+  update <- !which_exists || lup_cache_date < data_cache_date
 
   if (update) {
     if (ask) {
