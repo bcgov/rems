@@ -24,6 +24,7 @@ Imports:
     jsonlite (>= 1.6),
     rappdirs (>= 0.3.1),
     readr (>= 1.0.0),
+    rlang,
     RSQLite (>= 1.0.0),
     storr (>= 1.0.1),
     stringr (>= 1.1.0),

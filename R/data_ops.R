@@ -64,7 +64,7 @@ ems_posixct <- function(x) {
 
 ems_posixct.default <- function(x) {
   stop("No ems_posixct method defined for objects of class '", class(x), "'",
-       call. = FALSE)
+    call. = FALSE)
 }
 
 ems_posixct.Date <- function(x) {

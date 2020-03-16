@@ -17,10 +17,10 @@ test_that("ems_posixct works with all classes", {
   expect_equal(ems_posixct(as.Date(datestring)), expected)
   expect_equal(ems_posixct(expected), expected)
   expect_equal(ems_posixct(as.POSIXct("2019-11-18 08:00:00", tz = "UTC")),
-               expected)
+    expected)
   expect_equal(ems_posixct(as.POSIXlt(datestring, tz = "Etc/GMT+8")), expected)
   expect_equal(ems_posixct(as.POSIXlt("2019-11-18 08:00:00", tz = "UTC")),
-               expected)
+    expected)
   expect_equal(ems_posixct(1574064000), expected)
   expect_error(ems_posixct(list()), "No ems_posixct method defined for objects of class 'list'")
 })
