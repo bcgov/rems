@@ -117,7 +117,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
   if (check_db) {
     gh_date <- get_sqlite_gh_date()
     cache_date <- get_cache_date("historic")
-     if (cache_date < gh_date && file.exists(db_path)) {
+    if (cache_date < gh_date && file.exists(db_path)) {
       ans <- readline(paste("Your version of the historic dataset is out of date.",
         "Would you like to continue with the version you have (y/n)? ",
         sep = "\n"))
