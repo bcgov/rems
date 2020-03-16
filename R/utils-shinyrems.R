@@ -39,12 +39,11 @@ get_ems_lookup <- function(which = "2yr", ask = TRUE){
                                  " data lookup table at ", rems_data_dir(), ". This is required to run the ShinyRems app. Is that okay?"))
     }
 
-    message("Creating and caching lookup table ...")
-    data <- try(._remsCache_$get(which), silent = TRUE)
-    if(inherits(data, "try-error"))
+    if(!._remsCache_$exists(which))
       stop(which, " dataset must be cached before lookup table can be created. Run get_ems_data().")
 
-    lookup <- make_lookup(data)
+    message("Creating and caching lookup table ...")
+    lookup <- make_lookup(._remsCache_$get(which))
     update_lookup_cache(which = which, lookup)
   }
 
