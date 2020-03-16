@@ -47,15 +47,11 @@ get_ems_lookup <- function(which = "2yr", ask = TRUE){
     update_lookup_cache(which = which, lookup)
   }
 
-  lookup_from_cache(which_lup)
+  ._remsCache_$get(which_lup)
 }
 
 lookup_which <- function(x){
   paste(x, "lookup", sep = "_")
-}
-
-lookup_from_cache <- function(which){
-  ._remsCache_$get(which)
 }
 
 make_lookup <- function(x){
