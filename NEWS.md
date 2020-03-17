@@ -2,6 +2,7 @@
 
 * Fixed bug where currency of the historic sqlite database was checked against the wrong date
 * `filter_ems_data` can now take many more forms of date-like inputs for `from_date` and `to_date` (`Date`, `POSIXct`, `POSIXlt`, `character`, `numeric`; #42)
+* Added some (mainly internal) functionality to support development of the [shinyrems](https://github.com/bcgov/shinyrems) package (#43).
 
 # rems 0.5.0
 
