@@ -14,7 +14,7 @@ Description: Download and parse data from B.C.'s Environmental
     Monitoring System.
 License: file LICENSE
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.4)
 Imports:
     covr,
     DBI (>= 0.5-1),
