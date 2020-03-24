@@ -10,7 +10,21 @@
 \alias{ems_species}
 \alias{ems_units}
 \title{Data Dictionaries for EMS data}
-\format{Objects of class \code{tbl_df} (inherits from \code{tbl, data.frame}).}
+\format{
+Objects of class \code{tbl_df} (inherits from \code{tbl, data.frame}).
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 28 rows and 2 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 6926 rows and 7 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 16 rows and 2 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 332 rows and 6 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 2917 rows and 3 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 231 rows and 3 columns.
+}
 \source{
 \href{https://catalogue.data.gov.bc.ca/dataset/bc-environmental-monitoring-system-results#additional-information}{BC Data Catalogue: EMS Results}
 }
