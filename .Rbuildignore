@@ -11,3 +11,4 @@
 ^ems_sample_results_.*\.csv$
 ^COMPLIANCE\.yaml$
 ^codecov\.yml$
+^\.github$
