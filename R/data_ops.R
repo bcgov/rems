@@ -35,11 +35,8 @@ bind_ems_data <- function(...) {
 #'
 #' @return A filtered data frame
 #' @export
-#' @importFrom dplyr filter_
 filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL,
                             from_date = NULL, to_date = NULL) {
-  # See which arguments have been given a value
-  argslist <- names(as.list(match.call()))[c(-1, -2)]
   # convert
   if (!is.null(from_date)) from_date <- ems_posixct(from_date)
   if (!is.null(to_date)) to_date <- ems_posixct(to_date)
@@ -48,14 +45,13 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
 
   emsid <- pad_emsid(emsid)
 
-  dots <- list(emsid = ~ EMS_ID %in% emsid,
-    parameter = ~ PARAMETER %in% parameter,
-    param_code = ~ PARAMETER_CODE %in% param_code,
-    from_date = ~ COLLECTION_START >= from_date,
-    to_date = ~ COLLECTION_START <= to_date)
-  dots <- unname(dots[argslist])
+  if (!is.null(emsid)) x <- x[x$EMS_ID %in% emsid, , drop = FALSE]
+  if (!is.null(parameter)) x <- x[x$PARAMETER %in% parameter, , drop = FALSE]
+  if (!is.null(param_code)) x <- x[x$PARAMETER_CODE %in% param_code, , drop = FALSE]
+  if (!is.null(from_date)) x <- x[x$COLLECTION_START >= from_date, , drop = FALSE]
+  if (!is.null(to_date)) x <- x[x$COLLECTION_START <= to_date, , drop = FALSE]
 
-  dplyr::filter_(x, .dots = dots)
+  x
 }
 
 ems_posixct <- function(x) {
