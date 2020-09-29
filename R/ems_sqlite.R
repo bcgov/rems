@@ -181,7 +181,7 @@ attach_historic_data <- function() {
     stop("Please download the historic data with\n",
       " the 'download_historic_data' function.", call. = FALSE)
   }
-  db <- dplyr::src_sqlite(db_path)
+  db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
   tbl <- dplyr::tbl(db, "historic")
   tbl
 }
