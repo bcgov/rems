@@ -1,13 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-rems 0.5.1
+rems 0.5.2
 ==========
 
 <!-- badges: start -->
 
-[![Travis-CI Build
-Status](https://travis-ci.org/bcgov/rems.svg?branch=master)](https://travis-ci.org/bcgov/rems)
 [![Codecov test
 coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -15,7 +13,8 @@ coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https
 status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 [![R build
 status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
 Overview
@@ -61,7 +60,7 @@ data):
     #> Caching data on disk...
     #> Loading data...
     nrow(two_year)
-    #> [1] 1494672
+    #> [1] 1497503
     head(two_year)
     #> # A tibble: 6 x 23
     #>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   

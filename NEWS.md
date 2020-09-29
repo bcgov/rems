@@ -1,3 +1,7 @@
+# rems 0.5.2
+
+* removed internal use of `filter_` to avoid dplyr deprecation warnings. (#48)
+
 # rems 0.5.1
 
 * Fixed bug where currency of the historic sqlite database was checked against the wrong date
