@@ -61,7 +61,7 @@ get_gh_release <- function(release = "latest") {
   # List releases
   sep <- ifelse(release == "latest", "/", "/tags/")
   url <- paste(gh_base_url(), release, sep = sep)
-  rels_resp <- httr::GET(auth_url(url))
+  rels_resp <- httr::GET(url, add_auth_header())
   httr::stop_for_status(rels_resp)
 
   jsonlite::fromJSON(httr::content(rels_resp, as = "text",
@@ -73,9 +73,10 @@ get_gh_release <- function(release = "latest") {
 
 download_release_asset <- function(asset_url, path, httr_config = list()) {
   resp <- httr::RETRY("GET",
-    url = auth_url(asset_url),
+    url = asset_url,
     config = httr_config,
     httr::add_headers(Accept = "application/octet-stream"),
+    add_auth_header(),
     httr::write_disk(path, overwrite = TRUE),
     httr::progress("down"))
 
@@ -84,13 +85,13 @@ download_release_asset <- function(asset_url, path, httr_config = list()) {
   invisible(path)
 }
 
-auth_url <- function(url) {
-  pat <- Sys.getenv("GITHUB_PAT", "")
-  if (!nzchar(pat)) pat <- Sys.getenv("GITHUB_TOKEN", "")
+add_auth_header <- function() {
+  ## downloading with authentication raises the rate-limiting
+  pat <- Sys.getenv("GITHUB_PAT")
   if (nzchar(pat)) {
-    return(paste0(url, "?access_token=", pat))
+    return(httr::add_headers(Authentication = paste0("token ", pat)))
   }
-  url
+  invisible(NULL)
 }
 
 get_sqlite_gh_date <- function(release = "latest") {
