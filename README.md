@@ -13,8 +13,7 @@ coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https
 status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 [![R build
 status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
-[![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 <!-- badges: end -->
 
 Overview
