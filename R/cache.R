@@ -91,7 +91,7 @@ remove_it <- function(which) {
   if (which == "historic") {
     fpath <- write_db_path()
     if (file.exists(fpath)) {
-      file.remove(fpath)
+      unlink(dirname(fpath), recursive = TRUE)
     }
   } else if (which %in% c("2yr", "4yr")) {
     stopifnot(cache_exists())

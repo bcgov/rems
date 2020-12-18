@@ -4,7 +4,7 @@
 \name{rems-package}
 \alias{rems}
 \alias{rems-package}
-\title{rems: Get Data From British Columbia's Environmental Monitoring
+\title{rems: Get Data from British Columbia's Environmental Monitoring
     System}
 \description{
 Download and parse data from B.C.'s Environmental
