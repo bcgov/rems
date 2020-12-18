@@ -63,8 +63,8 @@ col_specs <- function(type = c("readr", "sql", "base", "all", "names_only"), sub
     "LATITUDE" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
     "LONGITUDE" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
     "LOCATION_TYPE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
-    "COLLECTION_START" = list(readr_fun = col_datetime(format = "%Y%m%d%H%M%S"), base_type = "ems_posix_ct", sql_type = "TIMESTAMP"),
-    "COLLECTION_END" = list(readr_fun = col_datetime(format = "%Y%m%d%H%M%S"), base_type = "ems_posix_ct", sql_type = "TIMESTAMP"),
+    "COLLECTION_START" = list(readr_fun = col_datetime(format = ems_timestamp_format()), base_type = "POSIXct", sql_type = "TIMESTAMP"),
+    "COLLECTION_END" = list(readr_fun = col_datetime(format = ems_timestamp_format()), base_type = "POSIXct", sql_type = "TIMESTAMP"),
     "LOCATION_PURPOSE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
     "PERMIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
     "PERMIT_RELATIONSHIP" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
@@ -146,21 +146,9 @@ col_specs <- function(type = c("readr", "sql", "base", "all", "names_only"), sub
   ret
 }
 
-ems_tz <- function() {
-  "Etc/GMT+8"
-}
+ems_tz <- function() "Etc/GMT+8"
 
-timestamp_to_numeric <- function(from) {
-  as.numeric(as.POSIXct(from, tz = ems_tz(), format = "%Y%m%d%H%M%S"))
-}
-
-setClass("ems_posix_ct")
-
-#' @name as
-#' @import methods
-#' @rdname coerce-methods
-#' @aliases coerce
-setAs("character", "ems_posix_ct", timestamp_to_numeric)
+ems_timestamp_format <- function() "%Y%m%d%H%M%S"
 
 #' Save EMS data as a csv file
 #'

@@ -89,7 +89,7 @@ download_historic_data(ask = FALSE)
 ```{r}
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   parameter = c("Aluminum Total", "Cadmium Total",
-    "Copper Total", " Zinc Total",
+    "Copper Total", "Zinc Total",
     "Turbidity"),
   from_date = "2001/02/05",
   to_date = "2011/12/31",

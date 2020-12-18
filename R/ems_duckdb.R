@@ -20,21 +20,21 @@
 #' @param httr_config configuration settings passed on to [httr::GET()],
 #' such as [httr::timeout()]
 #'
-#' @return The path where the sqlite database is stored (invisibly).
+#' @return The path where the duckdb database is stored (invisibly).
 #' @export
 #'
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
-#' @importFrom RSQLite SQLite
+#' @importFrom duckdb duckdb
 #'
 download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
 
-  sqlite_gh_date <- get_sqlite_gh_date() # Get from gh release
+  file_meta <- get_file_metadata("historic")
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
 
   if (file.exists(db_path) && !force) {
-    if (cache_date >= sqlite_gh_date) {
+    if (cache_date >= file_meta[["server_date"]]) {
       message("It appears that you already have the most up-to date version of the",
         " historic ems data.")
       return(invisible(db_path))
@@ -53,25 +53,14 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   }
 
   message("This is going to take a while...")
-  zipfile <- tempfile(fileext = ".zip")
-  on.exit(unlink(zipfile))
 
   message("Downloading latest 'historic' EMS data")
-  download_file_from_release("ems_historic.sqlite.zip", zipfile,
-    httr_config = httr_config)
+  url <- paste0(base_url(), file_meta[["filename"]])
+  csv_file <- download_ems_data(url)
 
-  exdir <- dirname(db_path)
-  files_in_zip <- zip::zip_list(zipfile)$filename
-  sqlite_filename <- files_in_zip[grepl("ems_historic.*\\.sqlite$", files_in_zip)]
+  create_rems_duckdb(csv_file, db_path)
 
-  zip::unzip(zipfile, files = sqlite_filename, junkpaths = TRUE, exdir = exdir)
-  extracted_sqlite <- file.path(exdir, sqlite_filename)
-
-  if (!extracted_sqlite == db_path) {
-    file.rename(extracted_sqlite, db_path)
-  }
-
-  set_cache_date("historic", sqlite_gh_date)
+  set_cache_date("historic", file_meta[["server_date"]])
 
   message("Successfully downloaded and stored the historic EMS data.\n",
     "You can access and subset it with the 'read_historic_data' function, or
@@ -115,9 +104,9 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
   ## Check for missing or outdated historic database
   if (check_db) {
-    gh_date <- get_sqlite_gh_date()
+    server_date <- file_meta <- get_file_metadata("historic")[["server_date"]]
     cache_date <- get_cache_date("historic")
-    if (cache_date < gh_date && file.exists(db_path)) {
+    if (cache_date < server_date && file.exists(db_path)) {
       ans <- readline(paste("Your version of the historic dataset is out of date.",
         "Would you like to continue with the version you have (y/n)? ",
         sep = "\n"))
@@ -133,15 +122,15 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     param_code = param_code, from_date = from_date,
     to_date = to_date, cols = cols)
 
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
-  on.exit(DBI::dbDisconnect(con))
+  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path)
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 
   res <- DBI::dbGetQuery(con, qry)
 
-  if (!is.null(res$COLLECTION_START))
-    res$COLLECTION_START <- ems_posix_numeric(res$COLLECTION_START)
-  if (!is.null(res$COLLECTION_END))
-    res$COLLECTION_END <- ems_posix_numeric(res$COLLECTION_END)
+  # if (!is.null(res$COLLECTION_START))
+  #   res$COLLECTION_START <- ems_posix_numeric(res$COLLECTION_START)
+  # if (!is.null(res$COLLECTION_END))
+  #   res$COLLECTION_END <- ems_posix_numeric(res$COLLECTION_END)
 
   ret <- tibble::as_tibble(res)
 
@@ -149,19 +138,14 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
 }
 
-#' Load the historic ems sqlite database as a tbl
+#' Load the historic ems database as a tbl
 #'
 #' You can then use dplyr verbs such as \code{\link[dplyr]{filter}},
 #' \code{\link[dplyr]{select}}, \code{\link[dplyr]{summarize}}, etc. For basic
 #' importing of historic data based on \code{ems_id}, \code{date}, and \code{parameter},
 #' you can use the function \code{\link{read_historic_data}}
 #'
-#' @return A dplyr connection to the sqlite database. See \code{\link[dplyr]{src_sqlite}} for more.
-#'
-#' @details Note that the dates are stored in the sqlite database as integers.
-#' This number is the number of seconds since midnight on January 1, 1970, PST. Convert the dates
-#' to a \code{POSIXct} object with \code{as.POSIXct(x, origin = "1970/01/01", tz = "Etc/GMT+8")}.
-#' If you use \code{\link{read_historic_data}}, this will be done for you.
+#' @return A dplyr connection to the duckdb database. See \code{\link[dplyr]{src_sql}} for more.
 #'
 #' @export
 #'
@@ -181,8 +165,8 @@ attach_historic_data <- function() {
     stop("Please download the historic data with\n",
       " the 'download_historic_data' function.", call. = FALSE)
   }
-  db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-  tbl <- dplyr::tbl(db, "historic")
+  con <- DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE)
+  tbl <- dplyr::tbl(con, "historic")
   tbl
 }
 
@@ -201,16 +185,16 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL, param_code = 
   }
 
   if (!is.null(from_date)) {
-    from_date <- as.integer(as.POSIXct(from_date, tz = ems_tz()))
-    from_date_qry <- sprintf("COLLECTION_START >= %s", from_date)
+    from_date <- format(as.POSIXct(from_date, tz = ems_tz()), "%Y/%m/%d")
+    from_date_qry <- sprintf("COLLECTION_START >= '%s'", from_date)
   }
   if (!is.null(to_date)) {
-    to_date <- as.integer(as.POSIXct(to_date, tz = ems_tz()))
-    to_date_qry <- sprintf("COLLECTION_START <= %s", to_date)
+    to_date <- format(as.POSIXct(to_date, tz = ems_tz()), "%Y/%m/%d")
+    to_date_qry <- sprintf("COLLECTION_START <= '%s' ", to_date)
   }
-  row_query_vec <- c(emsid_qry, parameter_qry, param_cd_qry, from_date_qry, to_date_qry)
-  row_query_vec <- row_query_vec[!is.null(row_query_vec)]
-  row_query <- paste(row_query_vec, collapse = " AND ")
+  where_clause_vec <- c(emsid_qry, parameter_qry, param_cd_qry, from_date_qry, to_date_qry)
+  where_clause_vec <- where_clause_vec[!is.null(where_clause_vec)]
+  where_clause <- paste(where_clause_vec, collapse = " AND ")
 
   if (is.null(cols) || cols == "all") {
     cols <- "*"
@@ -218,12 +202,12 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL, param_code = 
     cols <- wq_cols()
   }
 
-  col_query <- paste(cols, collapse = ", ")
+  select_clause <- paste(cols, collapse = ", ")
 
-  if (row_query == "") {
-    sql <- sprintf("SELECT %s FROM historic", col_query)
+  if (where_clause == "") {
+    sql <- sprintf("SELECT %s FROM historic", select_clause)
   } else {
-    sql <- sprintf("SELECT %s FROM historic WHERE %s", col_query, row_query)
+    sql <- sprintf("SELECT %s FROM historic WHERE %s", select_clause, where_clause)
   }
 
   sql
@@ -242,12 +226,15 @@ stringify_vec <- function(vec) {
 
 write_db_path <- function(path = getOption("rems.historic.path",
                             default = rems_data_dir())) {
-  file.path(path, "ems_historic.sqlite")
+  fpath <- normalizePath(file.path(path, "duckdb/ems_historic.duckdb"),
+                        mustWork = FALSE)
+  dir.create(dirname(fpath), showWarnings = FALSE)
+  fpath
 }
 
-#' Add an index to a column in a sqlite database
+#' Add an index to a column in a DBI database
 #'
-#' @param con sqlite connection
+#' @param con DBI connection
 #' @param idxname desired name for the index
 #' @param tblname table in the database
 #' @param colname col on which to create an index
