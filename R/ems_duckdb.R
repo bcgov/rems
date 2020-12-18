@@ -127,11 +127,6 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
   res <- DBI::dbGetQuery(con, qry)
 
-  # if (!is.null(res$COLLECTION_START))
-  #   res$COLLECTION_START <- ems_posix_numeric(res$COLLECTION_START)
-  # if (!is.null(res$COLLECTION_END))
-  #   res$COLLECTION_END <- ems_posix_numeric(res$COLLECTION_END)
-
   ret <- tibble::as_tibble(res)
 
   add_rems_type(ret, "historic")
