@@ -1,6 +1,6 @@
 Type: Package
 Package: rems
-Title: Get Data From British Columbia's Environmental Monitoring
+Title: Get Data from British Columbia's Environmental Monitoring
     System
 Version: 0.6.0
 Authors@R: 
