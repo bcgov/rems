@@ -140,19 +140,18 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 #' importing of historic data based on \code{ems_id}, \code{date}, and \code{parameter},
 #' you can use the function \code{\link{read_historic_data}}
 #'
-#' @return A dplyr connection to the duckdb database. See \code{\link[dplyr]{src_sql}} for more.
+#' @return A dplyr connection to the duckdb database. See \code{\link[dplyr]{tbl}} for more.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#' foo <- attach_historic_data()
-#' bar <- foo %>%
-#'   group_by(EMS_ID) %>%
-#'   summarise(max_date = max(COLLECTION_START))
-#' baz <- collect(bar)
-#' baz$max_date <- as.POSIXct(baz$max_date, origin = "1970/01/01", tz = "Etc/GMT+8")
+#' hist_tbl <- attach_historic_data()
+#' result <- hist_tbl %>%
+#'  group_by(EMS_ID) %>%
+#'  summarise(max_date = max(COLLECTION_START))
+#' collect(result)
 #' }
 attach_historic_data <- function() {
   db_path <- write_db_path()

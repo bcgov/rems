@@ -7,7 +7,7 @@
 attach_historic_data()
 }
 \value{
-A dplyr connection to the duckdb database. See \code{\link[dplyr]{src_sql}} for more.
+A dplyr connection to the duckdb database. See \code{\link[dplyr]{tbl}} for more.
 }
 \description{
 You can then use dplyr verbs such as \code{\link[dplyr]{filter}},
@@ -18,11 +18,10 @@ you can use the function \code{\link{read_historic_data}}
 \examples{
 \dontrun{
 library(dplyr)
-foo <- attach_historic_data()
-bar <- foo \%>\%
-  group_by(EMS_ID) \%>\%
-  summarise(max_date = max(COLLECTION_START))
-baz <- collect(bar)
-baz$max_date <- as.POSIXct(baz$max_date, origin = "1970/01/01", tz = "Etc/GMT+8")
+hist_tbl <- attach_historic_data()
+result <- hist_tbl \%>\%
+ group_by(EMS_ID) \%>\%
+ summarise(max_date = max(COLLECTION_START))
+collect(result)
 }
 }
