@@ -1,3 +1,7 @@
+# rems 0.6.0
+
+* Switched from using SQLite to [DuckDB](https://duckdb.org/) as a backend for the historic database. This allows fast creation of the database directly from the csv file downloaded from the [B.C. Data Catalogue](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659) (#52).
+
 # rems 0.5.2
 
 * removed internal use of `filter_` to avoid dplyr deprecation warnings. (#48)

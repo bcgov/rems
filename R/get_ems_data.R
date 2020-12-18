@@ -148,16 +148,16 @@ download_ems_data <- function(url) {
   cat("\n")
   httr::stop_for_status(res)
 
-  if (ext == ".zip") {
-    exdir <- tempdir()
-    zipfile <- res$request$output$path
-    files_in_zip <- zip::zip_list(zipfile)$filename
-    zip::unzip(zipfile, exdir = exdir)
-    ret <- file.path(exdir, files_in_zip)
-  } else if (ext == ".csv") {
-    ret <- res$request$output$path
-  }
-  ret
+  # if (ext == ".zip") {
+  #   exdir <- tempdir()
+  #   zipfile <- res$request$output$path
+  #   files_in_zip <- zip::zip_list(zipfile)$filename
+  #   zip::unzip(zipfile, exdir = exdir)
+  #   ret <- file.path(exdir, files_in_zip)
+  # } else if (ext == ".csv") {
+  #   ret <- res$request$output$path
+  # }
+  res$request$output$path
 }
 
 #' @importFrom xml2 read_html as_list

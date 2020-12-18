@@ -2,7 +2,7 @@ Type: Package
 Package: rems
 Title: Get Data From British Columbia's Environmental Monitoring
     System
-Version: 0.5.2
+Version: 0.6.0
 Authors@R: 
     c(person(given = "Andy",
              family = "Teucher",
@@ -31,11 +31,9 @@ Imports:
     tibble (>= 1.2),
     utils,
     xml2 (>= 1.0.0),
-    zip (>= 2.0.4)
+    glue (>= 1.4)
 Suggests: 
     bit64,
-    devtools,
-    gh,
     testthat
 Encoding: UTF-8
 LazyData: true
