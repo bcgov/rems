@@ -96,19 +96,20 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   check_db = FALSE)
 ```
 
-You can also query the sqlite database using `dplyr`, which ultimately gives you more flexibility than using `read_historic_data`:
+You can also query the historic database using `dplyr`, which ultimately gives you more flexibility than using `read_historic_data`:
 
-First, attach the database to your R session. This creates an object which behaves like a data frame, which you can query with dplyr.  The advantage is that the computation is done in the database rather than importing all of the records into R (which would likely be impossible).
+First, create a connection to the database using `connect_historic_db()`, then attach the historic database table to your R session using `attach_historic_data()`. This creates an object which behaves like a data frame, which you can query with dplyr.  The advantage is that the computation is done in the database rather than importing all of the records into R (which would likely be impossible).
 
 ```{r}
 library(dplyr)
-hist_db <- attach_historic_data()
+hist_db_con <- connect_historic_db()
+hist_tbl <- attach_historic_data(hist_db_con)
 ```
 
 You can then query this object with dplyr:
 
 ```{r}
-filtered_historic2 <- hist_db %>%
+filtered_historic2 <- hist_tbl %>%
   select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
   filter(EMS_ID %in% c("0121580", "0126400"),
     PARAMETER %in% c("Aluminum Total", "Cadmium Total",
@@ -118,12 +119,11 @@ filtered_historic2 <- hist_db %>%
 
 
 Finally, to get the results into your R session as a regular data frame, you must `collect()` it. 
-Note that date/times are stored in the `SQLite` database as integers, so you must convert them back to 
-`POSIXct`. There is a shortcut function to do this: `ems_posix_numeric`:
+Note that date/times are stored in the historic database as UTC, so you must convert them back PST. There is a shortcut function to help with this: `set_ems_tz()`
 
 ```{r}
 filtered_historic2 <- collect(filtered_historic2) %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START))
 glimpse(filtered_historic2)
 ```
 
@@ -146,6 +146,14 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
   geom_point() +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
+
+When you are finished querying the historic database, you should close the 
+database connection using `disconnect_historic_db()`:
+
+```{r}
+disconnect_historic_db(hist_db_con)
+```
+
 
 When the data are downloaded from the B.C. Data Catalogue, they are cached so that 
 you don't have to download it every time you want to use it. If there is newer 
