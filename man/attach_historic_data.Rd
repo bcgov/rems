@@ -4,7 +4,7 @@
 \alias{attach_historic_data}
 \title{Load the historic ems database as a tbl}
 \usage{
-attach_historic_data()
+attach_historic_data(con = NULL)
 }
 \value{
 A dplyr connection to the duckdb database. See \code{\link[dplyr]{tbl}} for more.
@@ -18,10 +18,15 @@ you can use the function \code{\link{read_historic_data}}
 \examples{
 \dontrun{
 library(dplyr)
-hist_tbl <- attach_historic_data()
+
+con <- connect_historic_db()
+
+hist_tbl <- attach_historic_data(con)
 result <- hist_tbl \%>\%
  group_by(EMS_ID) \%>\%
  summarise(max_date = max(COLLECTION_START))
 collect(result)
+
+disconnect_historic_db(con)
 }
 }
