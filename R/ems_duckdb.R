@@ -32,8 +32,9 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
+  db_exists <- file.exists(db_path)
 
-  if (file.exists(db_path) && !force) {
+  if (db_exists && !force) {
     if (cache_date >= file_meta[["server_date"]]) {
       message("It appears that you already have the most up-to date version of the",
         " historic ems data.")
@@ -57,6 +58,11 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   message("Downloading latest 'historic' EMS data")
   url <- paste0(base_url(), file_meta[["filename"]])
   csv_file <- download_ems_data(url)
+
+  if (db_exists) {
+    unlink(dirname(db_path), recursive = TRUE)
+    write_db_path()
+  }
 
   create_rems_duckdb(csv_file, db_path)
 
@@ -104,7 +110,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
   ## Check for missing or outdated historic database
   if (check_db) {
-    server_date <- file_meta <- get_file_metadata("historic")[["server_date"]]
+    server_date <- get_file_metadata("historic")[["server_date"]]
     cache_date <- get_cache_date("historic")
     if (cache_date < server_date && file.exists(db_path)) {
       ans <- readline(paste("Your version of the historic dataset is out of date.",
@@ -122,7 +128,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     param_code = param_code, from_date = from_date,
     to_date = to_date, cols = cols)
 
-  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path)
+  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 
   res <- DBI::dbGetQuery(con, qry)
@@ -131,6 +137,42 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
   add_rems_type(ret, "historic")
 
+}
+
+#' Create a database connection to the historic database
+#'
+#' This creates a DBI connection to the duckdb database
+#' that holds the historic data table. You should call
+#' [disconnect_historic_db()] when you are finished
+#' querying the database.
+#'
+#' See [attach_historic_data()] for examples.
+#'
+#' @param db_path path to the duckdb database. In most cases
+#'  it does not need to be specified as it uses the default location
+#'  set by `rems`.
+#'
+#' @seealso [DBI::dbConnect()]
+#' @return a [DBI::DBIConnection] object for communicating with the database
+#' @export
+connect_historic_db <- function(db_path = NULL) {
+  if (is.null(db_path)) db_path <- write_db_path()
+  if (!file.exists(db_path)) {
+    stop("Please download the historic data with\n",
+         " the 'download_historic_data' function.", call. = FALSE)
+  }
+  message("Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.")
+  DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE)
+}
+
+#' Close the connection to the historic database
+#'
+#' @param con DBI connection object, most likely created by [connect_historic_db()].
+#'
+#' @return `TRUE`, invisibly
+#' @export
+disconnect_historic_db <- function(con) {
+  DBI::dbDisconnect(con, shutdown = TRUE)
 }
 
 #' Load the historic ems database as a tbl
@@ -147,19 +189,21 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#' hist_tbl <- attach_historic_data()
+#'
+#' con <- connect_historic_db()
+#'
+#' hist_tbl <- attach_historic_data(con)
 #' result <- hist_tbl %>%
 #'  group_by(EMS_ID) %>%
 #'  summarise(max_date = max(COLLECTION_START))
 #' collect(result)
+#'
+#' disconnect_historic_db(con)
 #' }
-attach_historic_data <- function() {
-  db_path <- write_db_path()
-  if (!file.exists(db_path)) {
-    stop("Please download the historic data with\n",
-      " the 'download_historic_data' function.", call. = FALSE)
+attach_historic_data <- function(con = NULL) {
+  if (is.null(con)) {
+    stop("You must specificy a database connection 'con', created by calling 'connect_historic_db()'.")
   }
-  con <- DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE)
   tbl <- dplyr::tbl(con, "historic")
   tbl
 }
