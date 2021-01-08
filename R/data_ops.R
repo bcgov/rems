@@ -38,8 +38,8 @@ bind_ems_data <- function(...) {
 filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL,
                             from_date = NULL, to_date = NULL) {
   # convert
-  if (!is.null(from_date)) from_date <- ems_posixct(from_date)
-  if (!is.null(to_date)) to_date <- ems_posixct(to_date)
+  if (!is.null(from_date)) from_date <- set_ems_tz(from_date)
+  if (!is.null(to_date)) to_date <- set_ems_tz(to_date)
   # Create the dots objects to be passed in to filter_, then remove the elements
   # didn't get passed a value, and remove names
 
@@ -54,32 +54,22 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
   x
 }
 
-ems_posixct <- function(x) {
-  UseMethod("ems_posixct")
-}
-
-ems_posixct.default <- function(x) {
-  stop("No ems_posixct method defined for objects of class '", class(x), "'",
-    call. = FALSE)
-}
-
-ems_posixct.Date <- function(x) {
-  ems_posixct(as.character(x))
-}
-
-ems_posixct.character <- function(x) {
-  as.POSIXct(x, tz = ems_tz())
-}
-
-ems_posixct.POSIXct <- function(x) {
-  attr(x, "tzone") <- ems_tz()
-  x
-}
-
-ems_posixct.POSIXlt <- function(x) {
-  ems_posixct(as.POSIXct(x))
-}
-
-ems_posixct.numeric <- function(x) {
-  as.POSIXct(as.numeric(x), origin = "1970/01/01", tz = ems_tz())
+#' Set a date-time to the timezone used by EMS
+#'
+#' Sets the timezone to PST (UTC -8 hrs; Etc/GMT+8), which is what is used
+#' in EMS. Does not change the clock time of the input, rather
+#' forces the timezone to be UTC -8 hrs.
+#'
+#' @param x a date-time-like object or character string
+#' in a standard unambiguous format (e.g., `"YYYY/MM/DD"`).
+#'
+#' @seealso [lubridate::force_tz()], [OlsonNames()]
+#'
+#' @return `POSIXct` in the updated timezone.
+#' @export
+set_ems_tz <- function(x) {
+  if (is.character(x)) {
+    return(as.POSIXct(x, tz = ems_tz()))
+  }
+  lubridate::force_tz(x, tzone = ems_tz())
 }
