@@ -153,7 +153,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 #'  set by `rems`.
 #'
 #' @seealso [DBI::dbConnect()]
-#' @return a [DBI::DBIConnection] object for communicating with the database
+#' @return a DBIConnection object for communicating with the duckdb database
 #' @export
 connect_historic_db <- function(db_path = NULL) {
   if (is.null(db_path)) db_path <- write_db_path()

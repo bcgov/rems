@@ -31,9 +31,9 @@ Imports:
     tibble (>= 1.2),
     utils,
     xml2 (>= 1.0.0),
-    glue (>= 1.4)
+    glue (>= 1.4),
+    lubridate
 Suggests: 
-    bit64,
     testthat
 Encoding: UTF-8
 LazyData: true

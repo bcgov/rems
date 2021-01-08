@@ -12,7 +12,7 @@ it does not need to be specified as it uses the default location
 set by \code{rems}.}
 }
 \value{
-a \link[DBI:DBIConnection]{DBI::DBIConnection} object for communicating with the database
+a DBIConnection object for communicating with the duckdb database
 }
 \description{
 This creates a DBI connection to the duckdb database

@@ -17,5 +17,16 @@ hist_20170101 <- hist_tbl %>%
 
 all.equal(hist_20170101, four_yr_20170101, check.attributes = FALSE)
 
+## Compare date range with 2yr
+max_dt <- dbGetQuery(con, "SELECT max(COLLECTION_START) max_dt from historic;")
+
+set_ems_tz(max_dt[[1]])
+# [1] "2019-12-31 23:59:00 -08"
+
+two_year <- get_ems_data("2yr")
+
+min(two_year$COLLECTION_START)
+# [1] "2020-01-01 -08"
+
 disconnect_historic_db(con)
 rm(hist_tbl, con)
