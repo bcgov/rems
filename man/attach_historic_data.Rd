@@ -6,6 +6,9 @@
 \usage{
 attach_historic_data(con = NULL)
 }
+\arguments{
+\item{con}{DBI connection object, most likely created by \code{\link[=connect_historic_db]{connect_historic_db()}}.}
+}
 \value{
 A dplyr connection to the duckdb database. See \code{\link[dplyr]{tbl}} for more.
 }

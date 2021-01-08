@@ -182,6 +182,8 @@ disconnect_historic_db <- function(con) {
 #' importing of historic data based on \code{ems_id}, \code{date}, and \code{parameter},
 #' you can use the function \code{\link{read_historic_data}}
 #'
+#' @param con DBI connection object, most likely created by [connect_historic_db()].
+#'
 #' @return A dplyr connection to the duckdb database. See \code{\link[dplyr]{tbl}} for more.
 #'
 #' @export
