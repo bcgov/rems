@@ -25,7 +25,7 @@ create_rems_duckdb <- function(csv_file, db_path) {
   csv_file <- normalizePath(csv_file, mustWork = TRUE)
 
   con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path)
-  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
   tbl_name <- "historic"
 

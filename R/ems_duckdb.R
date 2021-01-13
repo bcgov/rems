@@ -130,7 +130,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     to_date = to_date, cols = cols)
 
   con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
-  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
   res <- DBI::dbGetQuery(con, qry)
 
