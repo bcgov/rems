@@ -58,6 +58,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   message("Downloading latest 'historic' EMS data")
   url <- paste0(base_url(), file_meta[["filename"]])
   csv_file <- download_ems_data(url)
+  on.exit(unlink(csv_file), add = TRUE)
 
   if (db_exists) {
     unlink(dirname(db_path), recursive = TRUE)
