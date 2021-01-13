@@ -185,7 +185,7 @@ get_databc_metadata <- function() {
   # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
   files_df <- files_df[grepl("expanded", files_df[["filename"]]), ]
   files_df$label <- dplyr::case_when(
-    grepl("^te?mp", files_df[["filename"]]) ~ "drop",
+    grepl("(^te?mp)|(zip$)", files_df[["filename"]]) ~ "drop",
     grepl("4yr", files_df[["filename"]]) ~ "4yr",
     grepl("historic", files_df[["filename"]]) ~ "historic",
     grepl("results_current", files_df[["filename"]]) ~ "2yr",
