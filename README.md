@@ -53,12 +53,10 @@ data):
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
+#> Your version of 2yr is dated 2021-01-07 03:38:00 and there is a newer version available. Would you like to download it? (y/n)
+#> Fetching data from cache...
 nrow(two_year)
-#> [1] 1757581
+#> [1] 807753
 head(two_year)
 #> # A tibble: 6 x 23
 #>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
@@ -117,23 +115,35 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   check_db = FALSE)
 ```
 
-You can also query the sqlite database using `dplyr`, which ultimately
+You can also query the historic database using `dplyr`, which ultimately
 gives you more flexibility than using `read_historic_data`:
 
-First, attach the database to your R session. This creates an object
-which behaves like a data frame, which you can query with dplyr. The
-advantage is that the computation is done in the database rather than
-importing all of the records into R (which would likely be impossible).
+First, create a connection to the database using
+`connect_historic_db()`, then attach the historic database table to your
+R session using `attach_historic_data()`. This creates an object which
+behaves like a data frame, which you can query with dplyr. The advantage
+is that the computation is done in the database rather than importing
+all of the records into R (which would likely be impossible).
 
 ``` r
 library(dplyr)
-hist_db <- attach_historic_data()
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+hist_db_con <- connect_historic_db()
+#> Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.
+hist_tbl <- attach_historic_data(hist_db_con)
 ```
 
 You can then query this object with dplyr:
 
 ``` r
-filtered_historic2 <- hist_db %>%
+filtered_historic2 <- hist_tbl %>%
   select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
   filter(EMS_ID %in% c("0121580", "0126400"),
     PARAMETER %in% c("Aluminum Total", "Cadmium Total",
@@ -142,20 +152,20 @@ filtered_historic2 <- hist_db %>%
 ```
 
 Finally, to get the results into your R session as a regular data frame,
-you must `collect()` it. Note that date/times are stored in the `SQLite`
-database as integers, so you must convert them back to `POSIXct`. There
-is a shortcut function to do this: `ems_posix_numeric`:
+you must `collect()` it. Note that date/times are stored in the historic
+database as UTC, so you must convert them back PST. There is a shortcut
+function to help with this: `set_ems_tz()`
 
 ``` r
 filtered_historic2 <- collect(filtered_historic2) %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START))
 glimpse(filtered_historic2)
-#> Rows: 5,444
+#> Rows: 5,666
 #> Columns: 4
-#> $ EMS_ID           <chr> "0126400", "0126400", "0126400", "0126400", "0126400…
-#> $ PARAMETER        <chr> "Turbidity", "Cadmium Total", "Cadmium Total", "Turb…
-#> $ COLLECTION_START <dttm> 1994-08-14 23:15:00, 1994-11-03 04:45:00, 1994-09-2…
-#> $ RESULT           <dbl> 2.000000, 0.000100, 0.000100, 0.590000, 0.000100, 0.…
+#> $ EMS_ID           <chr> "0121580", "0126400", "0126400", "0126400", "0126400…
+#> $ PARAMETER        <chr> "Cadmium Total", "Turbidity", "Copper Total", "Coppe…
+#> $ COLLECTION_START <dttm> 2009-06-23 09:15:00, 2000-12-13 14:50:00, 2017-06-0…
+#> $ RESULT           <dbl> 0.000002, 0.900000, 0.000890, 0.000700, 6.100000, 0.…
 ```
 
 You can combine the previously imported historic and two\_year data sets
@@ -181,6 +191,13 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
 ```
 
 ![](fig/README-unnamed-chunk-11-1.png)<!-- -->
+
+When you are finished querying the historic database, you should close
+the database connection using `disconnect_historic_db()`:
+
+``` r
+disconnect_historic_db(hist_db_con)
+```
 
 When the data are downloaded from the B.C. Data Catalogue, they are
 cached so that you don’t have to download it every time you want to use
