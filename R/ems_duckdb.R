@@ -269,7 +269,7 @@ write_db_path <- function(path = getOption("rems.historic.path",
                             default = rems_data_dir())) {
   fpath <- normalizePath(file.path(path, "duckdb/ems_historic.duckdb"),
                         mustWork = FALSE)
-  dir.create(dirname(fpath), showWarnings = FALSE)
+  dir.create(dirname(fpath), recursive = TRUE, showWarnings = FALSE)
   fpath
 }
 
@@ -288,4 +288,10 @@ add_sql_index <- function(con, tbl = "historic", colname,
   sql_str <- sprintf("CREATE INDEX %s ON %s(%s)", idxname, tbl, colname)
   DBI::dbExecute(con, sql_str)
   invisible(NULL)
+}
+
+handle_zip <- function(x) {
+  if (!grepl("\\.zip$", x)) return(x)
+
+  unzip(x, )
 }
