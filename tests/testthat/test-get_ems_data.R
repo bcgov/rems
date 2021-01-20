@@ -32,3 +32,13 @@ test_that("httr_progress works", {
 test_that("making file hash works", {
   expect_equal(nchar(make_file_hash("sha1test")), 40)
 })
+
+test_that("handle_zip works", {
+  test_zip <- withr::local_file(tempfile(fileext = ".zip"))
+  zip::zip(test_zip, "test_historic.csv")
+  expect_equal(
+    read_csv(handle_zip(test_zip)),
+    read_csv(handle_zip("test_historic.csv"))
+  )
+  expect_error(handle_zip("not_zip_or_csv.txt"))
+})
