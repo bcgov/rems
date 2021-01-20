@@ -97,7 +97,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
     cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
-    if (cache_date < file_meta[["server_date"]]) {
+    if (cache_date < unique(file_meta[["server_date"]])) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
         cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
@@ -124,6 +124,10 @@ rems_data_from_cache <- function(which, cols) {
 
 update_cache <- function(which, n, cols) {
   file_meta <- get_file_metadata(which)
+
+  # If both zip and csv keep just zip
+  if(length(file_meta) > 1) file_meta <- file_meta[grepl("zip$", file_meta$filename), ]
+
   url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
     "' EMS data from BC Data Catalogue (url: ", url, ")")
@@ -165,24 +169,19 @@ download_ems_data <- function(url) {
 get_databc_metadata <- function() {
   url <- base_url()
   html <- xml2::read_html(url)
-  ## Convert xml to list and only extract the portion with the information
-  res <- xml2::as_list(xml2::xml_find_first(html, "//pre"))
-  res <- suppressWarnings(lapply(res, function(x) {
-    url <- attr(x, "href")
-    x$url <- url
-    x
-  }))
-  res <- remove_zero_length(res[2:length(res)])
-  res <- unname(unlist(res))
-  res <- stringr::str_trim(res, side = "both")
-  # Extract only elements with filename or dates
-  res <- res[grepl("ems_sample_results.+\\.(csv|zip)$|[0-9]{4}(-|/)[0-9]{2}(-|/)[0-9]{2}", res)]
-  # Remove file size
-  res <- gsub("\\s+[0-9]{1,3}(\\.[0-9]{1,})?(G|M)$", "", res)
-  files_df <- data.frame(matrix(res, ncol = 2, byrow = TRUE),
-    stringsAsFactors = FALSE)
-  colnames(files_df) <- c("filename", "server_date")
-  # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
+
+  ## Only extract portion of xml with the information
+  files <- xml2::xml_attr(xml2::xml_find_all(html, ".//a"), "href")
+  files <- grep("((out.txt$)|(ems_sample_results.+\\.(csv|zip)$))", files, value = TRUE)
+  dates <- xml2::xml_text(xml2::xml_find_all(html, ".//a/following-sibling::text()[1]"))
+  dates <- grep("[0-9]{4}(-|/)[0-9]{2}(-|/)[0-9]{2}", dates, value = TRUE)
+
+  files_df <- data.frame(filename = files, server_date = dates)
+  files_df <- files_df[files_df$filename != "out.txt", ]
+  files_df$server_date <- stringr::str_trim(files_df$server_date, side = "both")
+  files_df$server_date <- gsub("\\s+[0-9]{1,3}(\\.[0-9]{1,})?(G|M)$", "",
+                               files_df$server_date)
+
   files_df <- files_df[grepl("expanded", files_df[["filename"]]), ]
   files_df$label <- dplyr::case_when(
     grepl("^te?mp", files_df[["filename"]]) ~ "drop",
