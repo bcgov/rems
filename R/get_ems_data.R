@@ -123,7 +123,8 @@ rems_data_from_cache <- function(which, cols) {
 }
 
 update_cache <- function(which, n, cols) {
-  file_meta <- get_file_metadata(which)
+  filetype <- if (which == "4yr") "zip" else "csv"
+  file_meta <- get_file_metadata(which, filetype)
   url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
     "' EMS data from BC Data Catalogue (url: ", url, ")")
@@ -188,12 +189,13 @@ get_databc_metadata <- function() {
   # files_df$ext <- vapply(strsplit(files_df[["filename"]], "\\."), `[`, character(1), 2)
   files_df <- files_df[grepl("expanded", files_df[["filename"]]), ]
   files_df$label <- dplyr::case_when(
-    grepl("(^te?mp)|(zip$)", files_df[["filename"]]) ~ "drop",
+    # grepl("(^te?mp)|(zip$)", files_df[["filename"]]) ~ "drop",
     grepl("4yr", files_df[["filename"]]) ~ "4yr",
     grepl("historic", files_df[["filename"]]) ~ "historic",
     grepl("results_current", files_df[["filename"]]) ~ "2yr",
     TRUE ~ "drop")
   files_df <- files_df[files_df$label != "drop", ]
+  files_df$filetype <- tools::file_ext(files_df$filename)
   files_df$server_date <- as.POSIXct(files_df$server_date, format = "%Y-%m-%d %R")
   files_df
 }
@@ -203,14 +205,15 @@ remove_zero_length <- function(l) {
   Filter(Negate(is.null), out)
 }
 
-get_file_metadata <- function(which) {
+get_file_metadata <- function(which, filetype = c("csv", "zip")) {
   choices <- c("2yr", "historic", "4yr")
   if (!which %in% choices) {
     stop("'which' needs to be one of: ", paste(choices, collapse = ", "),
       call. = FALSE)
   }
+  filetype <- match.arg(filetype)
 
   all_meta <- get_databc_metadata()
 
-  all_meta[all_meta$label == which, ]
+  all_meta[all_meta$label == which & all_meta$filetype == filetype, ]
 }

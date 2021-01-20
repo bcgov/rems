@@ -32,7 +32,8 @@ Imports:
     utils,
     xml2 (>= 1.0.0),
     glue (>= 1.4),
-    lubridate
+    lubridate,
+    zip
 Suggests: 
     testthat
 Encoding: UTF-8
