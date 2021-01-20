@@ -145,23 +145,13 @@ update_cache <- function(which, n, cols) {
 #' @importFrom httr GET
 #' @importFrom stringr str_extract
 download_ems_data <- function(url) {
-  ext <- stringr::str_extract(url, "\\.(csv|zip)$")
+  ext <- tools::file_ext(url)
   tfile <- tempfile(fileext = ext)
   res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
   cat("\n")
   httr::stop_for_status(res)
 
-  if (ext == ".zip") {
-    zipfile <- res$request$output$path
-    exdir <- tempdir()
-    files_in_zip <- zip::zip_list(zipfile)$filename
-    message("Unzipping...")
-    zip::unzip(zipfile, exdir = exdir)
-    ret <- file.path(exdir, files_in_zip)
-    unlink(zipfile)
-  } else if (ext == ".csv") {
-    ret <- res$request$output$path
-  }
+  ret <- handle_zip(ret)
   ret
   # res$request$output$path
 }
@@ -213,4 +203,21 @@ get_file_metadata <- function(which, filetype = c("csv", "zip")) {
   all_meta <- get_databc_metadata()
 
   all_meta[all_meta$label == which & all_meta$filetype == filetype, ]
+}
+
+handle_zip <- function(x) {
+  ext <- tools::file_ext(x)
+
+  stopifnot(ext %in% c("csv", "zip"))
+
+  if (ext == "csv") return(x)
+
+  zipfile <- x
+  exdir <- tempdir()
+  files_in_zip <- zip::zip_list(zipfile)$filename
+  message("Unzipping...")
+  zip::unzip(zipfile, exdir = exdir)
+  on.exit(unlink(zipfile), add = TRUE)
+
+  file.path(exdir, files_in_zip)
 }

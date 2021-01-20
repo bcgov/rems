@@ -290,9 +290,3 @@ add_sql_index <- function(con, tbl = "historic", colname,
   DBI::dbExecute(con, sql_str)
   invisible(NULL)
 }
-
-handle_zip <- function(x) {
-  if (!grepl("\\.zip$", x)) return(x)
-
-  unzip(x, )
-}
