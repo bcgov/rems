@@ -153,7 +153,6 @@ download_ems_data <- function(url) {
 
   ret <- handle_zip(ret)
   ret
-  # res$request$output$path
 }
 
 #' @importFrom xml2 read_html as_list
@@ -185,11 +184,6 @@ get_databc_metadata <- function() {
   files_df$filetype <- tools::file_ext(files_df$filename)
   files_df$server_date <- as.POSIXct(files_df$server_date, format = "%Y-%m-%d %R")
   files_df
-}
-
-remove_zero_length <- function(l) {
-  out <- lapply(l, function(x) if (length(x) > 0) x)
-  Filter(Negate(is.null), out)
 }
 
 get_file_metadata <- function(which, filetype = c("csv", "zip")) {
