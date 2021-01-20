@@ -97,7 +97,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
     cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
-    if (cache_date < file_meta[["server_date"]]) {
+    if (cache_date < unique(file_meta[["server_date"]])) {
       ans <- readline(paste0("Your version of ", which, " is dated ",
         cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
@@ -124,6 +124,10 @@ rems_data_from_cache <- function(which, cols) {
 
 update_cache <- function(which, n, cols) {
   file_meta <- get_file_metadata(which)
+
+  # If both zip and csv keep just zip
+  if(length(file_meta) > 1) file_meta <- file_meta[grepl("zip$", file_meta$filename), ]
+
   url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
     "' EMS data from BC Data Catalogue (url: ", url, ")")
