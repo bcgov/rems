@@ -71,12 +71,10 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
 
   message("Successfully downloaded and stored the historic EMS data.\n",
     "You can access and subset it with the 'read_historic_data' function, or
-          attach it as a remote data.frame with 'attach_historic_data()'
-          which you can then query with dplyr")
+        attach it as a remote data.frame with 'connect_historic_db()' and
+        'attach_historic_data()' which you can then query with dplyr")
   invisible(db_path)
 }
-
-
 
 #' Read historic ems data into R.
 #'
