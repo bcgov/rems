@@ -146,13 +146,11 @@ update_cache <- function(which, n, cols) {
 #' @importFrom stringr str_extract
 download_ems_data <- function(url) {
   ext <- tools::file_ext(url)
-  tfile <- tempfile(fileext = ext)
+  tfile <- tempfile(fileext = paste0(".", ext))
   res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
-  cat("\n")
+  cat_if_interactive("\n")
   httr::stop_for_status(res)
-
-  ret <- handle_zip(ret)
-  ret
+  handle_zip(res$request$output$path)
 }
 
 #' @importFrom xml2 read_html as_list
@@ -180,6 +178,7 @@ get_databc_metadata <- function() {
     grepl("historic", files_df[["filename"]]) ~ "historic",
     grepl("results_current", files_df[["filename"]]) ~ "2yr",
     TRUE ~ "drop")
+
   files_df <- files_df[files_df$label != "drop", ]
   files_df$filetype <- tools::file_ext(files_df$filename)
   files_df$server_date <- as.POSIXct(files_df$server_date, format = "%Y-%m-%d %R")
