@@ -227,12 +227,12 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL, param_code = 
   }
 
   if (!is.null(from_date)) {
-    from_date <- format(as.POSIXct(from_date, tz = ems_tz()), "%Y/%m/%d")
-    from_date_qry <- sprintf("COLLECTION_START >= '%s'", from_date)
+    from_date <- format(as.Date(from_date), "%Y/%m/%d")
+    from_date_qry <- sprintf("COLLECTION_START >= strptime('%s', '%%Y/%%m/%%d')", from_date)
   }
   if (!is.null(to_date)) {
-    to_date <- format(as.POSIXct(to_date, tz = ems_tz()), "%Y/%m/%d")
-    to_date_qry <- sprintf("COLLECTION_START <= '%s' ", to_date)
+    to_date <- format(as.Date(to_date), "%Y/%m/%d")
+    to_date_qry <- sprintf("COLLECTION_START <= strptime('%s', '%%Y/%%m/%%d')", to_date)
   }
   where_clause_vec <- c(emsid_qry, parameter_qry, param_cd_qry, from_date_qry, to_date_qry)
   where_clause_vec <- where_clause_vec[!is.null(where_clause_vec)]
