@@ -2,6 +2,8 @@
 
 export(attach_historic_data)
 export(bind_ems_data)
+export(connect_historic_db)
+export(disconnect_historic_db)
 export(download_historic_data)
 export(ems_posix_numeric)
 export(filter_ems_data)

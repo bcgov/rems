@@ -26,15 +26,16 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom RSQLite SQLite
 #'
-download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
+download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, n = 1e6, httr_config = list()) {
 
-  sqlite_gh_date <- get_sqlite_gh_date() # Get from gh release
+  file_meta <- get_file_metadata("historic", "zip")
   cache_date <- get_cache_date("historic")
 
   db_path <- write_db_path()
+  db_exists <- file.exists(db_path)
 
-  if (file.exists(db_path) && !force) {
-    if (cache_date >= sqlite_gh_date) {
+  if (db_exists && !force) {
+    if (cache_date >= file_meta[["server_date"]]) {
       message("It appears that you already have the most up-to date version of the",
         " historic ems data.")
       return(invisible(db_path))
@@ -53,30 +54,25 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   }
 
   message("This is going to take a while...")
-  zipfile <- tempfile(fileext = ".zip")
-  on.exit(unlink(zipfile))
 
   message("Downloading latest 'historic' EMS data")
-  download_file_from_release("ems_historic.sqlite.zip", zipfile,
-    httr_config = httr_config)
+  url <- paste0(base_url(), file_meta[["filename"]])
+  csv_file <- download_ems_data(url)
+  on.exit(unlink(csv_file), add = TRUE)
 
-  exdir <- dirname(db_path)
-  files_in_zip <- zip::zip_list(zipfile)$filename
-  sqlite_filename <- files_in_zip[grepl("ems_historic.*\\.sqlite$", files_in_zip)]
-
-  zip::unzip(zipfile, files = sqlite_filename, junkpaths = TRUE, exdir = exdir)
-  extracted_sqlite <- file.path(exdir, sqlite_filename)
-
-  if (!extracted_sqlite == db_path) {
-    file.rename(extracted_sqlite, db_path)
+  if (db_exists) {
+    unlink(dirname(db_path), recursive = TRUE)
+    write_db_path()
   }
 
-  set_cache_date("historic", sqlite_gh_date)
+  save_historic_data(csv_file, db_path, n)
+
+  set_cache_date("historic", file_meta[["server_date"]])
 
   message("Successfully downloaded and stored the historic EMS data.\n",
     "You can access and subset it with the 'read_historic_data' function, or
-          attach it as a remote data.frame with 'attach_historic_data()'
-          which you can then query with dplyr")
+        attach it as a remote data.frame with 'connect_historic_db()' and
+        'attach_historic_data()' which you can then query with dplyr")
   invisible(db_path)
 }
 
@@ -149,40 +145,74 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
 }
 
-#' Load the historic ems sqlite database as a tbl
+#' Create a database connection to the historic database
+#'
+#' This creates a DBI connection to the SQLite database
+#' that holds the historic data table. You should call
+#' [disconnect_historic_db()] when you are finished
+#' querying the database.
+#'
+#' See [attach_historic_data()] for examples.
+#'
+#' @param db_path path to the historic SQLite database. In most cases
+#'  it does not need to be specified as it uses the default location
+#'  set by `rems`.
+#'
+#' @seealso [DBI::dbConnect()]
+#' @return a DBIConnection object for communicating with the SQLite database
+#' @export
+connect_historic_db <- function(db_path = NULL) {
+  if (is.null(db_path)) db_path <- write_db_path()
+  if (!file.exists(db_path)) {
+    stop("Please download the historic data with\n",
+         " the 'download_historic_data' function.", call. = FALSE)
+  }
+  message("Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.")
+  db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+}
+
+#' Close the connection to the historic database
+#'
+#' @param con DBI connection object, most likely created by [connect_historic_db()].
+#'
+#' @return `TRUE`, invisibly
+#' @export
+disconnect_historic_db <- function(con) {
+  DBI::dbDisconnect(con, shutdown = TRUE)
+}
+
+#' Load the historic ems database as a tbl
 #'
 #' You can then use dplyr verbs such as \code{\link[dplyr]{filter}},
 #' \code{\link[dplyr]{select}}, \code{\link[dplyr]{summarize}}, etc. For basic
 #' importing of historic data based on \code{ems_id}, \code{date}, and \code{parameter},
 #' you can use the function \code{\link{read_historic_data}}
 #'
-#' @return A dplyr connection to the sqlite database. See \code{\link[dplyr]{src_sqlite}} for more.
+#' @param con DBI connection object, most likely created by [connect_historic_db()].
 #'
-#' @details Note that the dates are stored in the sqlite database as integers.
-#' This number is the number of seconds since midnight on January 1, 1970, PST. Convert the dates
-#' to a \code{POSIXct} object with \code{as.POSIXct(x, origin = "1970/01/01", tz = "Etc/GMT+8")}.
-#' If you use \code{\link{read_historic_data}}, this will be done for you.
+#' @return A dplyr connection to the SQLite database. See \code{\link[dplyr]{tbl}} for more.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#' foo <- attach_historic_data()
-#' bar <- foo %>%
-#'   group_by(EMS_ID) %>%
-#'   summarise(max_date = max(COLLECTION_START))
-#' baz <- collect(bar)
-#' baz$max_date <- as.POSIXct(baz$max_date, origin = "1970/01/01", tz = "Etc/GMT+8")
+#'
+#' con <- connect_historic_db()
+#'
+#' hist_tbl <- attach_historic_data(con)
+#' result <- hist_tbl %>%
+#'  group_by(EMS_ID) %>%
+#'  summarise(max_date = max(COLLECTION_START))
+#' collect(result)
+#'
+#' disconnect_historic_db(con)
 #' }
-attach_historic_data <- function() {
-  db_path <- write_db_path()
-  if (!file.exists(db_path)) {
-    stop("Please download the historic data with\n",
-      " the 'download_historic_data' function.", call. = FALSE)
+attach_historic_data <- function(con = NULL) {
+  if (is.null(con)) {
+    stop("You must specificy a database connection 'con', created by calling 'connect_historic_db()'.")
   }
-  db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-  tbl <- dplyr::tbl(db, "historic")
+  tbl <- dplyr::tbl(con, "historic")
   tbl
 }
 

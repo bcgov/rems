@@ -146,22 +146,12 @@ update_cache <- function(which, n, cols) {
 #' @importFrom httr GET
 #' @importFrom stringr str_extract
 download_ems_data <- function(url) {
-  ext <- stringr::str_extract(url, "\\.(csv|zip)$")
-  tfile <- tempfile(fileext = ext)
+  ext <- tools::file_ext(url)
+  tfile <- tempfile(fileext = paste0(".", ext))
   res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
-  cat("\n")
+  cat_if_interactive("\n")
   httr::stop_for_status(res)
-
-  if (ext == ".zip") {
-    exdir <- tempdir()
-    zipfile <- res$request$output$path
-    files_in_zip <- zip::zip_list(zipfile)$filename
-    zip::unzip(zipfile, exdir = exdir)
-    ret <- file.path(exdir, files_in_zip)
-  } else if (ext == ".csv") {
-    ret <- res$request$output$path
-  }
-  ret
+  handle_zip(res$request$output$path)
 }
 
 #' @importFrom xml2 read_html as_list
@@ -184,29 +174,44 @@ get_databc_metadata <- function() {
 
   files_df <- files_df[grepl("expanded", files_df[["filename"]]), ]
   files_df$label <- dplyr::case_when(
-    grepl("^te?mp", files_df[["filename"]]) ~ "drop",
+    # grepl("(^te?mp)|(zip$)", files_df[["filename"]]) ~ "drop",
     grepl("4yr", files_df[["filename"]]) ~ "4yr",
     grepl("historic", files_df[["filename"]]) ~ "historic",
     grepl("results_current", files_df[["filename"]]) ~ "2yr",
     TRUE ~ "drop")
+
   files_df <- files_df[files_df$label != "drop", ]
+  files_df$filetype <- tools::file_ext(files_df$filename)
   files_df$server_date <- as.POSIXct(files_df$server_date, format = "%Y-%m-%d %R")
   files_df
 }
 
-remove_zero_length <- function(l) {
-  out <- lapply(l, function(x) if (length(x) > 0) x)
-  Filter(Negate(is.null), out)
-}
-
-get_file_metadata <- function(which) {
+get_file_metadata <- function(which, filetype = c("csv", "zip")) {
   choices <- c("2yr", "historic", "4yr")
   if (!which %in% choices) {
     stop("'which' needs to be one of: ", paste(choices, collapse = ", "),
-      call. = FALSE)
+         call. = FALSE)
   }
+  filetype <- match.arg(filetype)
 
   all_meta <- get_databc_metadata()
 
-  all_meta[all_meta$label == which, ]
+  all_meta[all_meta$label == which & all_meta$filetype == filetype, ]
+}
+
+handle_zip <- function(x) {
+  ext <- tools::file_ext(x)
+
+  stopifnot(ext %in% c("csv", "zip"))
+
+  if (ext == "csv") return(x)
+
+  zipfile <- x
+  exdir <- tempdir()
+  files_in_zip <- zip::zip_list(zipfile)$filename
+  message("Unzipping...")
+  zip::unzip(zipfile, exdir = exdir)
+  on.exit(unlink(zipfile), add = TRUE)
+
+  file.path(exdir, files_in_zip)
 }
