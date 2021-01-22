@@ -23,6 +23,10 @@ hist_tbl %>%
   mutate(COLLECTION_START = set_ems_tz(COLLECTION_START)) # set timezone here
 ```
 
+* Removed `ems_posix_ct()` function
+
+
+
 # rems 0.5.2
 
 * removed internal use of `filter_` to avoid dplyr deprecation warnings. (#48)
