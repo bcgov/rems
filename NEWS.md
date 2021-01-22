@@ -2,6 +2,27 @@
 
 * Switched from using SQLite to [DuckDB](https://duckdb.org/) as a backend for the historic database. This allows fast creation of the database directly from the csv file downloaded from the [B.C. Data Catalogue](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659) (#52).
 
+### Breaking changes
+
+* When using `attach_historic_data()`, it is now necessary to call `connect_historic_db()` first, and finish with `disconnect_historic_db()`:
+
+```r
+con <- connect_historic_db()
+hist_tbl <- attach_historic_data(con)
+## Do your work with hist_tbl
+disconnect_historic_db()
+```
+
+* The historic data now has its date/time columns stored in the "UTC" timezone - There is a shortcut function to help with this: `set_ems_tz()`
+
+```r
+hist_tbl %>%
+  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
+  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total")) %>%
+  collect(filtered_historic) %>%
+  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START)) # set timezone here
+```
+
 # rems 0.5.2
 
 * removed internal use of `filter_` to avoid dplyr deprecation warnings. (#48)
