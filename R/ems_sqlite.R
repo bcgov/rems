@@ -17,6 +17,10 @@
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
+#' @param n Number of records to be written at a time to the
+#' sqlite database. Default is `1e6` (one million). Try
+#' lowering this if your computer runs out of memory while
+#' creating the database.
 #' @param httr_config configuration settings passed on to [httr::GET()],
 #' such as [httr::timeout()]
 #'
