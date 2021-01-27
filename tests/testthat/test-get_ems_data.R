@@ -8,8 +8,8 @@ test_that("reading metadata works", {
   expect_equal(lapply(ret, class),
     list(filename = "character",
       server_date = c("POSIXct", "POSIXt"),
-      label = "character"),
-    filetype = "character")
+      label = "character",
+    filetype = "character"))
   expect_false(any(duplicated(ret$filename)))
 
   # Test extracting for each
