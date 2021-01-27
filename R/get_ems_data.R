@@ -125,9 +125,6 @@ rems_data_from_cache <- function(which, cols) {
 update_cache <- function(which, n, cols) {
   file_meta <- get_file_metadata(which)
 
-  # If both zip and csv keep just zip
-  if(length(file_meta) > 1) file_meta <- file_meta[grepl("zip$", file_meta$filename), ]
-
   url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
     "' EMS data from BC Data Catalogue (url: ", url, ")")
