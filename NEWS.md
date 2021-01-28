@@ -5,23 +5,19 @@ update of the sqlite historic dataset in `rems`, but it means that it must be re
 
 ## Breaking changes:
 
-* When using `attach_historic_data()`, it is now necessary to call `connect_historic_db()` first, and finish with `disconnect_historic_db()`:
+* When using `attach_historic_data()`, it is now necessary to call `connect_historic_db()` first, and finish with `disconnect_historic_db()`. For example:
 
 ```r
 con <- connect_historic_db()
 hist_tbl <- attach_historic_data(con)
-## Do your work with hist_tbl
-disconnect_historic_db()
-```
 
-* The historic data now has its date/time columns stored in the "UTC" timezone - There is a shortcut function to help with this: `set_ems_tz()`
-
-```r
 hist_tbl %>%
   select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
   filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total")) %>%
-  collect(filtered_historic) %>%
-  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START)) # set timezone here
+  collect() %>%
+  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+
+disconnect_historic_db()
 ```
 
 # rems 0.5.2
