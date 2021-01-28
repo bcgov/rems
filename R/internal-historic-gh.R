@@ -143,9 +143,9 @@ save_historic_data <- function(csv_file, db_path, n) {
   tbl_name <- "historic"
 
   i <- 1
-  cat("|")
+  cat_if_interactive("|")
   while (nrow(data) == n) { # if not reached the end of line
-    cat("=")
+    cat_if_interactive("=")
     skip <- i * n + 1
     if (i == 1) {
       DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
@@ -162,24 +162,25 @@ save_historic_data <- function(csv_file, db_path, n) {
     DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
   }
 
-  cat("=")
+  message("Creating indexes")
+  cat_if_interactive("|=")
   add_sql_index(con, colname = "EMS_ID")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "COLLECTION_START")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "COLLECTION_END")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "LOCATION_PURPOSE")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "SAMPLE_CLASS")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "SAMPLE_STATE")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "PARAMETER")
-  cat("=")
+  cat_if_interactive("=")
   add_sql_index(con, colname = "PARAMETER_CODE")
 
-  cat("| 100%\n")
+  cat_if_interactive("| 100%\n")
 
   invisible(TRUE)
 }
