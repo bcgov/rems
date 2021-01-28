@@ -13,11 +13,11 @@ hist_tbl <- attach_historic_data(con)
 
 hist_tbl %>%
   select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
-  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total")) %>%
+  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total") %>%
   collect() %>%
   mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
 
-disconnect_historic_db()
+disconnect_historic_db(con)
 ```
 
 # rems 0.5.2
