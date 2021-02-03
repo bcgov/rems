@@ -109,15 +109,16 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
   db_path <- write_db_path()
   exit_fun <- FALSE
+
   if (!file.exists(db_path)) {
     exit_fun <- TRUE
   }
 
   ## Check for missing or outdated historic database
   if (check_db) {
-    gh_date <- get_sqlite_gh_date()
+    server_date <- get_file_metadata("historic", "zip")[["server_date"]]
     cache_date <- get_cache_date("historic")
-    if (cache_date < gh_date && file.exists(db_path)) {
+    if (cache_date < server_date && file.exists(db_path)) {
       ans <- readline(paste("Your version of the historic dataset is out of date.",
         "Would you like to continue with the version you have (y/n)? ",
         sep = "\n"))
@@ -350,3 +351,4 @@ save_historic_data <- function(csv_file, db_path, n) {
 
   invisible(TRUE)
 }
+
