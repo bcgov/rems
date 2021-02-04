@@ -1,3 +1,8 @@
+# rems 0.6.1
+
+## Bug fixes
+* Fixed a bug where `read_historic_data()` was looking for the date of the latest historic data on GitHub (#56)
+
 # rems 0.6.0
 
 Historic data are now being updated daily in the BC Data Catalogue. This release allows the daily 
