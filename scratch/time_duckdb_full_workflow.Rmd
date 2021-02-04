@@ -1,6 +1,15 @@
+---
+title: "Test timing with duckdb backend"
+date: "`r Sys.time()`"
+output: github_document
+---
+
+
+```{r}
 library(tictoc)
 library(rems)
 library(dplyr)
+packageVersion("duckdb") # 0.2.5, unreleased commit 57ed79e8ff17eedde0483509d4202e9e716e16ab
 
 start <- tic("download")
 download_historic_data(TRUE, FALSE)
@@ -26,3 +35,4 @@ end <- toc()
 
 # Total time:
 end$toc - start
+```
