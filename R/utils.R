@@ -92,3 +92,52 @@ find_os <- function() {
 cat_if_interactive <- function(...) {
   if (interactive()) cat(...)
 }
+
+#' Standardize MDL
+#'
+#' @param data an ems data frame containing
+#'
+#' @return
+#' @export
+#'
+#' @examples
+standardize_mdl_units <- function(data) {
+  if (!all(c("UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT") %in% names(data))) {
+    stop("'data' must contain columns 'UNIT', 'METHOD_DETECTION_LIMIT', 'MDL_UNIT'")
+  }
+  rows_to_fix <- which(data[["UNIT"]] != data[["MDL_UNIT"]])
+
+  if (!any(length(rows_to_fix))) return(data)
+
+  for (i in rows_to_fix) {
+    val <- data[["METHOD_DETECTION_LIMIT"]][i]
+    from_unit <- data[["MDL_UNIT"]][i]
+    to_unit <- data[["UNIT"]][i]
+    new_val <- try(
+      convert_unit_values(x = val, from = from_unit, to = to_unit),
+      silent = TRUE
+    )
+
+    if (inherits(new_val, "try-error") || !is.numeric(new_val)) {
+      warning("Could not convert from '", from_unit, "' to '", to_unit, "' on row ", i, call. = FALSE)
+    } else {
+      data[["MDL_UNIT"]][i] <- to_unit
+      data[["METHOD_DETECTION_LIMIT"]][i] <- new_val
+    }
+  }
+  data
+}
+
+convert_unit_values <- function(x, from, to) {
+  to <- clean_unit(to)
+  from <- clean_unit(from)
+  x <- units::set_units(x, from, mode = "standard")
+  as.numeric(units::set_units(x, to, mode = "standard"))
+}
+
+clean_unit <- function(x) {
+  x[x == "N/A"] <- NA_character_
+  # Remove trailing A, W, wet etc. as well as percent type (V/V, W/W, Moratlity)
+  # Assuming they are not imporant in the unit conversion??
+  gsub("\\s*(W|wet|A|\\(W/W\\)|\\(V/V\\)|\\(Mortality\\))\\s*$", "", x)
+}

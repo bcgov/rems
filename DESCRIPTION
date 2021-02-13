@@ -31,7 +31,8 @@ Imports:
     tibble (>= 1.2),
     utils,
     xml2 (>= 1.0.0),
-    zip (>= 2.0.4)
+    zip (>= 2.0.4),
+    units
 Suggests: 
     bit64,
     devtools,
