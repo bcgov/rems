@@ -95,24 +95,27 @@ cat_if_interactive <- function(...) {
 
 #' Standardize MDL
 #'
-#' @param data an ems data frame containing
+#' @param data an ems data frame containing at least the
+#' columns `"UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT"`
 #'
-#' @return
+#' @return data frame with MDLs standardized to UNITs (where possible)
 #' @export
-#'
-#' @examples
 standardize_mdl_units <- function(data) {
   if (!all(c("UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT") %in% names(data))) {
     stop("'data' must contain columns 'UNIT', 'METHOD_DETECTION_LIMIT', 'MDL_UNIT'")
   }
+
   rows_to_fix <- which(data[["UNIT"]] != data[["MDL_UNIT"]])
 
   if (!any(length(rows_to_fix))) return(data)
+
+  new_vals <- rep(NA_real_, nrow(data))
 
   for (i in rows_to_fix) {
     val <- data[["METHOD_DETECTION_LIMIT"]][i]
     from_unit <- data[["MDL_UNIT"]][i]
     to_unit <- data[["UNIT"]][i]
+
     new_val <- try(
       convert_unit_values(x = val, from = from_unit, to = to_unit),
       silent = TRUE
@@ -121,18 +124,22 @@ standardize_mdl_units <- function(data) {
     if (inherits(new_val, "try-error") || !is.numeric(new_val)) {
       warning("Could not convert from '", from_unit, "' to '", to_unit, "' on row ", i, call. = FALSE)
     } else {
-      data[["MDL_UNIT"]][i] <- to_unit
-      data[["METHOD_DETECTION_LIMIT"]][i] <- new_val
+      new_vals[i] <- new_val
     }
   }
+
+  fixed <- !is.na(new_vals)
+  data[["METHOD_DETECTION_LIMIT"]][fixed] <- new_vals[fixed]
+  data[["MDL_UNIT"]][fixed] <- data[["UNIT"]][fixed]
   data
 }
 
 convert_unit_values <- function(x, from, to) {
   to <- clean_unit(to)
   from <- clean_unit(from)
-  x <- units::set_units(x, from, mode = "standard")
-  as.numeric(units::set_units(x, to, mode = "standard"))
+  units(x) <- from
+  units(x) <- to
+  as.numeric(x)
 }
 
 clean_unit <- function(x) {
