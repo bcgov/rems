@@ -99,47 +99,62 @@ cat_if_interactive <- function(...) {
 #' columns `"UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT"`
 #'
 #' @return data frame with MDLs standardized to UNITs (where possible)
+#' @importFrom rlang .data
 #' @export
 standardize_mdl_units <- function(data) {
   if (!all(c("UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT") %in% names(data))) {
     stop("'data' must contain columns 'UNIT', 'METHOD_DETECTION_LIMIT', 'MDL_UNIT'")
   }
 
-  rows_to_fix <- which(data[["UNIT"]] != data[["MDL_UNIT"]])
+  if (!any(data[["UNIT"]] != data[["MDL_UNIT"]])) return(data)
 
-  if (!any(length(rows_to_fix))) return(data)
+  data <- dplyr::group_by(data, .data$MDL_UNIT, .data$UNIT)
+  data <- dplyr::mutate(
+    data,
+    converted_val = convert_unit_values(.data$METHOD_DETECTION_LIMIT,
+                                  .data$MDL_UNIT[1],
+                                  .data$UNIT[1])
+  )
 
-  new_vals <- rep(NA_real_, nrow(data))
-
-  for (i in rows_to_fix) {
-    val <- data[["METHOD_DETECTION_LIMIT"]][i]
-    from_unit <- data[["MDL_UNIT"]][i]
-    to_unit <- data[["UNIT"]][i]
-
-    new_val <- try(
-      convert_unit_values(x = val, from = from_unit, to = to_unit),
-      silent = TRUE
-    )
-
-    if (inherits(new_val, "try-error") || !is.numeric(new_val)) {
-      warning("Could not convert from '", from_unit, "' to '", to_unit, "' on row ", i, call. = FALSE)
-    } else {
-      new_vals[i] <- new_val
-    }
-  }
-
-  fixed <- !is.na(new_vals)
-  data[["METHOD_DETECTION_LIMIT"]][fixed] <- new_vals[fixed]
+  fixed <- !is.na(data[["converted_val"]])
+  # update MDL and MDL_UNIT for those that were converted
+  # and remove the temporary converted_val column
+  data[["METHOD_DETECTION_LIMIT"]][fixed] <- data[["converted_val"]][fixed]
   data[["MDL_UNIT"]][fixed] <- data[["UNIT"]][fixed]
+  data[["converted_val"]] <- NULL
+
   data
 }
 
 convert_unit_values <- function(x, from, to) {
-  to <- clean_unit(to)
-  from <- clean_unit(from)
-  units(x) <- from
-  units(x) <- to
-  as.numeric(x)
+  stopifnot(length(unique(from)) == 1)
+  stopifnot(length(unique(to)) == 1)
+
+  clean_to <- clean_unit(to)
+  clean_from <- clean_unit(from)
+
+  # only return a non-NA value for those that are converted
+  if (
+    is.na(x) ||
+    any(is.na(c(clean_from, clean_to))) ||
+    clean_from == clean_to
+  ) {
+    return(NA_real_)
+  }
+
+  ret <- tryCatch(
+    units::set_units(
+      units::set_units(x, clean_from, mode = "standard"),
+      clean_to, mode = "standard"
+    ),
+    error = function(e) {
+      warning("Could not convert ", from, " to ", to,
+              call. = FALSE)
+      NA_real_
+    }
+  )
+
+  as.numeric(ret)
 }
 
 clean_unit <- function(x) {
