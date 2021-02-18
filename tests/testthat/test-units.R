@@ -43,7 +43,7 @@ test_that("standardize_mdl_unit works", {
 
   expect_equal(
     out$MDL_UNIT,
-    c("mg/L", "mg/L", "ug/g", "g/m2", "m3/d", "ug/m3",
+    c("ug/L", "mg/L", "ug/g", "g/m2", "m3/d", "ug/m3",
       "t/d", "m3/min A", "m3/d", "mg/L", "mg/L", "ppm (S)")
   )
 })
