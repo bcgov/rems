@@ -1,17 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.6.0
+# rems 0.6.1.9000
 
 <!-- badges: start -->
 
-[![Codecov test
-coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
-[![R build
-status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
+[![R build status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 <!-- badges: end -->
 
@@ -53,12 +50,9 @@ data):
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
-#> Reading data from file...
-#> Caching data on disk...
-#> Loading data...
+#> Fetching data from cache...
 nrow(two_year)
-#> [1] 874045
+#> [1] 951551
 head(two_year)
 #> # A tibble: 6 x 23
 #>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
@@ -167,7 +161,7 @@ glimpse(filtered_historic2)
 #> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "0121580…
 #> $ PARAMETER        <chr> "Turbidity", "Aluminum Total", "Turbidity", "Turbidi…
 #> $ COLLECTION_START <dttm> 2010-04-12 08:50:00, 2010-08-23 09:12:00, 2016-08-0…
-#> $ RESULT           <dbl> 0.900000, 0.013800, 0.320000, 0.620000, 1.600000, 0.…
+#> $ RESULT           <dbl> 0.900000, 0.013800, 0.320000, 0.300000, 0.700000, 0.…
 ```
 
 You can combine the previously imported historic and two\_year data sets
@@ -175,8 +169,61 @@ using `bind_ems_data`:
 
 ``` r
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
-nrow(all_data)
-#> [1] 2481
+head(all_data)
+#> # A tibble: 6 x 23
+#>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
+#>   <chr>  <chr>               <dbl>     <dbl> <chr>         <dttm>             
+#> 1 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2010-04-12 08:50:00
+#> 2 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2010-08-23 09:12:00
+#> 3 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2010-07-20 09:47:00
+#> 4 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2009-09-29 09:25:00
+#> 5 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2003-02-06 13:30:00
+#> 6 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2007-11-20 09:15:00
+#> # … with 17 more variables: LOCATION_PURPOSE <chr>, PERMIT <chr>,
+#> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
+#> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
+#> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
+#> #   METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>, QA_INDEX_CODE <chr>,
+#> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+```
+
+## Units
+
+There are many cases in EMS data where the unit of the `RESULT` (in the
+`UNIT` column) is different from that of `METHOD_DETECTION_LIMIT`
+(`MDL_UNIT` column). The `standardize_mdl_units()` function converts the
+`METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`, and
+updates the `MDL_UNIT` column accordingly:
+
+``` r
+# look at data with mismatched units:
+filter(all_data, UNIT != MDL_UNIT) %>% 
+  select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
+  head()
+#> # A tibble: 6 x 4
+#>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
+#>      <dbl> <chr>                  <dbl> <chr>   
+#> 1 0.0138   mg/L                   0.5   ug/L    
+#> 2 0.000002 mg/L                   0.001 ug/L    
+#> 3 0.00074  mg/L                   0.02  ug/L    
+#> 4 0.0947   mg/L                   0.2   ug/L    
+#> 5 0.00072  mg/L                   0.02  ug/L    
+#> 6 0.00068  mg/L                   0.02  ug/L
+
+all_data <- standardize_mdl_units(all_data)
+#> Successfully converted units in 1629 rows.
+
+# Check again
+filter(all_data, UNIT != MDL_UNIT) %>% 
+  select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
+  head()
+#> # A tibble: 3 x 4
+#> # Groups:   MDL_UNIT, UNIT [1]
+#>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
+#>      <dbl> <chr>                  <dbl> <chr>   
+#> 1 0.00065  mg/L                      NA ug/L    
+#> 2 0.000005 mg/L                      NA ug/L    
+#> 3 0.0122   mg/L                      NA ug/L
 ```
 
 For more advanced filtering, selecting, and summarizing, I recommend
@@ -192,7 +239,7 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
-![](fig/README-unnamed-chunk-11-1.png)<!-- -->
+![](fig/README-unnamed-chunk-12-1.png)<!-- -->
 
 When you are finished querying the historic database, you should close
 the database connection using `disconnect_historic_db()`:
