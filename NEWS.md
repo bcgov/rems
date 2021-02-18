@@ -1,5 +1,7 @@
 # rems (development version)
 
+* Added new helper function `standardize_mdl_units()` to detect when `MDL_UNIT` and `UNIT` are different, and convert `METHOD_DETECTION_LIMIT` to the same unit as `RESULT` (and updated the `MDL_UNIT` column accordingly). (https://github.com/bcgov/wqbc/issues/158, #57)
+
 # rems 0.6.1
 
 ## Bug fixes
