@@ -31,6 +31,9 @@ standardize_mdl_units <- function(data) {
   if (!any(data[["UNIT"]] != data[["MDL_UNIT"]])) return(data)
 
   data <- dplyr::group_by(data, .data$MDL_UNIT, .data$UNIT)
+
+  # TODO: figure out a way to suppress dplyr warnings.
+  # https://community.rstudio.com/t/suppress-custom-dplyr-warnings-while-allowing-other-warnings-through/96483
   data <- dplyr::mutate(
     data,
     converted_val = convert_unit_values(.data$METHOD_DETECTION_LIMIT,
