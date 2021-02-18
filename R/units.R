@@ -12,6 +12,11 @@
 
 #' Standardize MDL
 #'
+#' There are many cases in EMS where the RESULT UNIT is
+#' displayed differently than the METHOD_DETECTION_LIMIT.
+#' This function uses the `units` package to convert the
+#' `METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`.
+#'
 #' @param data an ems data frame containing at least the
 #' columns `"UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT"`
 #'
@@ -44,8 +49,8 @@ standardize_mdl_units <- function(data) {
 }
 
 convert_unit_values <- function(x, from, to) {
-  stopifnot(length(unique(from)) == 1)
-  stopifnot(length(unique(to)) == 1)
+  stopifnot(length(from) == 1)
+  stopifnot(length(to) == 1)
 
   clean_to <- clean_unit(to)
   clean_from <- clean_unit(from)
@@ -76,7 +81,7 @@ convert_unit_values <- function(x, from, to) {
 
 clean_unit <- function(x) {
   x[x == "N/A"] <- NA_character_
-  # Remove trailing A, W, wet etc. as well as percent type (V/V, W/W, Moratlity)
-  # Assuming they are not imporant in the unit conversion??
-  gsub("\\s*(W|wet|A|\\(W/W\\)|\\(V/V\\)|\\(Mortality\\))\\s*$", "", x)
+  # Remove trailing A, W, wet etc. as well as percent type (V/V, W/W, Mortality)
+  # Assuming they are not important in the unit conversion??
+  gsub("\\s*(W|wet|A|\\(?W/W\\)?|\\(?V/V\\)?|\\(?Mortality\\)?)\\s*$", "", x)
 }
