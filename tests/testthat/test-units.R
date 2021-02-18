@@ -6,9 +6,7 @@ test_that("convert_unit_values works", {
   expect_equal(convert_unit_values(1, "E3m3", "L"), 1e6)
 })
 
-test_that("convert_unit_values fails and warns correctly", {
-  expect_warning(convert_unit_values(1, "mg/L", "foo"))
-  expect_warning(convert_unit_values(1, "foo", "ug/L"))
+test_that("convert_unit_values fails correctly", {
   expect_equal(suppressWarnings(convert_unit_values(1, "mg/L", "foo")), NA_real_)
   expect_equal(suppressWarnings(convert_unit_values(1, "foo", "ug/L")), NA_real_)
   expect_error(convert_unit_values(1:2, c("mg/L", "mg/L"), c("ug/L", "ug/L")))
@@ -33,7 +31,7 @@ test_that("standardize_mdl_unit works", {
                  "ng/L", "mg/L", "ppm (S)"),
     METHOD_DETECTION_LIMIT = c(NA_real_, rep(1, 11)))
 
-  expect_warning(out <- standardize_mdl_units(testdata), "Could not convert")
+  expect_warning(out <- standardize_mdl_units(testdata), "not convertible")
 
   expect_equal(
     out$METHOD_DETECTION_LIMIT,

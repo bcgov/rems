@@ -14,7 +14,7 @@ columns \verb{"UNIT", "METHOD_DETECTION_LIMIT", "MDL_UNIT"}}
 data frame with MDLs standardized to UNITs (where possible)
 }
 \description{
-There are many cases in EMS where the RESULT UNIT is
+There are many cases in EMS where the UNIT of the RESULT is
 displayed differently than the METHOD_DETECTION_LIMIT.
 This function uses the \code{units} package to convert the
 \code{METHOD_DETECTION_LIMIT} values to the same unit as \code{RESULT}.

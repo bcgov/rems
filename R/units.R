@@ -12,7 +12,7 @@
 
 #' Standardize MDL
 #'
-#' There are many cases in EMS where the RESULT UNIT is
+#' There are many cases in EMS where the UNIT of the RESULT is
 #' displayed differently than the METHOD_DETECTION_LIMIT.
 #' This function uses the `units` package to convert the
 #' `METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`.
@@ -32,8 +32,25 @@ standardize_mdl_units <- function(data) {
 
   data <- dplyr::group_by(data, .data$MDL_UNIT, .data$UNIT)
 
-  # TODO: figure out a way to suppress dplyr warnings.
-  # https://community.rstudio.com/t/suppress-custom-dplyr-warnings-while-allowing-other-warnings-through/96483
+  unique_units <- unique(data[, c("UNIT", "MDL_UNIT"), drop = FALSE])
+
+  are_convertible <- mapply(
+    units:::ud_are_convertible,
+    unique_units$MDL_UNIT,
+    unique_units$UNIT,
+    USE.NAMES = FALSE
+  )
+
+  not_convertible <- unique_units[!are_convertible, , drop = FALSE]
+
+  if (nrow(not_convertible)) {
+    warning("There were ", nrow(not_convertible),
+            " unit combinations that were not convertible:\n    * ",
+            paste(not_convertible$MDL_UNIT, "to",
+                  not_convertible$UNIT, collapse = "\n    * "),
+            call. = FALSE)
+  }
+
   data <- dplyr::mutate(
     data,
     converted_val = convert_unit_values(.data$METHOD_DETECTION_LIMIT,
@@ -61,21 +78,15 @@ convert_unit_values <- function(x, from, to) {
   # only return a non-NA value for those that are converted
   if (
     any(is.na(c(clean_from, clean_to))) ||
-    clean_from == clean_to
+     clean_from == clean_to ||
+     !units:::ud_are_convertible(clean_from, clean_to)
   ) {
     return(NA_real_)
   }
 
-  ret <- tryCatch(
-    units::set_units(
-      units::set_units(x, clean_from, mode = "standard"),
-      clean_to, mode = "standard"
-    ),
-    error = function(e) {
-      warning("Could not convert ", from, " to ", to,
-              call. = FALSE)
-      NA_real_
-    }
+  ret <- units::set_units(
+    units::set_units(x, clean_from, mode = "standard"),
+    clean_to, mode = "standard"
   )
 
   as.numeric(ret)
