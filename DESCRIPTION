@@ -12,7 +12,7 @@ Authors@R:
              role = "cph"))
 Description: Download and parse data from B.C.'s Environmental
     Monitoring System.
-License: file LICENSE
+License: Apache License (>= 2)
 Depends:
     R (>= 3.4)
 Imports:
