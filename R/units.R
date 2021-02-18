@@ -57,7 +57,6 @@ convert_unit_values <- function(x, from, to) {
 
   # only return a non-NA value for those that are converted
   if (
-    is.na(x) ||
     any(is.na(c(clean_from, clean_to))) ||
     clean_from == clean_to
   ) {

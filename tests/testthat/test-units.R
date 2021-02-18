@@ -31,13 +31,13 @@ test_that("standardize_mdl_unit works", {
     MDL_UNIT = c("ug/L", "ug/L", "mg/kg", "mg/m2", "E3m3/d",
                  "mg/m3", "kg/d", "m3/s A", "m3/min W",
                  "ng/L", "mg/L", "ppm (S)"),
-    METHOD_DETECTION_LIMIT = rep(1, 12))
+    METHOD_DETECTION_LIMIT = c(NA_real_, rep(1, 11)))
 
   expect_warning(out <- standardize_mdl_units(testdata), "Could not convert")
 
   expect_equal(
     out$METHOD_DETECTION_LIMIT,
-    c(0.001, 0.001, 1, 0.001, 1000, 1000, 0.001, 60, 1440,
+    c(NA_real_, 0.001, 1, 0.001, 1000, 1000, 0.001, 60, 1440,
       1e-06, 1, 1)
   )
 
