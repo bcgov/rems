@@ -35,6 +35,7 @@ standardize_mdl_units <- function(data) {
   unique_units <- unique(data[, c("UNIT", "MDL_UNIT"), drop = FALSE])
 
   are_convertible <- mapply(
+    # TODO: when new units is released, this function will be exported so can drop the :::
     units:::ud_are_convertible,
     unique_units$MDL_UNIT,
     unique_units$UNIT,
@@ -59,6 +60,9 @@ standardize_mdl_units <- function(data) {
   )
 
   fixed <- !is.na(data[["converted_val"]])
+
+  message("Successfully converted units in ", sum(fixed), " rows.")
+
   # update MDL and MDL_UNIT for those that were converted
   # and remove the temporary converted_val column
   data[["METHOD_DETECTION_LIMIT"]][fixed] <- data[["converted_val"]][fixed]
@@ -79,6 +83,7 @@ convert_unit_values <- function(x, from, to) {
   if (
     any(is.na(c(clean_from, clean_to))) ||
      clean_from == clean_to ||
+    # TODO: when new units is released, this function will be exported so can drop the :::
      !units:::ud_are_convertible(clean_from, clean_to)
   ) {
     return(NA_real_)
