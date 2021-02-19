@@ -132,10 +132,26 @@ You can combine the previously imported historic and two_year data sets using `b
 
 ```{r}
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
-nrow(all_data)
+head(all_data)
 ```
 
-For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
+## Units
+
+There are many cases in EMS data where the unit of the `RESULT` (in the `UNIT` column) is different from that of `METHOD_DETECTION_LIMIT` (`MDL_UNIT` column). The `standardize_mdl_units()` function converts the `METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`, and updates the `MDL_UNIT` column accordingly:
+
+```{r}
+# look at data with mismatched units:
+filter(all_data, UNIT != MDL_UNIT) %>% 
+  select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
+  head()
+
+all_data <- standardize_mdl_units(all_data)
+
+# Check again
+filter(all_data, UNIT != MDL_UNIT) %>% 
+  select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
+  head()
+```
 
 Then you can plot your data with ggplot2:
 
