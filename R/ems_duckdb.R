@@ -17,6 +17,10 @@
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
+#' @param n Number of records to be written at a time to the
+#' sqlite database. Default is `1e6` (one million). Try
+#' lowering this if your computer runs out of memory while
+#' creating the database.
 #' @param httr_config configuration settings passed on to [httr::GET()],
 #' such as [httr::timeout()]
 #'
@@ -26,7 +30,7 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom duckdb duckdb
 #'
-download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
+download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, n = 1e6, httr_config = list()) {
 
   file_meta <- get_file_metadata("historic", "zip")
   cache_date <- get_cache_date("historic")
@@ -103,13 +107,14 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
   db_path <- write_db_path()
   exit_fun <- FALSE
+
   if (!file.exists(db_path)) {
     exit_fun <- TRUE
   }
 
   ## Check for missing or outdated historic database
   if (check_db) {
-    server_date <- get_file_metadata("historic")[["server_date"]]
+    server_date <- get_file_metadata("historic", "zip")[["server_date"]]
     cache_date <- get_cache_date("historic")
     if (cache_date < server_date && file.exists(db_path)) {
       ans <- readline(paste("Your version of the historic dataset is out of date.",
@@ -288,3 +293,59 @@ add_sql_index <- function(con, tbl = "historic", colname,
   DBI::dbExecute(con, sql_str)
   invisible(NULL)
 }
+
+save_historic_data <- function(csv_file, db_path, n) {
+  message("Saving historic data at ", db_path)
+  data <- read_ems_data(csv_file, n = n, cols = NULL, verbose = FALSE,
+                        progress = FALSE)
+  col_names <- col_specs("names_only")
+
+  # setting up sqlite
+
+  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
+  on.exit(DBI::dbDisconnect(con))
+  tbl_name <- "historic"
+
+  i <- 1
+  cat_if_interactive("|")
+  while (nrow(data) == n) { # if not reached the end of line
+    cat_if_interactive("=")
+    skip <- i * n + 1
+    if (i == 1) {
+      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
+                        field.types = col_specs(type = "sql"))
+    } else {
+      DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE) # write to sqlite
+    }
+    data <- read_ems_data(csv_file, n = n, cols = col_names, verbose = FALSE, skip = skip,
+                          col_names = col_names, progress = FALSE)
+    i <- i + 1
+  }
+
+  if (nrow(data) > 0) {
+    DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
+  }
+
+  message("Creating indexes")
+  cat_if_interactive("|=")
+  add_sql_index(con, colname = "EMS_ID")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "COLLECTION_START")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "COLLECTION_END")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "LOCATION_PURPOSE")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "SAMPLE_CLASS")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "SAMPLE_STATE")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "PARAMETER")
+  cat_if_interactive("=")
+  add_sql_index(con, colname = "PARAMETER_CODE")
+
+  cat_if_interactive("| 100%\n")
+
+  invisible(TRUE)
+}
+

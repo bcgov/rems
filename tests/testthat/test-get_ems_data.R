@@ -4,7 +4,7 @@ test_that("reading metadata works", {
   skip_on_cran()
   ret <- get_databc_metadata()
   expect_is(ret, "data.frame")
-  expect_equal(dim(ret), c(5, 4))
+  expect_equal(ncol(ret), 4)
   expect_equal(lapply(ret, class),
     list(filename = "character",
       server_date = c("POSIXct", "POSIXt"),

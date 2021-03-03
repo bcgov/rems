@@ -78,3 +78,7 @@ find_os <- function() {
     stop("Could not find oprating system")
   }
 }
+
+cat_if_interactive <- function(...) {
+  if (interactive()) cat(...)
+}

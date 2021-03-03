@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 [![R build status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
@@ -127,15 +127,30 @@ filtered_historic2 <- collect(filtered_historic2) %>%
 glimpse(filtered_historic2)
 ```
 
-
 You can combine the previously imported historic and two_year data sets using `bind_ems_data`:
 
 ```{r}
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
-nrow(all_data)
+head(all_data)
 ```
 
-For more advanced filtering, selecting, and summarizing, I recommend using the `dplyr` package.
+## Units
+
+There are many cases in EMS data where the unit of the `RESULT` (in the `UNIT` column) is different from that of `METHOD_DETECTION_LIMIT` (`MDL_UNIT` column). The `standardize_mdl_units()` function converts the `METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`, and updates the `MDL_UNIT` column accordingly:
+
+```{r}
+# look at data with mismatched units:
+filter(all_data, UNIT != MDL_UNIT) %>% 
+  select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
+  head()
+
+all_data <- standardize_mdl_units(all_data)
+
+# Check again
+filter(all_data, UNIT != MDL_UNIT) %>% 
+  select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
+  head()
+```
 
 Then you can plot your data with ggplot2:
 
@@ -153,7 +168,6 @@ database connection using `disconnect_historic_db()`:
 ```{r}
 disconnect_historic_db(hist_db_con)
 ```
-
 
 When the data are downloaded from the B.C. Data Catalogue, they are cached so that 
 you don't have to download it every time you want to use it. If there is newer 

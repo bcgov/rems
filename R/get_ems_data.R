@@ -189,7 +189,7 @@ get_file_metadata <- function(which, filetype = c("csv", "zip")) {
   choices <- c("2yr", "historic", "4yr")
   if (!which %in% choices) {
     stop("'which' needs to be one of: ", paste(choices, collapse = ", "),
-      call. = FALSE)
+         call. = FALSE)
   }
   filetype <- match.arg(filetype)
 
