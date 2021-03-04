@@ -29,6 +29,7 @@ col_spec <- function(subset = NULL) {
 
 wq_cols <- function() {
   c("EMS_ID",
+    "REQUISITION_ID",
     "MONITORING_LOCATION",
     "LATITUDE",
     "LONGITUDE",
