@@ -36,7 +36,7 @@ bind_ems_data <- function(...) {
 #' @return A filtered data frame
 #' @export
 filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL,
-                            from_date = NULL, to_date = NULL) {
+                            from_date = NULL, to_date = NULL, req_id=NULL) {
   # convert
   if (!is.null(from_date)) from_date <- ems_posixct(from_date)
   if (!is.null(to_date)) to_date <- ems_posixct(to_date)
@@ -50,6 +50,7 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
   if (!is.null(param_code)) x <- x[x$PARAMETER_CODE %in% param_code, , drop = FALSE]
   if (!is.null(from_date)) x <- x[x$COLLECTION_START >= from_date, , drop = FALSE]
   if (!is.null(to_date)) x <- x[x$COLLECTION_START <= to_date, , drop = FALSE]
+  if (!is.null(req_id)) x <- x[x$REQUISITION_ID %in% req_id, , drop = FALSE]
 
   x
 }
