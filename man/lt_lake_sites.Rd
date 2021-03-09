@@ -4,7 +4,7 @@
 \alias{lt_lake_sites}
 \title{Long-term lake monitoring sites}
 \usage{
-lt_lake_sites(which = c("all", "active", "inactive"))
+lt_lake_sites(which = c("active", "all", "inactive"))
 }
 \arguments{
 \item{which}{which sites do you want returned? One of \code{"all"} (default),
