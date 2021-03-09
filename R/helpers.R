@@ -66,3 +66,23 @@ lt_lake_sites <- function(which = c("active", "all", "inactive")) {
 
   sites[[which]]
 }
+
+
+#' Long-term lake monitoring sites
+#'
+#' Get the REQ_IDs of all of the long-term lake monitoring sites.
+#'
+#' @param data loads a site ID lookup table
+#'
+#' @return a character vector of req ids (EMS IDs)
+#' @export
+#'
+lt_lake_req <- function(data=NULL) {
+
+  if (!exists("lt_lake_ids")) load("data/lt_lake_ids.RData")
+  sites <- unique(lt_lake_ids$REQUISITION_ID)
+
+  sites
+}
+
+
