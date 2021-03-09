@@ -74,7 +74,7 @@ lt_lake_sites <- function(which = c("active", "all", "inactive")) {
 #'
 #' @param data loads a site ID lookup table
 #'
-#' @return a character vector of req ids (EMS IDs)
+#' @return a character vector of requisition ids 
 #' @export
 #'
 lt_lake_req <- function(data=NULL) {
@@ -84,5 +84,4 @@ lt_lake_req <- function(data=NULL) {
 
   sites
 }
-
 
