@@ -10,7 +10,8 @@ filter_ems_data(
   parameter = NULL,
   param_code = NULL,
   from_date = NULL,
-  to_date = NULL
+  to_date = NULL,
+  req_id = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ filter_ems_data(
 \item{from_date}{A \code{Date}, \code{POSIXct}, \code{POSIXlt}, or a \code{character} string in a standard unambiguous format (e.g., \code{"YYYY/MM/DD"})}
 
 \item{to_date}{A \code{Date}, \code{POSIXct}, \code{POSIXlt}, or a \code{character} string in a standard unambiguous format (e.g., \code{"YYYY/MM/DD"})}
+
+\item{req_id}{A character vector of requisition id(s) of interest}
 }
 \value{
 A filtered data frame
