@@ -10,7 +10,7 @@ lt_lake_req(data = NULL)
 \item{data}{loads a site ID lookup table}
 }
 \value{
-a character vector of requisitions ids
+a character vector of requisition ids
 }
 \description{
 Get the REQ_IDs of all of the long-term lake monitoring sites.

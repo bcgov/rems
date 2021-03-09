@@ -34,7 +34,7 @@ lt_lake_sites <- function(data=NULL) {
 #'
 #' @param data loads a site ID lookup table
 #'
-#' @return a character vector of requisitions ids
+#' @return a character vector of requisition ids
 #' @export
 #'
 lt_lake_req <- function(data=NULL) {
@@ -43,5 +43,4 @@ lt_lake_req <- function(data=NULL) {
 
   sites
 }
-
 
