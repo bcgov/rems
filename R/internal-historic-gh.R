@@ -10,6 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
+# Functions in this file are not used as of rems v0.6.
+# This was used by inst/construct_historic_sqlite.R to
+# create the sqlite db that was hosted on GitHub before
+# the historic csv started being generated daily in Jan 2021.
+
 download_file_from_release <- function(file, path, release = "latest",
                                        force = FALSE, httr_config = list()) {
   the_release <- get_gh_release(release)
@@ -129,57 +134,3 @@ delete_release_asset <- function(asset_id) {
 }
 
 gh_base_url <- function() "https://api.github.com/repos/bcgov/rems/releases"
-
-save_historic_data <- function(csv_file, db_path, n) {
-  message("Saving historic data at ", db_path)
-  data <- read_ems_data(csv_file, n = n, cols = NULL, verbose = FALSE,
-    progress = FALSE)
-  col_names <- col_specs("names_only")
-
-  # setting up sqlite
-
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
-  on.exit(DBI::dbDisconnect(con))
-  tbl_name <- "historic"
-
-  i <- 1
-  cat("|")
-  while (nrow(data) == n) { # if not reached the end of line
-    cat("=")
-    skip <- i * n + 1
-    if (i == 1) {
-      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
-        field.types = col_specs(type = "sql"))
-    } else {
-      DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE) # write to sqlite
-    }
-    data <- read_ems_data(csv_file, n = n, cols = col_names, verbose = FALSE, skip = skip,
-      col_names = col_names, progress = FALSE)
-    i <- i + 1
-  }
-
-  if (nrow(data) > 0) {
-    DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
-  }
-
-  cat("=")
-  add_sql_index(con, colname = "EMS_ID")
-  cat("=")
-  add_sql_index(con, colname = "COLLECTION_START")
-  cat("=")
-  add_sql_index(con, colname = "COLLECTION_END")
-  cat("=")
-  add_sql_index(con, colname = "LOCATION_PURPOSE")
-  cat("=")
-  add_sql_index(con, colname = "SAMPLE_CLASS")
-  cat("=")
-  add_sql_index(con, colname = "SAMPLE_STATE")
-  cat("=")
-  add_sql_index(con, colname = "PARAMETER")
-  cat("=")
-  add_sql_index(con, colname = "PARAMETER_CODE")
-
-  cat("| 100%\n")
-
-  invisible(TRUE)
-}

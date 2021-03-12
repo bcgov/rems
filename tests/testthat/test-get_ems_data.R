@@ -4,12 +4,13 @@ test_that("reading metadata works", {
   skip_on_cran()
   ret <- get_databc_metadata()
   expect_is(ret, "data.frame")
-  expect_equal(dim(ret), c(3, 3))
+  expect_equal(ncol(ret), 4)
   expect_equal(lapply(ret, class),
     list(filename = "character",
       server_date = c("POSIXct", "POSIXt"),
-      label = "character"))
-  expect_false(any(duplicated(ret$label)))
+      label = "character",
+    filetype = "character"))
+  expect_false(any(duplicated(ret$filename)))
 
   # Test extracting for each
   expect_equal(nrow(get_file_metadata("historic")), 1L)

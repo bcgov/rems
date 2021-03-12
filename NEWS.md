@@ -1,3 +1,34 @@
+# rems (development version)
+
+* Added new helper function `standardize_mdl_units()` to detect when `MDL_UNIT` and `UNIT` are different, and convert `METHOD_DETECTION_LIMIT` to the same unit as `RESULT` (and update the `MDL_UNIT` column accordingly). (https://github.com/bcgov/wqbc/issues/158, #57)
+
+# rems 0.6.1
+
+## Bug fixes
+* Fixed a bug where `read_historic_data()` was looking for the date of the latest historic data on GitHub (#56)
+
+# rems 0.6.0
+
+Historic data are now being updated daily in the BC Data Catalogue. This release allows the daily 
+update of the sqlite historic dataset in `rems`, but it means that it must be recreated each time from the csv, which takes a while.
+
+## Breaking changes:
+
+* When using `attach_historic_data()`, it is now necessary to call `connect_historic_db()` first, and finish with `disconnect_historic_db()`. For example:
+
+```r
+con <- connect_historic_db()
+hist_tbl <- attach_historic_data(con)
+
+hist_tbl %>%
+  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
+  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total") %>%
+  collect() %>%
+  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+
+disconnect_historic_db(con)
+```
+
 # rems 0.5.2
 
 * removed internal use of `filter_` to avoid dplyr deprecation warnings. (#48)
