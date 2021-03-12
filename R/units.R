@@ -83,8 +83,7 @@ convert_unit_values <- function(x, from, to) {
   if (
     any(is.na(c(clean_from, clean_to))) ||
      clean_from == clean_to ||
-    # TODO: when new units is released, this function will be exported so can drop the :::
-     !units:::ud_are_convertible(clean_from, clean_to)
+     !units::ud_are_convertible(clean_from, clean_to)
   ) {
     return(NA_real_)
   }
