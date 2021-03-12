@@ -32,7 +32,7 @@ Imports:
     utils,
     xml2 (>= 1.0.0),
     zip (>= 2.0.4),
-    units
+    units (>= 0.7-0)
 Suggests: 
     bit64,
     devtools,
