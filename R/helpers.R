@@ -14,7 +14,6 @@
 #'
 #' Get the EMS_IDs of all of the long-term lake monitoring sites.
 #'
-#' @param data loads a site ID lookup table
 #'
 #' @return a character vector of ems ids
 #' @export
@@ -32,7 +31,6 @@ lt_lake_sites <- function() {
 #'
 #' Get the REQ_IDs of all of the long-term lake monitoring sites.
 #'
-#' @param data loads a site ID lookup table
 #'
 #' @return a character vector of requisition ids
 #' @export

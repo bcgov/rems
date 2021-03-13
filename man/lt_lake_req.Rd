@@ -4,10 +4,7 @@
 \alias{lt_lake_req}
 \title{Long-term lake monitoring sites}
 \usage{
-lt_lake_req(data = NULL)
-}
-\arguments{
-\item{data}{loads a site ID lookup table}
+lt_lake_req()
 }
 \value{
 a character vector of requisition ids

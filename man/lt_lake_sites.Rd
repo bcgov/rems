@@ -4,10 +4,7 @@
 \alias{lt_lake_sites}
 \title{Long-term lake monitoring sites}
 \usage{
-lt_lake_sites(data = NULL)
-}
-\arguments{
-\item{data}{loads a site ID lookup table}
+lt_lake_sites()
 }
 \value{
 a character vector of ems ids
