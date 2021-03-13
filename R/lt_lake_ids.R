@@ -6,7 +6,7 @@
 #' \describe{
 #'   \item{EMS_ID}{EMS IDs of sites}
 #'   \item{MONITORING_LOCATION}{names of sites}
-#'   \item{REQUISTION_ID}{Requisition IDS of sites}
+#'   \item{REQUISITION_ID}{Requisition IDS of sites}
 #'   }
 #' @source internal data source
 "lt_lake_ids"

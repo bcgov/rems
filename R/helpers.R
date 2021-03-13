@@ -20,7 +20,7 @@
 #' @export
 #'
 #'
-lt_lake_sites <- function(data=NULL) {
+lt_lake_sites <- function() {
 
   sites <- unique(lt_lake_ids$EMS_ID)
 
@@ -37,7 +37,7 @@ lt_lake_sites <- function(data=NULL) {
 #' @return a character vector of requisition ids
 #' @export
 #'
-lt_lake_req <- function(data=NULL) {
+lt_lake_req <- function() {
 
   sites <- unique(lt_lake_ids$REQUISITION_ID)
 
