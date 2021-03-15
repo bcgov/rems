@@ -34,7 +34,7 @@ Imports:
     glue (>= 1.4),
     lubridate,
     zip (>= 2.0.4),
-    units
+    units (>= 0.7-0)
 Suggests: 
     bit64,
     devtools,
