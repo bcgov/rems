@@ -35,8 +35,7 @@ standardize_mdl_units <- function(data) {
   unique_units <- unique(data[, c("UNIT", "MDL_UNIT"), drop = FALSE])
 
   are_convertible <- mapply(
-    # TODO: when new units is released, this function will be exported so can drop the :::
-    units:::ud_are_convertible,
+    units::ud_are_convertible,
     unique_units$MDL_UNIT,
     unique_units$UNIT,
     USE.NAMES = FALSE
