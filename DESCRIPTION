@@ -16,12 +16,10 @@ License: Apache License (>= 2)
 Depends:
     R (>= 3.4)
 Imports:
-    covr,
     DBI (>= 0.5-1),
     dbplyr (>= 1.1.0),
     dplyr (>= 0.7.0),
     httr (>= 1.2.1),
-    jsonlite (>= 1.6),
     rappdirs (>= 0.3.1),
     readr (>= 1.0.0),
     rlang,
@@ -35,10 +33,9 @@ Imports:
     lubridate,
     zip (>= 2.0.4),
     units (>= 0.7-0)
-Suggests: 
-    bit64,
+Suggests:
+    covr,
     devtools,
-    gh,
     testthat,
     withr
 Encoding: UTF-8

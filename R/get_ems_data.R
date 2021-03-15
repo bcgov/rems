@@ -141,9 +141,6 @@ update_cache <- function(which, n, cols) {
   add_rems_type(data_obj[, cols], which)
 }
 
-#' @importFrom utils unzip
-#' @importFrom httr GET
-#' @importFrom stringr str_extract
 download_ems_data <- function(url) {
   ext <- tools::file_ext(url)
   tfile <- tempfile(fileext = paste0(".", ext))
