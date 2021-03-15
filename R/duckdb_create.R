@@ -74,7 +74,3 @@ create_rems_duckdb <- function(csv_file, db_path) {
 
   invisible(TRUE)
 }
-
-cat_if_interactive <- function(...) {
-  if (interactive()) cat(...)
-}
