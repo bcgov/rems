@@ -4,6 +4,18 @@
 
 * Added new helper function `standardize_mdl_units()` to detect when `MDL_UNIT` and `UNIT` are different, and convert `METHOD_DETECTION_LIMIT` to the same unit as `RESULT` (and update the `MDL_UNIT` column accordingly). (https://github.com/bcgov/wqbc/issues/158, #57)
 
+* The historic data now has its date/time columns stored in the "UTC" timezone - There is a shortcut function to help with this: `set_ems_tz()`
+
+```r
+hist_tbl %>%
+  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
+  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total")) %>%
+  collect(filtered_historic) %>%
+  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START)) # set timezone here
+```
+
+* Removed `ems_posix_ct()` function
+
 # rems 0.6.1
 
 ## Bug fixes
@@ -21,35 +33,9 @@ update of the sqlite historic dataset in `rems`, but it means that it must be re
 ```r
 con <- connect_historic_db()
 hist_tbl <- attach_historic_data(con)
-<<<<<<< HEAD
 ## Do your work with hist_tbl
 disconnect_historic_db()
 ```
-
-* The historic data now has its date/time columns stored in the "UTC" timezone - There is a shortcut function to help with this: `set_ems_tz()`
-
-```r
-hist_tbl %>%
-  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
-  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total")) %>%
-  collect(filtered_historic) %>%
-  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START)) # set timezone here
-```
-
-* Removed `ems_posix_ct()` function
-
-
-=======
-
-hist_tbl %>%
-  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
-  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total") %>%
-  collect() %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
-
-disconnect_historic_db(con)
-```
->>>>>>> master
 
 # rems 0.5.2
 
