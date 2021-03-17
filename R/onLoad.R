@@ -18,12 +18,12 @@ register_ems_units <- function() {
   # package has been loaded once already so don't try
   # to do it again
   try_test <- try(
-    units::install_unit("mho", "1 S"),
+    units::install_unit("MPN", "unitless", name = "Most Probable Number"),
     silent = TRUE
   )
 
   if (!inherits(try_test, "try-error")) {
-    units::install_unit("MPN", name = "Most Probable Number")
+    units::install_unit("mho", "1 S")
     units::install_unit("CFU", "1 MPN", "Colony-Forming Unit")
     units::install_unit("NTU", name = "Nephelometric Turbidity Unit")
     units::install_unit("JTU", "1 NTU", "Jackson Turbidity Unit")

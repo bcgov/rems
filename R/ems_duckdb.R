@@ -128,7 +128,7 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     param_code = param_code, from_date = from_date,
     to_date = to_date, cols = cols)
 
-  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
+  con <- duckdb_connect(db_path)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
   res <- DBI::dbGetQuery(con, qry)
@@ -163,7 +163,7 @@ connect_historic_db <- function(db_path = NULL) {
   }
   message("Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.")
   # DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE, timezone_out = "Etc/GMT+8", tz_out_convert = "force")
-  DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE)
+  duckdb_connect(db_path)
 }
 
 #' Close the connection to the historic database
@@ -288,4 +288,9 @@ add_sql_index <- function(con, tbl = "historic", colname,
   sql_str <- sprintf("CREATE INDEX %s ON %s(%s)", idxname, tbl, colname)
   DBI::dbExecute(con, sql_str)
   invisible(NULL)
+}
+
+duckdb_connect <- function(db_path, read_only = TRUE) {
+  DBI::dbConnect(duckdb::duckdb(), db_path, read_only = read_only,
+                 timezone_out = "Etc/GMT+8", tz_out_convert = "force")
 }
