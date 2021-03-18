@@ -73,6 +73,8 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
                          ask = TRUE, dont_update = FALSE, check_only = FALSE) {
   which <- match.arg(which, c("2yr", "4yr"))
 
+  if (!cache_exists()) write_cache()
+
   which_exists <- ._remsCache_$exists(which)
 
   cols <- if (cols == "wq") {
@@ -119,10 +121,13 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
 }
 
 rems_data_from_cache <- function(which, cols) {
+  stopifnot(cache_exists())
   add_rems_type(._remsCache_$get(which)[, cols], which)
 }
 
 update_cache <- function(which, n, cols) {
+
+  if (!cache_exists()) write_cache()
 
   filetype <- if (which == "4yr") "zip" else "csv"
   file_meta <- get_file_metadata(which, filetype)
@@ -131,11 +136,10 @@ update_cache <- function(which, n, cols) {
   message("Downloading latest '", which,
     "' EMS data from BC Data Catalogue (url: ", url, ")")
   csv_file <- download_ems_data(url)
-  data_obj <- read_ems_data(csv_file, n = n, cols = NULL)
 
-  message("Caching data on disk...")
-  ._remsCache_$set(which, data_obj)
-  set_cache_date(which = which, value = file_meta[["server_date"]])
+  data_obj <- file_to_cache(csv_file, which = which,
+                            cache_date = file_meta[["server_date"]],
+                            n = n)
 
   message("Loading data...")
   add_rems_type(data_obj[, cols], which)
@@ -148,6 +152,18 @@ download_ems_data <- function(url) {
   cat_if_interactive("\n")
   httr::stop_for_status(res)
   handle_zip(res$request$output$path)
+}
+
+file_to_cache <- function(csv_file, which, cache_date, n) {
+  data_obj <- read_ems_data(csv_file, n = n)
+
+  if (!cache_exists()) write_cache()
+
+  message("Caching data on disk...")
+  ._remsCache_$set(which, data_obj)
+  set_cache_date(which = which, value = cache_date)
+
+  data_obj
 }
 
 #' @importFrom xml2 read_html as_list

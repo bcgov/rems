@@ -15,9 +15,14 @@ write_cache <- function() {
   ._remsCache_ <<- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
 }
 
-cache_exists <- function() exists("._remsCache_")
+cache_exists <- function() {
+  exists("._remsCache_") && dir.exists(rems_data_dir()) && rems_data_dir() == ._remsCache_$driver$path
+}
 
-rems_data_dir <- function() rappdirs::user_data_dir("rems")
+rems_data_dir <- function() {
+  path <- getOption("rems.cache.dir", default = rappdirs::user_data_dir("rems"))
+  normalizePath(path, mustWork = FALSE)
+}
 
 set_cache_date <- function(which, value) {
   stopifnot(cache_exists())
@@ -56,7 +61,7 @@ get_cache_date <- function(which) {
 #' @return TRUE
 #' @noRd
 burn_it_down <- function() {
-  if (file.exists(rems_data_dir()) && cache_exists()) {
+  if (cache_exists()) {
     ._remsCache_$destroy()
     message("Removed rems cache. Please restart R and reload rems before continuing.")
   } else {
