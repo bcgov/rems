@@ -35,6 +35,9 @@ test_that("read_ems_data works with current", {
       "character", "numeric", "numeric", "character", "numeric",
       "character", "numeric", "numeric", "character", "character",
       "character"))
+
+  expect_equal(attributes(test$COLLECTION_START)[["tzone"]], "Etc/GMT+8")
+  expect_equal(attributes(test$COLLECTION_END)[["tzone"]], "Etc/GMT+8")
 })
 
 test_that("read_ems_data works with options", {
