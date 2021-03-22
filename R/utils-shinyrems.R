@@ -20,7 +20,7 @@ get_ems_lookup <- function(which = "2yr", ask = TRUE) {
     stop("`which` must be either '2yr' or '4yr'")
 
   which_lup <- lookup_which(which)
-  which_exists <- ._remsCache_$exists(which_lup)
+  which_exists <- ._remsenv_$cache$exists(which_lup)
 
   lup_cache_date <- get_cache_date(which_lup)
   data_cache_date <- get_cache_date(which)
@@ -33,15 +33,15 @@ get_ems_lookup <- function(which = "2yr", ask = TRUE) {
         " data lookup table at ", rems_data_dir(), ". This is required to run the ShinyRems app. Is that okay?"))
     }
 
-    if(!._remsCache_$exists(which))
+    if(!._remsenv_$cache$exists(which))
       stop(which, " dataset must be cached before lookup table can be created. Run get_ems_data().")
 
     message("Creating and caching lookup table ...")
-    lookup <- make_lookup(._remsCache_$get(which))
+    lookup <- make_lookup(._remsenv_$cache$get(which))
     update_lookup_cache(which = which, lookup)
   }
 
-  ._remsCache_$get(which_lup)
+  ._remsenv_$cache$get(which_lup)
 }
 
 lookup_which <- function(x) {
@@ -62,6 +62,6 @@ make_lookup <- function(x) {
 update_lookup_cache <- function(which, data) {
   file_meta <- get_file_metadata(which)
   which_lup <- lookup_which(which)
-  ._remsCache_$set(which_lup, data)
+  ._remsenv_$cache$set(which_lup, data)
   set_cache_date(which = which_lup, value = file_meta[["server_date"]])
 }

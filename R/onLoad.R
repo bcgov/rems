@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-._remsCache_ <- NULL
+._remsenv_ <- new.env(parent = emptyenv())
 
 register_ems_units <- function() {
 
@@ -47,6 +47,5 @@ register_ems_units <- function() {
 }
 
 .onLoad <- function(libname, pkgname) {
-  write_cache()
   register_ems_units()
 }

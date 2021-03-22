@@ -75,7 +75,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
 
   if (!cache_exists()) write_cache()
 
-  which_exists <- ._remsCache_$exists(which)
+  which_exists <- ._remsenv_$cache$exists(which)
 
   cols <- if (cols == "wq") {
     wq_cols()
@@ -95,7 +95,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
   update <- FALSE # Don't update by default
   if (force || !which_exists) {
     update <- TRUE
-  } else if (._remsCache_$exists("cache_dates")) {
+  } else if (._remsenv_$cache$exists("cache_dates")) {
     cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
@@ -122,7 +122,7 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
 
 rems_data_from_cache <- function(which, cols) {
   stopifnot(cache_exists())
-  add_rems_type(._remsCache_$get(which)[, cols], which)
+  add_rems_type(._remsenv_$cache$get(which)[, cols], which)
 }
 
 update_cache <- function(which, n, cols) {
@@ -160,7 +160,7 @@ file_to_cache <- function(csv_file, which, cache_date, n) {
   if (!cache_exists()) write_cache()
 
   message("Caching data on disk...")
-  ._remsCache_$set(which, data_obj)
+  ._remsenv_$cache$set(which, data_obj)
   set_cache_date(which = which, value = cache_date)
 
   data_obj
