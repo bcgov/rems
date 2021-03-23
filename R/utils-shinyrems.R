@@ -28,10 +28,13 @@ get_ems_lookup <- function(which = "2yr", ask = TRUE) {
   update <- !which_exists || lup_cache_date < data_cache_date
 
   if (update) {
+
+    # nocov start
     if (ask) {
       stop_for_permission(paste0("rems would like to store a ", which,
         " data lookup table at ", rems_data_dir(), ". This is required to run the ShinyRems app. Is that okay?"))
     }
+    # nocov end
 
     if(!._remsenv_$cache$exists(which))
       stop(which, " dataset must be cached before lookup table can be created. Run get_ems_data().")
