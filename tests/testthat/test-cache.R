@@ -1,4 +1,4 @@
-test_that("getting cache date works", {
+test_that("getting and setting cache date works", {
   skip_on_cran()
   skip_if_offline()
 
@@ -8,6 +8,11 @@ test_that("getting cache date works", {
     expect_type(dt, "double")
     if (is.finite(dt)) expect_true(inherits(dt, "POSIXct"))
   }
+
+  expect_error(set_cache_date("2yr", Sys.Date()))
+  tm <- Sys.time() + 1
+  expect_silent(set_cache_date("2yr", tm))
+  expect_equal(get_cache_date("2yr"), tm)
 })
 
 test_that("deleting cache works", {

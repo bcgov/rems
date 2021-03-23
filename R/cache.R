@@ -27,6 +27,10 @@ rems_data_dir <- function() {
 set_cache_date <- function(which, value) {
   stopifnot(cache_exists())
 
+  if (!inherits(value, "POSIXct") && !is.null(value)) {
+    stop("cache date must be POSIXct or NULL")
+  }
+
   if (._remsenv_$cache$exists("cache_dates")) {
     cache_dates <- ._remsenv_$cache$get("cache_dates")
   } else {
