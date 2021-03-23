@@ -52,5 +52,6 @@ register_ems_units <- function() {
 }
 
 .onLoad <- function(libname, pkgname) {
+  write_cache() # nocov
   register_ems_units() # nocov
 }
