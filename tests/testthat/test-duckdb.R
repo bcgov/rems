@@ -1,7 +1,7 @@
 library(dplyr)
 
 test_that("duckdb is created from a csv file", {
-  expect_true(create_rems_duckdb("tests/testthat/test_historic.csv", write_db_path()))
+  expect_true(create_rems_duckdb("test_historic.csv", write_db_path()))
 })
 
 test_that("connecting and attaching historic duckdb works",{
