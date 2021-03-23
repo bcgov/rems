@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-._remsenv_ <- new.env(parent = emptyenv())
+._remsenv_ <- new.env(parent = emptyenv()) # nocov
 
 register_ems_units <- function() {
 
@@ -22,6 +22,9 @@ register_ems_units <- function() {
     silent = TRUE
   )
 
+  # nocov start
+  # This won't run in tests since it's run on pkg load, meaning
+  # the try above should return an error in subsequent calls
   if (!inherits(try_test, "try-error")) {
     units::install_unit("mho", "1 S")
     units::install_unit("CFU", "1 MPN", "Colony-Forming Unit")
@@ -42,10 +45,12 @@ register_ems_units <- function() {
     # 0.001 [E3m3]
     #> set_units(set_units(1, "m3"), "E6m3")
     # 1e-06 [E6m3]
+    return(invisible(TRUE))
   }
-  invisible(NULL)
+  # nocov end
+  invisible(FALSE)
 }
 
 .onLoad <- function(libname, pkgname) {
-  register_ems_units()
+  register_ems_units() # nocov
 }

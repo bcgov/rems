@@ -8,4 +8,3 @@ cleanup <- function() {
 
 file_to_cache("test_current.csv", which = "2yr", cache_date = Sys.Date(), n = 10)
 file_to_cache("test_current.csv", which = "4yr", cache_date = Sys.Date(), n = 10)
-
