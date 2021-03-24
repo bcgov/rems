@@ -53,6 +53,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
       db_path, ". Is that okay?"))
   }
 
+  # nocov start
   message("This is going to take a while...")
 
   message("Downloading latest 'historic' EMS data")
@@ -65,15 +66,14 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
     write_db_path()
   }
 
-  create_rems_duckdb(csv_file, db_path)
-
-  set_cache_date("historic", file_meta[["server_date"]])
+  create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
 
   message("Successfully downloaded and stored the historic EMS data.\n",
     "You can access and subset it with the 'read_historic_data' function, or
         attach it as a remote data.frame with 'connect_historic_db()' and
         'attach_historic_data()' which you can then query with dplyr")
   invisible(db_path)
+  # nocov end
 }
 
 #' Read historic ems data into R.

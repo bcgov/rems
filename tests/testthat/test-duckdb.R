@@ -1,7 +1,7 @@
 library(dplyr)
 
 test_that("duckdb is created from a csv file", {
-  expect_true(create_rems_duckdb("test_historic.csv", write_db_path()))
+  expect_true(create_rems_duckdb("test_historic.csv", write_db_path(), cache_date = Sys.time() + 1))
 })
 
 test_that("connecting and attaching historic duckdb works",{
@@ -14,12 +14,15 @@ test_that("connecting and attaching historic duckdb works",{
   expect_equal(dim(collected), dim(ref))
   expect_equal(names(collected), names(ref))
 
-  # Test set_ems_tz
-  expect_equal(collected %>% mutate(across(where(~ inherits(.x, "POSIXct")), set_ems_tz)),
-               read_ems_data("test_historic.csv"))
+  # Test columns including time zones
+  expect_equal(collected, read_ems_data("test_historic.csv"))
 })
 
 test_that("read_historic_data works", {
+  dat <- read_historic_data()
+  expect_s3_class(dat, "data.frame")
+  expect_equal(dim(dat), c(10L, 23L))
+
   dat <- read_historic_data(emsid = "0400034", from_date = as.Date("1975-07-27"),
                      to_date = as.Date("1975-07-29"), cols = "all", check_db = FALSE)
   expect_s3_class(dat, "data.frame")
@@ -29,7 +32,7 @@ test_that("read_historic_data works", {
 })
 
 test_that("removing historic works works", {
-    expect_equal(._remsenv_$cache$list(), c("2yr", "4yr", "cache_dates"))
+  expect_equal(._remsenv_$cache$list(), c("2yr", "4yr", "cache_dates"))
   remove_data_cache("historic")
   expect_error(connect_historic_db(write_db_path()), "Please download the historic data")
 })

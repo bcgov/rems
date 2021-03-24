@@ -19,7 +19,7 @@
 #'
 #' @import duckdb
 #' @importFrom glue glue
-create_rems_duckdb <- function(csv_file, db_path) {
+create_rems_duckdb <- function(csv_file, db_path, cache_date) {
   message("Saving historic data at ", db_path)
 
   csv_file <- normalizePath(csv_file, mustWork = TRUE)
@@ -71,6 +71,8 @@ create_rems_duckdb <- function(csv_file, db_path) {
   add_sql_index(con, colname = "PARAMETER_CODE")
 
   cat_if_interactive("| 100%\n")
+
+  set_cache_date("historic", cache_date)
 
   invisible(TRUE)
 }
