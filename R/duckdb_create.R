@@ -14,6 +14,7 @@
 #'
 #' @param csv_file path to csv file
 #' @param db_path where to create the duckdb
+#' @param cache_date The date (in POSIXct) that should be saved in the cache metadata
 #'
 #' @return `TRUE` (invisibly)
 #'

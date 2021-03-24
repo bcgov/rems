@@ -4,12 +4,14 @@
 \alias{create_rems_duckdb}
 \title{Create historic table in duckdb}
 \usage{
-create_rems_duckdb(csv_file, db_path)
+create_rems_duckdb(csv_file, db_path, cache_date)
 }
 \arguments{
 \item{csv_file}{path to csv file}
 
 \item{db_path}{where to create the duckdb}
+
+\item{cache_date}{The date (in POSIXct) that should be saved in the cache metadata}
 }
 \value{
 \code{TRUE} (invisibly)
