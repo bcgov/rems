@@ -94,18 +94,18 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
 
   update <- FALSE # Don't update by default
   if (force || !which_exists) {
-    update <- TRUE
+    update <- TRUE # nocov
   } else if (._remsenv_$cache$exists("cache_dates")) {
     cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
-    # nocov start
     if (cache_date < unique(file_meta[["server_date"]])) {
+    # nocov start
       ans <- readline(paste0("Your version of ", which, " is dated ",
         cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
-    }
     # nocov end
+    }
   }
 
   if (check_only) return(TRUE)

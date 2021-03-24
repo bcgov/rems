@@ -53,13 +53,15 @@ test_that("get_ems_data works", {
   expect_s3_class(dat, "data.frame")
   expect_equal(names(dat), wq_cols())
 
-    expect_message(
+  expect_message(
     dat <- get_ems_data("4yr", ask = FALSE, dont_update = TRUE, cols = "all"),
     "Fetching data from cache"
   )
 
   expect_s3_class(dat, "data.frame")
   expect_equal(names(dat), names(col_specs()))
+
+  expect_equal(nrow(get_ems_data(n = 1)), 1)
 
   expect_true(
     get_ems_data(ask = FALSE, check_only = TRUE)
