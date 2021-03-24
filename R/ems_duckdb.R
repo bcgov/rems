@@ -102,10 +102,10 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
                                from_date = NULL, to_date = NULL, cols = "wq", check_db = TRUE) {
 
   db_path <- write_db_path()
-  exit_fun <- FALSE
+  exit_msg <- "Please download the historic data with\n the 'download_historic_data' function."
 
   if (!file.exists(db_path)) {
-    exit_fun <- TRUE
+    stop(exit_msg, call. = FALSE)
   }
 
   ## Check for missing or outdated historic database
@@ -113,16 +113,15 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     server_date <- get_file_metadata("historic", "zip")[["server_date"]]
     cache_date <- get_cache_date("historic")
     if (cache_date < server_date && file.exists(db_path)) {
+    # nocov start
       ans <- readline(paste("Your version of the historic dataset is out of date.",
         "Would you like to continue with the version you have (y/n)? ",
         sep = "\n"))
       if (tolower(ans) != "y")
-        exit_fun <- TRUE
+        stop(exit_msg, call. = FALSE)
+    # nocov end
     }
   }
-
-  if (exit_fun) stop("Please download the historic data with\n",
-    " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
     param_code = param_code, from_date = from_date,
