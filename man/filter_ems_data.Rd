@@ -27,7 +27,7 @@ filter_ems_data(
 
 \item{to_date}{A \code{Date}, \code{POSIXct}, \code{POSIXlt}, or a \code{character} string in a standard unambiguous format (e.g., \code{"YYYY/MM/DD"})}
 
-\item{req_id}{A character vector of requisition id(s) of interest}
+\item{req_id}{A character vector of requisition id(s) of interest. See \code{\link[=lt_lake_req]{lt_lake_req()}} for a list on long-term lakes monitoring sites REQUISITION IDs}
 }
 \value{
 A filtered data frame
