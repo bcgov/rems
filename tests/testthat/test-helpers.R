@@ -7,3 +7,8 @@ test_that("checking correct number EMS_IDs and REQ_IDs of lt_lake_sites and lt_l
           }
           )
 
+test_that("checking data type of lt_lake_sites() and lt_lake_req()",
+         {
+           expect_type(lt_lake_sites(), "character")
+           expect_type(lt_lake_req(), "character")
+         })
