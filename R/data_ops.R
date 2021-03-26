@@ -32,7 +32,7 @@ bind_ems_data <- function(...) {
 #' @param param_code a character vector of parameter codes
 #' @param from_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., `"YYYY/MM/DD"`)
 #' @param to_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., `"YYYY/MM/DD"`)
-#' @param req_id A character vector of requisition id(s) of interest. See [lt_lake_req()] for a list on long-term lakes monitoring sites REQUISITION IDs
+#' @param req_id A character vector of requisition id(s) of interest. See [lt_lake_req()] for a list of long-term lakes monitoring sites REQUISITION IDs
 #'
 #' @return A filtered data frame
 #' @export
