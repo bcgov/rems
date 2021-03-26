@@ -182,6 +182,29 @@ can remove all the data, or just the "historic", "2yr", or "4yr":
 remove_data_cache("2yr")
 ```
 
+## Long-term lake monitoring site search functions
+
+There are two ways to select active sites in the long-term lake monitoring program. The `lt_lake_sites` function selects the `EMS_ID` of active sites. The `lt_lake_req` function selects the `REQUISITION_ID` of active sites. Using the `lt_lake_sites` will provide all data collected under the `EMS_ID`, whereas using `lt_lake_req` will filter data collected by the long-term lakes monitoring group. Both functions can be used with `filter_ems_data` to easily pull data from active long-term lake monitoring sites. 
+
+```{r}
+head(lt_lake_sites())
+head(lt_lake_req())
+
+#use with filter_ems_data
+filtered_2yr_lt_lakes_ems <- filter_ems_data(two_year, emsid = lt_lake_sites(),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"))
+head(filtered_2yr_lt_lakes_ems)
+
+filtered_2yr_lt_lakes_req <- filter_ems_data(two_year, req_id = lt_lake_req(),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"))
+head(filtered_2yr_lt_lakes_req)
+
+```
+
 
 ## Developing
 
