@@ -9,8 +9,17 @@ cleanup <- function() {
 cache_test_files <- function(which = c("2yr", "4yr")) {
   for (w in which) {
     # set cache date to future so we never run into an interactive prompt to update during tests
-    file_to_cache("test_current.csv", which = w, cache_date = Sys.time() + 1)
+    path <- "."
+    if (interactive()) path <- "tests/testthat"
+    file_to_cache(file.path(path, "test_current.csv"), which = w, cache_date = Sys.time() + 1)
   }
+}
+
+write_test_db <- function() {
+  path <- "."
+  if (interactive()) path <- "tests/testthat"
+  create_rems_duckdb(file.path(path, "test_historic.csv"),
+                     write_db_path(), cache_date = Sys.time() + 1)
 }
 
 # re-write cache in tempdir with options

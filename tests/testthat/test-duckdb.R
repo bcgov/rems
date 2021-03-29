@@ -1,7 +1,7 @@
 library(dplyr)
 
 test_that("duckdb is created from a csv file", {
-  expect_true(create_rems_duckdb("test_historic.csv", write_db_path(), cache_date = Sys.time() + 1))
+  expect_true(write_test_db())
 })
 
 test_that("connecting and attaching historic duckdb works",{
@@ -34,5 +34,19 @@ test_that("read_historic_data works", {
 test_that("removing historic works works", {
   expect_equal(._remsenv_$cache$list(), c("2yr", "4yr", "cache_dates"))
   remove_data_cache("historic")
+  withr::defer(write_test_db())
   expect_error(connect_historic_db(write_db_path()), "Please download the historic data")
+})
+
+test_that("download_historic_data works", {
+  expect_message(ret <- download_historic_data(force = FALSE, ask = FALSE),
+                 "you already have the most up-to date version")
+  expect_equal(ret, write_db_path())
+
+  set_cache_date("historic", as.POSIXct("2020-12-31"))
+  withr::defer(set_cache_date("historic", Sys.time() + 1))
+
+  expect_warning(ret <- download_historic_data(force = FALSE, ask = FALSE, dont_update = TRUE),
+                 "you have asked not to update")
+  expect_equal(ret, write_db_path())
 })

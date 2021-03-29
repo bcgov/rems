@@ -48,12 +48,12 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
     }
   }
 
+  # nocov start
   if (ask) {
     stop_for_permission(paste0("rems would like to store a copy of the historic ems data at ",
       db_path, ". Is that okay?"))
   }
 
-  # nocov start
   message("This is going to take a while...")
 
   message("Downloading latest 'historic' EMS data")
