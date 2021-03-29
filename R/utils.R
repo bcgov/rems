@@ -53,10 +53,10 @@ make_file_hash <- function(file) {
   if (os == "windows") {
     certutil_output <- system(sprintf("CertUtil -hashfile %s", file), intern = TRUE)
     ret <- gsub("\\s+", "", certutil_output[2])
-  } else if (os == "osx") {
+  } else if (os == "macos") {
     shasum_output <- system(sprintf("shasum %s", file), intern = TRUE)
     ret <- strsplit(shasum_output, "\\s+")[[1]][1]
-  } else if (os == "unix") {
+  } else if (os == "linux") {
     sha1sum_output <- system(sprintf("sha1sum %s", file), intern = TRUE)
     ret <- strsplit(sha1sum_output, "\\s+")[[1]][1]
   }
@@ -71,12 +71,12 @@ add_rems_type <- function(obj, which) {
 }
 
 find_os <- function() {
-  if (.Platform$OS.type == "windows") {
-    "windows"
-  } else if (Sys.info()["sysname"] == "Darwin") {
-    "osx"
-  } else if (.Platform$OS.type == "unix") {
-    "unix"
+  platform_os <- .Platform$OS.type
+
+  if (platform_os == "windows") {
+    return("windows")
+  } else if (platform_os == "unix") {
+    return(ifelse(grepl("darwin", tolower(R.version$os)), "macos", "linux"))
   } else {
     stop("Could not find oprating system")
   }

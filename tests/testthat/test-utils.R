@@ -17,3 +17,11 @@ test_that("basic utils work", {
   skip_if_offline()
   expect_equal(httr::status_code(httr::GET(base_url())), 200)
 })
+
+test_that("find_os works", {
+  # This is only set on GitHub Actions
+  localos <- tolower(Sys.getenv("RUNNER_OS"))
+  skip_if(!nzchar(localos))
+
+  expect_equal(find_os(), localos)
+})
