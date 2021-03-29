@@ -21,7 +21,7 @@ test_that("connecting and attaching historic duckdb works",{
 test_that("read_historic_data works", {
   dat <- read_historic_data()
   expect_s3_class(dat, "data.frame")
-  expect_equal(dim(dat), c(10L, 23L))
+  expect_equal(dim(dat), c(10L, 24L))
 
   dat <- read_historic_data(emsid = "0400034", from_date = as.Date("1975-07-27"),
                      to_date = as.Date("1975-07-29"), cols = "all", check_db = FALSE)
