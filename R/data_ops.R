@@ -32,11 +32,12 @@ bind_ems_data <- function(...) {
 #' @param param_code a character vector of parameter codes
 #' @param from_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., `"YYYY/MM/DD"`)
 #' @param to_date A `Date`, `POSIXct`, `POSIXlt`, or a `character` string in a standard unambiguous format (e.g., `"YYYY/MM/DD"`)
+#' @param req_id A character vector of requisition id(s) of interest. See [lt_lake_req()] for a list of long-term lakes monitoring sites REQUISITION IDs
 #'
 #' @return A filtered data frame
 #' @export
 filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL,
-                            from_date = NULL, to_date = NULL) {
+                            from_date = NULL, to_date = NULL, req_id=NULL) {
   # convert
   if (!is.null(from_date)) from_date <- set_ems_tz(from_date)
   if (!is.null(to_date)) to_date <- set_ems_tz(to_date)
@@ -50,6 +51,7 @@ filter_ems_data <- function(x, emsid = NULL, parameter = NULL, param_code = NULL
   if (!is.null(param_code)) x <- x[x$PARAMETER_CODE %in% param_code, , drop = FALSE]
   if (!is.null(from_date)) x <- x[x$COLLECTION_START >= from_date, , drop = FALSE]
   if (!is.null(to_date)) x <- x[x$COLLECTION_START <= to_date, , drop = FALSE]
+  if (!is.null(req_id)) x <- x[x$REQUISITION_ID %in% req_id, , drop = FALSE]
 
   x
 }

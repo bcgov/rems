@@ -47,7 +47,7 @@ test_that("read_ems_data works with options", {
 
   test2 <- read_ems_data("test_current.csv", cols = wq_cols())
   expect_is(test2, "data.frame")
-  expect_equal(dim(test2), c(10, 23))
+  expect_equal(dim(test2), c(10, 24))
   expect_equal(names(test2),
     c("EMS_ID",
       "MONITORING_LOCATION",
@@ -57,6 +57,7 @@ test_that("read_ems_data works with options", {
       "COLLECTION_START",
       "LOCATION_PURPOSE",
       "PERMIT",
+      "REQUISITION_ID",
       "SAMPLE_CLASS",
       "SAMPLE_STATE",
       "SAMPLE_DESCRIPTOR",
@@ -81,7 +82,7 @@ test_that("read_ems_data fails correctly", {
 
 test_that("col_spec and friends work", {
   expect_equal_to_reference(col_spec()$cols, "col_struct.RDS")
-  expect_equal_to_reference(col_spec(wq_cols())$cols, "wq_col_struct.RDS")
+  expect_equal_to_reference(col_spec(wq_cols())$cols, "wq_col_str.RDS")
   expect_equal(col_spec(), col_spec(col_specs("names_only")))
 })
 
