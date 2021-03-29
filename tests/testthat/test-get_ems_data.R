@@ -26,8 +26,10 @@ test_that("reading metadata works", {
 })
 
 test_that("httr_progress works", {
-  # Need to figure out a way to pretend in interactive mode
-  expect_is(httr_progress(), "NULL")
+  skip_on_cran()
+  skip_if_offline()
+
+  expect_null(httr_progress())
 })
 
 test_that("making file hash works", {
