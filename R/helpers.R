@@ -17,7 +17,6 @@
 #' @return a character vector of ems ids
 #' @export
 
-globalVariables("lt_lake_ids")
 
 lt_lake_sites <- function() {
 
@@ -42,3 +41,5 @@ lt_lake_req <- function() {
   sites
 }
 
+
+globalVariables("lt_lake_ids")
