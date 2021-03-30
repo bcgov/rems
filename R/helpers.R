@@ -14,11 +14,10 @@
 #'
 #' Get the EMS_IDs of all of the long-term lake monitoring sites.
 #'
-#'
 #' @return a character vector of ems ids
 #' @export
-#'
-#'
+
+
 lt_lake_sites <- function() {
 
   sites <- unique(lt_lake_ids$EMS_ID)
@@ -42,3 +41,5 @@ lt_lake_req <- function() {
   sites
 }
 
+
+globalVariables("lt_lake_ids")
