@@ -65,7 +65,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   on.exit(unlink(csv_file), add = TRUE)
 
   if (db_exists) {
-    unlink(dirname(db_path), recursive = TRUE)
+    file.remove(db_path)
     write_db_path()
   }
 
@@ -277,7 +277,9 @@ stringify_vec <- function(vec) {
 
 write_db_path <- function(path = getOption("rems.historic.path",
                             default = rems_data_dir())) {
-  file.path(path, "ems_historic.sqlite")
+  db_path <- file.path(path, "historic_db", "ems_historic.sqlite")
+  dir.create(dirname(db_path), recursive = TRUE, showWarnings = FALSE)
+  db_path
 }
 
 #' Add an index to a column in a sqlite database
