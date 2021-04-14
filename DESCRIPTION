@@ -2,7 +2,7 @@ Type: Package
 Package: rems
 Title: Get Data From British Columbia's Environmental Monitoring
     System
-Version: 0.6.1.9000
+Version: 0.7.0
 Authors@R: 
     c(person(given = "Andy",
              family = "Teucher",

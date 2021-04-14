@@ -1,4 +1,4 @@
-# rems (development version)
+# rems 0.7.0
 
 * Added new helper function `standardize_mdl_units()` to detect when `MDL_UNIT` and `UNIT` are different, and convert `METHOD_DETECTION_LIMIT` to the same unit as `RESULT` (and update the `MDL_UNIT` column accordingly). (https://github.com/bcgov/wqbc/issues/158, #57)
 * Added new helper function `lt_lake_req()` that returns the requisition IDs of lakes in the B.C. long-term lakes monitoring program. To compliment this, `filter_ems_data()` now has a `req_id` argument that takes a vector of requisition ids (which can be supplied by `lt_lake_req()`). #60, @KarHarker
