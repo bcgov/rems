@@ -7,3 +7,9 @@ test_that("lookup creation works", {
       "PARAMETER", "LONGITUDE", "LATITUDE", "FROM_DATE", "TO_DATE"))
   expect_identical(nrow(lup), 10L)
 })
+
+test_that("get_ems_lookup works", {
+  skip_on_cran()
+  skip_if_offline()
+  get_ems_lookup(ask = FALSE)
+})

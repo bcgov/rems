@@ -1,6 +1,6 @@
 Type: Package
 Package: rems
-Title: Get Data From British Columbia's Environmental Monitoring
+Title: Get Data from British Columbia's Environmental Monitoring
     System
 Version: 0.7.0
 Authors@R: 
@@ -20,27 +20,26 @@ License: Apache License (>= 2)
 Depends:
     R (>= 3.4)
 Imports:
-    covr,
     DBI (>= 0.5-1),
     dbplyr (>= 1.1.0),
     dplyr (>= 0.7.0),
     httr (>= 1.2.1),
-    jsonlite (>= 1.6),
     rappdirs (>= 0.3.1),
     readr (>= 1.0.0),
     rlang,
-    RSQLite (>= 1.0.0),
+    duckdb (>= 0.2.6),
     storr (>= 1.0.1),
     stringr (>= 1.1.0),
     tibble (>= 1.2),
     utils,
     xml2 (>= 1.0.0),
+    glue (>= 1.4),
+    lubridate,
     zip (>= 2.0.4),
     units (>= 0.7-0)
-Suggests: 
-    bit64,
+Suggests:
+    covr,
     devtools,
-    gh,
     testthat,
     withr
 Encoding: UTF-8

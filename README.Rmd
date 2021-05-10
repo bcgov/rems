@@ -89,7 +89,7 @@ download_historic_data(ask = FALSE)
 ```{r}
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   parameter = c("Aluminum Total", "Cadmium Total",
-    "Copper Total", " Zinc Total",
+    "Copper Total", "Zinc Total",
     "Turbidity"),
   from_date = "2001/02/05",
   to_date = "2011/12/31",
@@ -119,12 +119,11 @@ filtered_historic2 <- hist_tbl %>%
 
 
 Finally, to get the results into your R session as a regular data frame, you must `collect()` it. 
-Note that date/times are stored in the `SQLite` database as integers, so you must convert them back to 
-`POSIXct`. There is a shortcut function to do this: `ems_posix_numeric`:
+Note that date/times are stored in the historic database as UTC, so you must convert them back PST. There is a shortcut function to help with this: `set_ems_tz()`
 
 ```{r}
 filtered_historic2 <- collect(filtered_historic2) %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START))
 glimpse(filtered_historic2)
 ```
 
@@ -205,23 +204,6 @@ head(filtered_2yr_lt_lakes_req)
 
 ```
 
-
-## Developing
-
-### Releasing a new version
-
-As of version 0.5.0 the historic data will be provided as a sqlite database
-attached to the GitHub release, as such the release workflow is as follows:
-
-1. Create a 'draft' release on GitHub with the new version number
-2. Run the script `inst/create_historic_sqlite.R` 
-3. Upload `ems_historic.sqlite.zip` to the draft release
-4. Edit release to create full release.
-
-### Updating `ems_historic.sqlite` without releasing a new version of rems:
-
-1. Run the script `inst/create_historic_sqlite.R` 
-2. Upload `ems_historic.sqlite.zip` to the latest release, overwriting the old file
 
 
 ## Project Status

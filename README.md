@@ -1,7 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<<<<<<< HEAD
+# rems 0.6.0
+=======
 # rems 0.6.1.9000
+>>>>>>> master
 
 <!-- badges: start -->
 
@@ -53,6 +57,7 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Fetching data from cache...
 nrow(two_year)
 #> [1] 951551
+
 head(two_year)
 #> # A tibble: 6 x 23
 #>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
@@ -98,13 +103,14 @@ You can also get the entire historic dataset, which has records back to
 download_historic_data(ask = FALSE)
 ```
 
+1.  Next, read in the historic data, supplying constraints to only
 2.  Next, read in the historic data, supplying constraints to only
     import the records you want:
 
 ``` r
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   parameter = c("Aluminum Total", "Cadmium Total",
-    "Copper Total", " Zinc Total",
+    "Copper Total", "Zinc Total",
     "Turbidity"),
   from_date = "2001/02/05",
   to_date = "2011/12/31",
@@ -148,20 +154,20 @@ filtered_historic2 <- hist_tbl %>%
 ```
 
 Finally, to get the results into your R session as a regular data frame,
-you must `collect()` it. Note that date/times are stored in the `SQLite`
-database as integers, so you must convert them back to `POSIXct`. There
-is a shortcut function to do this: `ems_posix_numeric`:
+you must `collect()` it. Note that date/times are stored in the historic
+database as UTC, so you must convert them back PST. There is a shortcut
+function to help with this: `set_ems_tz()`
 
 ``` r
 filtered_historic2 <- collect(filtered_historic2) %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
+  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START))
 glimpse(filtered_historic2)
 #> Rows: 5,666
 #> Columns: 4
-#> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "0121580…
-#> $ PARAMETER        <chr> "Turbidity", "Aluminum Total", "Turbidity", "Turbidi…
-#> $ COLLECTION_START <dttm> 2010-04-12 08:50:00, 2010-08-23 09:12:00, 2016-08-0…
-#> $ RESULT           <dbl> 0.900000, 0.013800, 0.320000, 0.300000, 0.700000, 0.…
+#> $ EMS_ID           <chr> "0121580", "0126400", "0126400", "0126400", "0126400…
+#> $ PARAMETER        <chr> "Cadmium Total", "Turbidity", "Copper Total", "Coppe…
+#> $ COLLECTION_START <dttm> 2009-06-23 09:15:00, 2000-12-13 14:50:00, 2017-06-0…
+#> $ RESULT           <dbl> 0.000002, 0.900000, 0.000890, 0.000700, 6.100000, 0.…
 ```
 
 You can combine the previously imported historic and two\_year data sets
@@ -248,6 +254,13 @@ the database connection using `disconnect_historic_db()`:
 disconnect_historic_db(hist_db_con)
 ```
 
+When you are finished querying the historic database, you should close
+the database connection using `disconnect_historic_db()`:
+
+``` r
+disconnect_historic_db(hist_db_con)
+```
+
 When the data are downloaded from the B.C. Data Catalogue, they are
 cached so that you don’t have to download it every time you want to use
 it. If there is newer data available in the Catalogue, you will be
@@ -262,25 +275,6 @@ If you want to remove the cached data, use the function
 remove_data_cache("2yr")
 #> Removing 2yr data from your local cache...
 ```
-
-## Developing
-
-### Releasing a new version
-
-As of version 0.5.0 the historic data will be provided as a sqlite
-database attached to the GitHub release, as such the release workflow is
-as follows:
-
-1.  Create a ‘draft’ release on GitHub with the new version number
-2.  Run the script `inst/create_historic_sqlite.R`
-3.  Upload `ems_historic.sqlite.zip` to the draft release
-4.  Edit release to create full release.
-
-### Updating `ems_historic.sqlite` without releasing a new version of rems:
-
-1.  Run the script `inst/create_historic_sqlite.R`
-2.  Upload `ems_historic.sqlite.zip` to the latest release, overwriting
-    the old file
 
 ## Project Status
 

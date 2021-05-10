@@ -1,3 +1,8 @@
+
+test_that("register_ems_units works", {
+  expect_false(register_ems_units())
+})
+
 test_that("convert_unit_values works", {
   expect_equal(convert_unit_values(1, "mg/L", "ug/L"), 1000)
   expect_equal(convert_unit_values(NA_real_, "mg/L", "ug/L"), NA_real_)

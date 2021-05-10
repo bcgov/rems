@@ -17,20 +17,16 @@
 #' Default \code{TRUE}
 #' @param dont_update should the function avoid updating the data even if there is a newer
 #' version available? Default \code{FALSE}
-#' @param n Number of records to be written at a time to the
-#' sqlite database. Default is `1e6` (one million). Try
-#' lowering this if your computer runs out of memory while
-#' creating the database.
 #' @param httr_config configuration settings passed on to [httr::GET()],
 #' such as [httr::timeout()]
 #'
-#' @return The path where the sqlite database is stored (invisibly).
+#' @return The path where the duckdb database is stored (invisibly).
 #' @export
 #'
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
-#' @importFrom RSQLite SQLite
+#' @importFrom duckdb duckdb
 #'
-download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, n = 1e6, httr_config = list()) {
+download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
 
   file_meta <- get_file_metadata("historic", "zip")
   cache_date <- get_cache_date("historic")
@@ -52,6 +48,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
     }
   }
 
+  # nocov start
   if (ask) {
     stop_for_permission(paste0("rems would like to store a copy of the historic ems data at ",
       db_path, ". Is that okay?"))
@@ -69,18 +66,15 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
     write_db_path()
   }
 
-  save_historic_data(csv_file, db_path, n)
-
-  set_cache_date("historic", file_meta[["server_date"]])
+  create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
 
   message("Successfully downloaded and stored the historic EMS data.\n",
     "You can access and subset it with the 'read_historic_data' function, or
         attach it as a remote data.frame with 'connect_historic_db()' and
         'attach_historic_data()' which you can then query with dplyr")
   invisible(db_path)
+  # nocov end
 }
-
-
 
 #' Read historic ems data into R.
 #'
@@ -108,10 +102,10 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
                                from_date = NULL, to_date = NULL, cols = "wq", check_db = TRUE) {
 
   db_path <- write_db_path()
-  exit_fun <- FALSE
+  exit_msg <- "Please download the historic data with\n the 'download_historic_data' function."
 
   if (!file.exists(db_path)) {
-    exit_fun <- TRUE
+    stop(exit_msg, call. = FALSE)
   }
 
   ## Check for missing or outdated historic database
@@ -119,30 +113,24 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     server_date <- get_file_metadata("historic", "zip")[["server_date"]]
     cache_date <- get_cache_date("historic")
     if (cache_date < server_date && file.exists(db_path)) {
+    # nocov start
       ans <- readline(paste("Your version of the historic dataset is out of date.",
         "Would you like to continue with the version you have (y/n)? ",
         sep = "\n"))
       if (tolower(ans) != "y")
-        exit_fun <- TRUE
+        stop(exit_msg, call. = FALSE)
+    # nocov end
     }
   }
-
-  if (exit_fun) stop("Please download the historic data with\n",
-    " the 'download_historic_data' function.")
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
     param_code = param_code, from_date = from_date,
     to_date = to_date, cols = cols)
 
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
-  on.exit(DBI::dbDisconnect(con))
+  con <- duckdb_connect(db_path)
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
   res <- DBI::dbGetQuery(con, qry)
-
-  if (!is.null(res$COLLECTION_START))
-    res$COLLECTION_START <- ems_posix_numeric(res$COLLECTION_START)
-  if (!is.null(res$COLLECTION_END))
-    res$COLLECTION_END <- ems_posix_numeric(res$COLLECTION_END)
 
   ret <- tibble::as_tibble(res)
 
@@ -152,19 +140,19 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
 
 #' Create a database connection to the historic database
 #'
-#' This creates a DBI connection to the SQLite database
+#' This creates a DBI connection to the duckdb database
 #' that holds the historic data table. You should call
 #' [disconnect_historic_db()] when you are finished
 #' querying the database.
 #'
 #' See [attach_historic_data()] for examples.
 #'
-#' @param db_path path to the historic SQLite database. In most cases
+#' @param db_path path to the duckdb database. In most cases
 #'  it does not need to be specified as it uses the default location
 #'  set by `rems`.
 #'
 #' @seealso [DBI::dbConnect()]
-#' @return a DBIConnection object for communicating with the SQLite database
+#' @return a DBIConnection object for communicating with the duckdb database
 #' @export
 connect_historic_db <- function(db_path = NULL) {
   if (is.null(db_path)) db_path <- write_db_path()
@@ -173,7 +161,7 @@ connect_historic_db <- function(db_path = NULL) {
          " the 'download_historic_data' function.", call. = FALSE)
   }
   message("Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.")
-  db <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+  duckdb_connect(db_path)
 }
 
 #' Close the connection to the historic database
@@ -195,7 +183,7 @@ disconnect_historic_db <- function(con) {
 #'
 #' @param con DBI connection object, most likely created by [connect_historic_db()].
 #'
-#' @return A dplyr connection to the SQLite database. See \code{\link[dplyr]{tbl}} for more.
+#' @return A dplyr connection to the duckdb database. See \code{\link[dplyr]{tbl}} for more.
 #'
 #' @export
 #'
@@ -236,16 +224,16 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL, param_code = 
   }
 
   if (!is.null(from_date)) {
-    from_date <- as.integer(as.POSIXct(from_date, tz = ems_tz()))
-    from_date_qry <- sprintf("COLLECTION_START >= %s", from_date)
+    from_date <- format(as.Date(from_date), "%Y/%m/%d")
+    from_date_qry <- sprintf("COLLECTION_START >= strptime('%s', '%%Y/%%m/%%d')", from_date)
   }
   if (!is.null(to_date)) {
-    to_date <- as.integer(as.POSIXct(to_date, tz = ems_tz()))
-    to_date_qry <- sprintf("COLLECTION_START <= %s", to_date)
+    to_date <- format(as.Date(to_date), "%Y/%m/%d")
+    to_date_qry <- sprintf("COLLECTION_START <= strptime('%s', '%%Y/%%m/%%d')", to_date)
   }
-  row_query_vec <- c(emsid_qry, parameter_qry, param_cd_qry, from_date_qry, to_date_qry)
-  row_query_vec <- row_query_vec[!is.null(row_query_vec)]
-  row_query <- paste(row_query_vec, collapse = " AND ")
+  where_clause_vec <- c(emsid_qry, parameter_qry, param_cd_qry, from_date_qry, to_date_qry)
+  where_clause_vec <- where_clause_vec[!is.null(where_clause_vec)]
+  where_clause <- paste(where_clause_vec, collapse = " AND ")
 
   if (is.null(cols) || cols == "all") {
     cols <- "*"
@@ -253,12 +241,12 @@ construct_historic_sql <- function(emsid = NULL, parameter = NULL, param_code = 
     cols <- wq_cols()
   }
 
-  col_query <- paste(cols, collapse = ", ")
+  select_clause <- paste(cols, collapse = ", ")
 
-  if (row_query == "") {
-    sql <- sprintf("SELECT %s FROM historic", col_query)
+  if (where_clause == "") {
+    sql <- sprintf("SELECT %s FROM historic", select_clause)
   } else {
-    sql <- sprintf("SELECT %s FROM historic WHERE %s", col_query, row_query)
+    sql <- sprintf("SELECT %s FROM historic WHERE %s", select_clause, where_clause)
   }
 
   sql
@@ -277,14 +265,15 @@ stringify_vec <- function(vec) {
 
 write_db_path <- function(path = getOption("rems.historic.path",
                             default = rems_data_dir())) {
-  db_path <- file.path(path, "historic_db", "ems_historic.sqlite")
-  dir.create(dirname(db_path), recursive = TRUE, showWarnings = FALSE)
-  db_path
+  fpath <- normalizePath(file.path(path, "duckdb/ems_historic.duckdb"),
+                        mustWork = FALSE)
+  dir.create(dirname(fpath), recursive = TRUE, showWarnings = FALSE)
+  fpath
 }
 
-#' Add an index to a column in a sqlite database
+#' Add an index to a column in a DBI database
 #'
-#' @param con sqlite connection
+#' @param con DBI connection
 #' @param idxname desired name for the index
 #' @param tblname table in the database
 #' @param colname col on which to create an index
@@ -299,58 +288,7 @@ add_sql_index <- function(con, tbl = "historic", colname,
   invisible(NULL)
 }
 
-save_historic_data <- function(csv_file, db_path, n) {
-  message("Saving historic data at ", db_path)
-  data <- read_ems_data(csv_file, n = n, cols = NULL, verbose = FALSE,
-                        progress = FALSE)
-  col_names <- col_specs("names_only")
-
-  # setting up sqlite
-
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_path)
-  on.exit(DBI::dbDisconnect(con))
-  tbl_name <- "historic"
-
-  i <- 1
-  cat_if_interactive("|")
-  while (nrow(data) == n) { # if not reached the end of line
-    cat_if_interactive("=")
-    skip <- i * n + 1
-    if (i == 1) {
-      DBI::dbWriteTable(con, data, name = tbl_name, overwrite = TRUE,
-                        field.types = col_specs(type = "sql"))
-    } else {
-      DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE) # write to sqlite
-    }
-    data <- read_ems_data(csv_file, n = n, cols = col_names, verbose = FALSE, skip = skip,
-                          col_names = col_names, progress = FALSE)
-    i <- i + 1
-  }
-
-  if (nrow(data) > 0) {
-    DBI::dbWriteTable(con, data, name = tbl_name, append = TRUE)
-  }
-
-  message("Creating indexes")
-  cat_if_interactive("|=")
-  add_sql_index(con, colname = "EMS_ID")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "COLLECTION_START")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "COLLECTION_END")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "LOCATION_PURPOSE")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "SAMPLE_CLASS")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "SAMPLE_STATE")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "PARAMETER")
-  cat_if_interactive("=")
-  add_sql_index(con, colname = "PARAMETER_CODE")
-
-  cat_if_interactive("| 100%\n")
-
-  invisible(TRUE)
+duckdb_connect <- function(db_path, read_only = TRUE) {
+  DBI::dbConnect(duckdb::duckdb(), db_path, read_only = read_only,
+                 timezone_out = "Etc/GMT+8", tz_out_convert = "force")
 }
-
