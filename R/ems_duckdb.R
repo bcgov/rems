@@ -161,7 +161,7 @@ connect_historic_db <- function(db_path = NULL) {
          " the 'download_historic_data' function.", call. = FALSE)
   }
   message("Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.")
-  # DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE, timezone_out = "Etc/GMT+8", tz_out_convert = "force")
+  DBI::dbConnect(duckdb::duckdb(), db_path, read_only = TRUE, timezone_out = "Etc/GMT+8", tz_out_convert = "force")
   duckdb_connect(db_path)
 }
 

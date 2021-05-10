@@ -15,7 +15,9 @@ test_that("connecting and attaching historic duckdb works",{
   expect_equal(names(collected), names(ref))
 
   # Test columns including time zones
-  expect_equal(collected, read_ems_data("test_historic.csv"))
+  expect_equal(attributes(collected$COLLECTION_START)[["tzone"]], "Etc/GMT+8")
+  expect_equal(attributes(collected$COLLECTION_END)[["tzone"]], "Etc/GMT+8")
+  expect_equal(collected, ref)
 })
 
 test_that("read_historic_data works", {
