@@ -62,7 +62,7 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   on.exit(unlink(csv_file), add = TRUE)
 
   if (db_exists) {
-    unlink(dirname(db_path), recursive = TRUE)
+    file.remove(db_path)
     write_db_path()
   }
 
