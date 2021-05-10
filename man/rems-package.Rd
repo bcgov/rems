@@ -13,6 +13,11 @@ Download and parse data from B.C.'s Environmental
 \author{
 \strong{Maintainer}: Andy Teucher \email{andy.teucher@gov.bc.ca}
 
+Authors:
+\itemize{
+  \item Karly Harker \email{karly.harker@gov.bc.ca}
+}
+
 Other contributors:
 \itemize{
   \item Province of British Columbia [copyright holder]
