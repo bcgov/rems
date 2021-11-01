@@ -86,6 +86,6 @@ jobs:
       - name: Test coverage
         if: matrix.config.os == 'macOS-latest' && matrix.config.r == 'release'
         run: |
-          remotes::install_github("r-lib/covr@gh-actions")
+          install.packages("covr")
           covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")
         shell: Rscript {0}
