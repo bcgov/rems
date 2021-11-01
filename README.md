@@ -97,18 +97,22 @@ filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
 ## Historic data
 
 You can also get the entire historic dataset, which has records back to
-1964. This needs to be done in two steps:
+1964.
 
-1.  First download the dataset using `download_historic_data`, which
-    downloads the data and stores it in a
-    [**DuckDB**](https://duckdb.org/) database:
+First download the dataset using `download_historic_data`, which
+downloads the data and stores it in a [**DuckDB**](https://duckdb.org/)
+database:
 
 ``` r
 download_historic_data(ask = FALSE)
 ```
 
-2.  Next, read in the historic data, supplying constraints to only
-    import the records you want:
+There are two ways to pull data from the historic dataset into R:
+
+### 1. `read_historic_data()`
+
+Read in the historic data, supplying constraints to only import the
+records you want:
 
 ``` r
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
@@ -120,6 +124,8 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   check_db = FALSE)
 ```
 
+### 2. `dplyr`
+
 You can also query the historic database using `dplyr`, which ultimately
 gives you more flexibility than using `read_historic_data`:
 
@@ -128,7 +134,8 @@ First, create a connection to the database using
 R session using `attach_historic_data()`. This creates an object which
 behaves like a data frame, which you can query with dplyr. The advantage
 is that the computation is done in the database rather than importing
-all of the records into R (which would likely be impossible).
+all of the records into R (which would likely be impossible). This is
+illustrated below:
 
 ``` r
 library(dplyr)
