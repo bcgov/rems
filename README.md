@@ -53,10 +53,12 @@ data):
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Your version of 2yr is dated 2021-10-27 03:40:00 and there is a newer version available. Would you like to download it? (y/n)
-#> Fetching data from cache...
+#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
 nrow(two_year)
-#> [1] 1672007
+#> [1] 1759887
 head(two_year)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION  LATITUDE LONGITUDE LOCATION_TYPE  
@@ -98,7 +100,8 @@ You can also get the entire historic dataset, which has records back to
 1964. This needs to be done in two steps:
 
 1.  First download the dataset using `download_historic_data`, which
-    downloads the data and stores it in a `SQLite` database:
+    downloads the data and stores it in a
+    [**DuckDB**](https://duckdb.org/) database:
 
 ``` r
 download_historic_data(ask = FALSE)

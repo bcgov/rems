@@ -79,7 +79,7 @@ filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
 You can also get the entire historic dataset, which has records back to 1964. This needs to be done in two steps: 
 
 1. First download the dataset using `download_historic_data`, which downloads 
-the data and stores it in a `SQLite` database:
+the data and stores it in a [**DuckDB**](https://duckdb.org/) database:
 
 ```{r, eval=!file.exists(rems:::write_db_path())}
 download_historic_data(ask = FALSE)
