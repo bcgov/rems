@@ -74,6 +74,7 @@ filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
   to_date = "2015/12/31")
 ```
 
+## Historic data
 
 You can also get the entire historic dataset, which has records back to 1964. This needs to be done in two steps: 
 
@@ -119,13 +120,7 @@ filtered_historic2 <- hist_tbl %>%
 
 
 Finally, to get the results into your R session as a regular data frame, you must `collect()` it. 
-Note that date/times are stored in the historic database as UTC, so you must convert them back PST. There is a shortcut function to help with this: `set_ems_tz()`
-
-```{r}
-filtered_historic2 <- collect(filtered_historic2) %>%
-  mutate(COLLECTION_START = set_ems_tz(COLLECTION_START))
-glimpse(filtered_historic2)
-```
+Note that date/times are returned to R in the Pacific Standard Time timezone (PST; UTC-8).
 
 You can combine the previously imported historic and two_year data sets using `bind_ems_data`:
 
