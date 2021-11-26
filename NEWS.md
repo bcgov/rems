@@ -7,7 +7,7 @@
 * `lt_lake_sites()` now only returns EMS IDs for active sites in the B.C. long-term lakes monitoring program. #60, @KarHarker
 * Fixed a bug where the entire data cache was deleted when the historic data were updated. #62, #63
 
-* Removed `ems_posix_ct()` function
+* Removed `ems_posix_numeric()` function
 
 # rems 0.6.1
 
