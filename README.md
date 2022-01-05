@@ -167,6 +167,10 @@ Finally, to get the results into your R session as a regular data frame,
 you must `collect()` it. Note that date/times are returned to R in the
 Pacific Standard Time timezone (PST; UTC-8).
 
+``` r
+filtered_historic3 <- collect(filtered_historic2)
+```
+
 You can combine the previously imported historic and two_year data sets
 using `bind_ems_data`:
 
