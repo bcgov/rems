@@ -2,6 +2,7 @@
 
 * Switched from using SQLite to [DuckDB](https://duckdb.org/) as a backend for the historic database. This allows fast creation of the database directly from the csv file downloaded from the [B.C. Data Catalogue](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659) (#52). 
 * The data returned to R from the database is now returned with dates in Pacific Standard Time (PST; UTC -8), which matches the 2-year and 4-year datasets
+* Removed `ems_posix_numeric()` function
 
 # rems 0.7.0
 
@@ -9,8 +10,6 @@
 * Added new helper function `lt_lake_req()` that returns the requisition IDs of lakes in the B.C. long-term lakes monitoring program. To compliment this, `filter_ems_data()` now has a `req_id` argument that takes a vector of requisition ids (which can be supplied by `lt_lake_req()`). #60, @KarHarker
 * `lt_lake_sites()` now only returns EMS IDs for active sites in the B.C. long-term lakes monitoring program. #60, @KarHarker
 * Fixed a bug where the entire data cache was deleted when the historic data were updated. #62, #63
-
-* Removed `ems_posix_numeric()` function
 
 # rems 0.6.1
 
