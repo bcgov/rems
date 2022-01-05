@@ -193,7 +193,8 @@ head(all_data)
 #> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
 #> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
-And remember to disconnect the database when you are done. 
+And when you are finished querying the historic database, you should close
+the database connection using
 
 ``` r
 disconnect_historic_db(hist_db_con)
