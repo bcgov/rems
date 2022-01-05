@@ -1,14 +1,17 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.6.1.9000
+# rems 0.7.0
 
 <!-- badges: start -->
 
-[![Codecov test coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
+[![Codecov test
+coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
-[![R build status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
+[![R build
+status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 <!-- badges: end -->
 
@@ -40,8 +43,8 @@ install_github("bcgov/rems")
 
 **NOTE:** If you are using Windows, you must be running the 64-bit
 version of R, as the 32-bit version cannot handle the size of the EMS
-data. In RStudio, click on Tools -&gt; Global Options and ensure the 64
-bit version is chosen in the *R version* box.
+data. In RStudio, click on Tools -> Global Options and ensure the 64 bit
+version is chosen in the *R version* box.
 
 You can use the `get_ems_data()` function to get last two years of data
 (you can also specify `which = "4yr"` to get the last four years of
@@ -50,25 +53,28 @@ data):
 ``` r
 library(rems)
 two_year <- get_ems_data(which = "2yr", ask = FALSE)
-#> Fetching data from cache...
+#> Downloading latest '2yr' EMS data from BC Data Catalogue (url: https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/ems_sample_results_current_expanded.csv)
+#> Reading data from file...
+#> Caching data on disk...
+#> Loading data...
 nrow(two_year)
-#> [1] 951551
+#> [1] 1759887
 head(two_year)
-#> # A tibble: 6 x 23
-#>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
-#>   <chr>  <chr>               <dbl>     <dbl> <chr>         <dttm>             
-#> 1 01208… COWICHAN RIVER …     48.8     -124. RIVER,STREAM… 2020-12-02 17:50:00
-#> 2 01208… COWICHAN RIVER …     48.8     -124. RIVER,STREAM… 2020-12-02 17:50:00
-#> 3 01208… COWICHAN RIVER …     48.8     -124. RIVER,STREAM… 2020-12-02 17:50:00
-#> 4 01208… COWICHAN RIVER …     48.8     -124. RIVER,STREAM… 2020-12-02 17:50:00
-#> 5 01208… COWICHAN RIVER …     48.8     -124. RIVER,STREAM… 2020-12-02 17:50:00
-#> 6 01208… COWICHAN RIVER …     48.8     -124. RIVER,STREAM… 2020-12-02 17:50:00
-#> # … with 17 more variables: LOCATION_PURPOSE <chr>, PERMIT <chr>,
-#> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
-#> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
-#> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
-#> #   METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>, QA_INDEX_CODE <chr>,
-#> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+#> # A tibble: 6 × 24
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION  LATITUDE LONGITUDE LOCATION_TYPE  
+#>   <chr>   <chr>          <chr>                   <dbl>     <dbl> <chr>          
+#> 1 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#> 2 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#> 3 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#> 4 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#> 5 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#> 6 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
+#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
+#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
+#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 
 By default, `get_ems_data` imports only a subset of columns that are
@@ -88,28 +94,37 @@ filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
   to_date = "2015/12/31")
 ```
 
-You can also get the entire historic dataset, which has records back to
-1964. This needs to be done in two steps:
+## Historic data
 
-1.  First download the dataset using `download_historic_data`, which
-    downloads the data and stores it in a `SQLite` database:
+You can also get the entire historic dataset, which has records back to
+1964.
+
+First download the dataset using `download_historic_data`, which
+downloads the data and stores it in a [**DuckDB**](https://duckdb.org/)
+database:
 
 ``` r
 download_historic_data(ask = FALSE)
 ```
 
-2.  Next, read in the historic data, supplying constraints to only
-    import the records you want:
+There are two ways to pull data from the historic dataset into R:
+
+### 1. `read_historic_data()`
+
+Read in the historic data, supplying constraints to only import the
+records you want:
 
 ``` r
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
   parameter = c("Aluminum Total", "Cadmium Total",
-    "Copper Total", " Zinc Total",
+    "Copper Total", "Zinc Total",
     "Turbidity"),
   from_date = "2001/02/05",
   to_date = "2011/12/31",
   check_db = FALSE)
 ```
+
+### 2. `dplyr`
 
 You can also query the historic database using `dplyr`, which ultimately
 gives you more flexibility than using `read_historic_data`:
@@ -119,7 +134,8 @@ First, create a connection to the database using
 R session using `attach_historic_data()`. This creates an object which
 behaves like a data frame, which you can query with dplyr. The advantage
 is that the computation is done in the database rather than importing
-all of the records into R (which would likely be impossible).
+all of the records into R (which would likely be impossible). This is
+illustrated below:
 
 ``` r
 library(dplyr)
@@ -148,43 +164,30 @@ filtered_historic2 <- hist_tbl %>%
 ```
 
 Finally, to get the results into your R session as a regular data frame,
-you must `collect()` it. Note that date/times are stored in the `SQLite`
-database as integers, so you must convert them back to `POSIXct`. There
-is a shortcut function to do this: `ems_posix_numeric`:
+you must `collect()` it. Note that date/times are returned to R in the
+Pacific Standard Time timezone (PST; UTC-8).
 
-``` r
-filtered_historic2 <- collect(filtered_historic2) %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
-glimpse(filtered_historic2)
-#> Rows: 5,666
-#> Columns: 4
-#> $ EMS_ID           <chr> "0121580", "0121580", "0121580", "0121580", "0121580…
-#> $ PARAMETER        <chr> "Turbidity", "Aluminum Total", "Turbidity", "Turbidi…
-#> $ COLLECTION_START <dttm> 2010-04-12 08:50:00, 2010-08-23 09:12:00, 2016-08-0…
-#> $ RESULT           <dbl> 0.900000, 0.013800, 0.320000, 0.300000, 0.700000, 0.…
-```
-
-You can combine the previously imported historic and two\_year data sets
+You can combine the previously imported historic and two_year data sets
 using `bind_ems_data`:
 
 ``` r
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
 head(all_data)
-#> # A tibble: 6 x 23
-#>   EMS_ID MONITORING_LOCA… LATITUDE LONGITUDE LOCATION_TYPE COLLECTION_START   
-#>   <chr>  <chr>               <dbl>     <dbl> <chr>         <dttm>             
-#> 1 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2010-04-12 08:50:00
-#> 2 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2010-08-23 09:12:00
-#> 3 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2010-07-20 09:47:00
-#> 4 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2009-09-29 09:25:00
-#> 5 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2003-02-06 13:30:00
-#> 6 01215… ENGLISHMAN RIVE…     49.3     -124. RIVER,STREAM… 2007-11-20 09:15:00
-#> # … with 17 more variables: LOCATION_PURPOSE <chr>, PERMIT <chr>,
-#> #   SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>, SAMPLE_DESCRIPTOR <chr>,
-#> #   PARAMETER_CODE <chr>, PARAMETER <chr>, ANALYTICAL_METHOD_CODE <chr>,
-#> #   ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>, RESULT <dbl>, UNIT <chr>,
-#> #   METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>, QA_INDEX_CODE <chr>,
-#> #   UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+#> # A tibble: 6 × 24
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION  LATITUDE LONGITUDE LOCATION_TYPE  
+#>   <chr>   <chr>          <chr>                   <dbl>     <dbl> <chr>          
+#> 1 0126400 <NA>           QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
+#> 2 0126400 08189513       QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
+#> 3 0121580 08312097       ENGLISHMAN RIVER AT…     49.3     -124. RIVER,STREAM O…
+#> 4 0121580 08214745       ENGLISHMAN RIVER AT…     49.3     -124. RIVER,STREAM O…
+#> 5 0126400 08193504       QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
+#> 6 0126400 08334138       QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
+#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
+#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
+#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
+#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 
 ## Units
@@ -200,34 +203,32 @@ updates the `MDL_UNIT` column accordingly:
 filter(all_data, UNIT != MDL_UNIT) %>% 
   select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
   head()
-#> # A tibble: 6 x 4
-#>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
-#>      <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.0138   mg/L                   0.5   ug/L    
-#> 2 0.000002 mg/L                   0.001 ug/L    
-#> 3 0.00074  mg/L                   0.02  ug/L    
-#> 4 0.0947   mg/L                   0.2   ug/L    
-#> 5 0.00072  mg/L                   0.02  ug/L    
-#> 6 0.00068  mg/L                   0.02  ug/L
+#> # A tibble: 6 × 4
+#>    RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
+#>     <dbl> <chr>                  <dbl> <chr>   
+#> 1 0.00207 mg/L                    0.05 ug/L    
+#> 2 0.00053 mg/L                    0.05 ug/L    
+#> 3 0.105   mg/L                    0.2  ug/L    
+#> 4 0.00078 mg/L                    0.02 ug/L    
+#> 5 0.0002  mg/L                    0.2  ug/L    
+#> 6 0.0138  mg/L                    0.5  ug/L
 
 all_data <- standardize_mdl_units(all_data)
-#> Successfully converted units in 1629 rows.
+#> Successfully converted units in 2172 rows.
 
 # Check again
 filter(all_data, UNIT != MDL_UNIT) %>% 
   select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
   head()
-#> # A tibble: 3 x 4
+#> # A tibble: 4 × 4
 #> # Groups:   MDL_UNIT, UNIT [1]
 #>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
 #>      <dbl> <chr>                  <dbl> <chr>   
 #> 1 0.00065  mg/L                      NA ug/L    
 #> 2 0.000005 mg/L                      NA ug/L    
-#> 3 0.0122   mg/L                      NA ug/L
+#> 3 0.0122   mg/L                      NA ug/L    
+#> 4 0.00065  mg/L                      NA ug/L
 ```
-
-For more advanced filtering, selecting, and summarizing, I recommend
-using the `dplyr` package.
 
 Then you can plot your data with ggplot2:
 
@@ -239,7 +240,7 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
-![](fig/README-unnamed-chunk-12-1.png)<!-- -->
+![](fig/README-unnamed-chunk-11-1.png)<!-- -->
 
 When you are finished querying the historic database, you should close
 the database connection using `disconnect_historic_db()`:
@@ -263,24 +264,66 @@ remove_data_cache("2yr")
 #> Removing 2yr data from your local cache...
 ```
 
-## Developing
+## Long-term lake monitoring site search functions
 
-### Releasing a new version
+There are two ways to select active sites in the long-term lake
+monitoring program. The `lt_lake_sites` function selects the `EMS_ID` of
+active sites. The `lt_lake_req` function selects the `REQUISITION_ID` of
+active sites. Using the `lt_lake_sites` will provide all data collected
+under the `EMS_ID`, whereas using `lt_lake_req` will filter data
+collected by the long-term lakes monitoring group. Both functions can be
+used with `filter_ems_data` to easily pull data from active long-term
+lake monitoring sites.
 
-As of version 0.5.0 the historic data will be provided as a sqlite
-database attached to the GitHub release, as such the release workflow is
-as follows:
+``` r
+head(lt_lake_sites())
+#> [1] "1100844" "1100953" "E207466" "E217509" "E217508" "E217507"
+head(lt_lake_req())
+#> [1] "50223257" "50223255" "50223254" "50223253" "50223252" "50223251"
 
-1.  Create a ‘draft’ release on GitHub with the new version number
-2.  Run the script `inst/create_historic_sqlite.R`
-3.  Upload `ems_historic.sqlite.zip` to the draft release
-4.  Edit release to create full release.
+#use with filter_ems_data
+filtered_2yr_lt_lakes_ems <- filter_ems_data(two_year, emsid = lt_lake_sites(),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"))
+head(filtered_2yr_lt_lakes_ems)
+#> # A tibble: 6 × 24
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
+#>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
+#> 1 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 2 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 3 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 4 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 5 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 6 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
+#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
+#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
+#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 
-### Updating `ems_historic.sqlite` without releasing a new version of rems:
-
-1.  Run the script `inst/create_historic_sqlite.R`
-2.  Upload `ems_historic.sqlite.zip` to the latest release, overwriting
-    the old file
+filtered_2yr_lt_lakes_req <- filter_ems_data(two_year, req_id = lt_lake_req(),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"))
+head(filtered_2yr_lt_lakes_req)
+#> # A tibble: 6 × 24
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
+#>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
+#> 1 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 2 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 3 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 4 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 5 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 6 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
+#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
+#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
+#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+```
 
 ## Project Status
 

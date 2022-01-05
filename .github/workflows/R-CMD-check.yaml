@@ -3,7 +3,7 @@
 on:
   push:
     branches:
-      - master
+      - '**'
   pull_request:
     branches:
       - master
@@ -65,6 +65,8 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
+          # latest dev version of duckdb
+          # install.packages("https://github.com/cwida/duckdb/releases/download/v0.2.5/duckdb_r_src.tar.gz", repos = NULL)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
@@ -84,6 +86,6 @@ jobs:
       - name: Test coverage
         if: matrix.config.os == 'macOS-latest' && matrix.config.r == 'release'
         run: |
-          remotes::install_github("r-lib/covr@gh-actions")
+          install.packages("covr")
           covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")
         shell: Rscript {0}

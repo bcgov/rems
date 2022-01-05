@@ -4,14 +4,17 @@
 \name{rems-package}
 \alias{rems}
 \alias{rems-package}
-\title{rems: Get Data From British Columbia's Environmental Monitoring
-    System}
+\title{rems: Get Data from British Columbia's Environmental Monitoring System}
 \description{
-Download and parse data from B.C.'s Environmental
-    Monitoring System.
+Download and parse data from B.C.'s Environmental Monitoring System.
 }
 \author{
 \strong{Maintainer}: Andy Teucher \email{andy.teucher@gov.bc.ca}
+
+Authors:
+\itemize{
+  \item Karly Harker \email{karly.harker@gov.bc.ca}
+}
 
 Other contributors:
 \itemize{

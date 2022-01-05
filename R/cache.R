@@ -12,25 +12,34 @@
 
 write_cache <- function() {
   path <- rems_data_dir()
-  ._remsCache_ <<- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
+  ._remsenv_$cache <- storr::storr_rds(path, compress = FALSE, default_namespace = "rems")
 }
 
-cache_exists <- function() exists("._remsCache_")
+cache_exists <- function() {
+  exists("cache", envir = ._remsenv_) && dir.exists(rems_data_dir()) && rems_data_dir() == ._remsenv_$cache$driver$path
+}
 
-rems_data_dir <- function() rappdirs::user_data_dir("rems")
+rems_data_dir <- function() {
+  path <- getOption("rems.cache.dir", default = rappdirs::user_data_dir("rems"))
+  normalizePath(path, mustWork = FALSE)
+}
 
 set_cache_date <- function(which, value) {
   stopifnot(cache_exists())
 
-  if (._remsCache_$exists("cache_dates")) {
-    cache_dates <- ._remsCache_$get("cache_dates")
+  if (!inherits(value, "POSIXct") && !is.null(value)) {
+    stop("cache date must be POSIXct or NULL")
+  }
+
+  if (._remsenv_$cache$exists("cache_dates")) {
+    cache_dates <- ._remsenv_$cache$get("cache_dates")
   } else {
     cache_dates <- list()
   }
   if (!is.null(value)) value <- as.numeric(value)
   cache_dates[which] <- value # store time as a numeric value
 
-  ._remsCache_$set("cache_dates", cache_dates)
+  ._remsenv_$cache$set("cache_dates", cache_dates)
 }
 
 #' Get the date(s) when ems data was last updated locally.
@@ -42,8 +51,8 @@ set_cache_date <- function(which, value) {
 get_cache_date <- function(which) {
   stopifnot(cache_exists())
 
-  if (!._remsCache_$exists("cache_dates")) return(-Inf)
-  cache_date <- ._remsCache_$get("cache_dates")[[which]]
+  if (!._remsenv_$cache$exists("cache_dates")) return(-Inf)
+  cache_date <- ._remsenv_$cache$get("cache_dates")[[which]]
   if (is.null(cache_date)) return(-Inf)
   as.POSIXct(cache_date, origin = "1970/01/01") # converted numeric to POSIXct
 }
@@ -56,12 +65,12 @@ get_cache_date <- function(which) {
 #' @return TRUE
 #' @noRd
 burn_it_down <- function() {
-  if (file.exists(rems_data_dir()) && cache_exists()) {
-    ._remsCache_$destroy()
+  if (cache_exists()) {
+    ._remsenv_$cache$destroy()
+    rm("cache", envir = ._remsenv_)
     message("Removed rems cache. Please restart R and reload rems before continuing.")
-  } else {
-    write_cache()
   }
+  write_cache()
   invisible(TRUE)
 }
 
@@ -91,11 +100,11 @@ remove_it <- function(which) {
   if (which == "historic") {
     fpath <- write_db_path()
     if (file.exists(fpath)) {
-      file.remove(fpath)
+      unlink(dirname(fpath), recursive = TRUE)
     }
   } else if (which %in% c("2yr", "4yr")) {
     stopifnot(cache_exists())
-    ._remsCache_$del(which)
+    ._remsenv_$cache$del(which)
   }
   set_cache_date(which, value = NULL)
 }

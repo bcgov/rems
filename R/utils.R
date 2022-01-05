@@ -12,7 +12,7 @@
 
 httr_progress <- function() {
   if (interactive()) {
-    return(httr::progress("down"))
+    return(httr::progress("down")) # nocov
   }
 }
 
@@ -20,16 +20,8 @@ base_url <- function() {
   "https://pub.data.gov.bc.ca/datasets/949f2233-9612-4b06-92a9-903e817da659/"
 }
 
-#' Convert an integer representing a Unix date/time to POSIXct (R date/time) class
-#'
-#' @param x Datetime integer
-#'
-#' @return POSIXct vector
-#' @export
-ems_posix_numeric <- function(x) {
-  ems_posixct.numeric(x)
-}
-
+# nocov start
+# (interactive use only)
 stop_for_permission <- function(question) {
   permission <- get_write_permission(question)
   if (!permission) stop("Permission denied. Exiting", call. = FALSE)
@@ -42,6 +34,7 @@ get_write_permission <- function(question) {
   permission <- ans == 1L
   permission
 }
+# nocov end
 
 # Add leading zeroes to emsids to make sure they are 7 characters wide.
 # Could use string::stri_pad_left, but didn't want extra dependency
@@ -60,10 +53,10 @@ make_file_hash <- function(file) {
   if (os == "windows") {
     certutil_output <- system(sprintf("CertUtil -hashfile %s", file), intern = TRUE)
     ret <- gsub("\\s+", "", certutil_output[2])
-  } else if (os == "osx") {
+  } else if (os == "macos") {
     shasum_output <- system(sprintf("shasum %s", file), intern = TRUE)
     ret <- strsplit(shasum_output, "\\s+")[[1]][1]
-  } else if (os == "unix") {
+  } else if (os == "linux") {
     sha1sum_output <- system(sprintf("sha1sum %s", file), intern = TRUE)
     ret <- strsplit(sha1sum_output, "\\s+")[[1]][1]
   }
@@ -78,17 +71,17 @@ add_rems_type <- function(obj, which) {
 }
 
 find_os <- function() {
-  if (.Platform$OS.type == "windows") {
-    "windows"
-  } else if (Sys.info()["sysname"] == "Darwin") {
-    "osx"
-  } else if (.Platform$OS.type == "unix") {
-    "unix"
+  platform_os <- .Platform$OS.type
+
+  if (platform_os == "windows") {
+    return("windows")
+  } else if (platform_os == "unix") {
+    return(ifelse(grepl("darwin", tolower(R.version$os)), "macos", "linux"))
   } else {
     stop("Could not find oprating system")
   }
 }
 
 cat_if_interactive <- function(...) {
-  if (interactive()) cat(...)
+  if (interactive()) cat(...) # nocov
 }

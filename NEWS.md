@@ -1,9 +1,13 @@
 # rems 0.7.0
 
+* Switched from using SQLite to [DuckDB](https://duckdb.org/) as a backend for the historic database. This allows fast creation of the database directly from the csv file downloaded from the [B.C. Data Catalogue](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659) (#52). 
+* The data returned to R from the database is now returned with dates in Pacific Standard Time (PST; UTC -8), which matches the 2-year and 4-year datasets
 * Added new helper function `standardize_mdl_units()` to detect when `MDL_UNIT` and `UNIT` are different, and convert `METHOD_DETECTION_LIMIT` to the same unit as `RESULT` (and update the `MDL_UNIT` column accordingly). (https://github.com/bcgov/wqbc/issues/158, #57)
 * Added new helper function `lt_lake_req()` that returns the requisition IDs of lakes in the B.C. long-term lakes monitoring program. To compliment this, `filter_ems_data()` now has a `req_id` argument that takes a vector of requisition ids (which can be supplied by `lt_lake_req()`). #60, @KarHarker
 * `lt_lake_sites()` now only returns EMS IDs for active sites in the B.C. long-term lakes monitoring program. #60, @KarHarker
 * Fixed a bug where the entire data cache was deleted when the historic data were updated. #62, #63
+
+* Removed `ems_posix_numeric()` function
 
 # rems 0.6.1
 
@@ -22,14 +26,8 @@ update of the sqlite historic dataset in `rems`, but it means that it must be re
 ```r
 con <- connect_historic_db()
 hist_tbl <- attach_historic_data(con)
-
-hist_tbl %>%
-  select(EMS_ID, PARAMETER, COLLECTION_START, RESULT) %>%
-  filter(EMS_ID == "0121580", PARAMETER == "Aluminum Total") %>%
-  collect() %>%
-  mutate(COLLECTION_START = ems_posix_numeric(COLLECTION_START))
-
-disconnect_historic_db(con)
+## Do your work with hist_tbl
+disconnect_historic_db()
 ```
 
 # rems 0.5.2

@@ -73,7 +73,9 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
                          ask = TRUE, dont_update = FALSE, check_only = FALSE) {
   which <- match.arg(which, c("2yr", "4yr"))
 
-  which_exists <- ._remsCache_$exists(which)
+  if (!cache_exists()) write_cache()
+
+  which_exists <- ._remsenv_$cache$exists(which)
 
   cols <- if (cols == "wq") {
     wq_cols()
@@ -87,68 +89,95 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
         " data is not currently cached.")
     }
     message("Fetching data from cache...")
-    return(rems_data_from_cache(which, cols))
+    return(rems_data_from_cache(which, cols, n))
   }
 
   update <- FALSE # Don't update by default
   if (force || !which_exists) {
-    update <- TRUE
-  } else if (._remsCache_$exists("cache_dates")) {
+    update <- TRUE # nocov
+  } else if (._remsenv_$cache$exists("cache_dates")) {
     cache_date <- get_cache_date(which)
     file_meta <- get_file_metadata(which)
 
     if (cache_date < unique(file_meta[["server_date"]])) {
+    # nocov start
       ans <- readline(paste0("Your version of ", which, " is dated ",
         cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
       if (tolower(ans) == "y") update <- TRUE
+    # nocov end
     }
   }
 
   if (check_only) return(TRUE)
 
   if (update) {
+    # nocov start
     if (ask) {
       stop_for_permission(paste0("rems would like to store a copy of the ", which,
         " ems data at", rems_data_dir(), ". Is that okay?"))
     }
     return(update_cache(which = which, n = n, cols = cols))
+    # nocov end
   }
 
   message("Fetching data from cache...")
-  rems_data_from_cache(which, cols)
+  rems_data_from_cache(which, cols, n)
 }
 
-rems_data_from_cache <- function(which, cols) {
-  add_rems_type(._remsCache_$get(which)[, cols], which)
+rems_data_from_cache <- function(which, cols, n = Inf) {
+  stopifnot(cache_exists())
+  ret <- add_rems_type(._remsenv_$cache$get(which)[, cols], which)
+  if (is.infinite(n)) return(ret)
+
+  ret[seq_len(n), , drop = FALSE]
 }
 
 update_cache <- function(which, n, cols) {
-  file_meta <- get_file_metadata(which)
+  # nocov start
+  if (!cache_exists()) write_cache()
+
+  filetype <- if (which == "4yr") "zip" else "csv"
+  file_meta <- get_file_metadata(which, filetype)
 
   url <- paste0(base_url(), file_meta[["filename"]])
   message("Downloading latest '", which,
     "' EMS data from BC Data Catalogue (url: ", url, ")")
   csv_file <- download_ems_data(url)
-  data_obj <- read_ems_data(csv_file, n = n, cols = NULL)
 
-  message("Caching data on disk...")
-  ._remsCache_$set(which, data_obj)
-  set_cache_date(which = which, value = file_meta[["server_date"]])
+  data_obj <- file_to_cache(csv_file, which = which,
+                            cache_date = file_meta[["server_date"]])
 
   message("Loading data...")
+
+  if (is.finite(n)) {
+    data_obj <- data_obj[seq_len(n), , drop = FALSE]
+  }
+
   add_rems_type(data_obj[, cols], which)
+  # nocov end
 }
 
-#' @importFrom utils unzip
-#' @importFrom httr GET
-#' @importFrom stringr str_extract
 download_ems_data <- function(url) {
+  # nocov start
   ext <- tools::file_ext(url)
   tfile <- tempfile(fileext = paste0(".", ext))
   res <- httr::GET(url, httr::write_disk(tfile), httr_progress())
   cat_if_interactive("\n")
   httr::stop_for_status(res)
   handle_zip(res$request$output$path)
+  # nocov end
+}
+
+file_to_cache <- function(csv_file, which, cache_date) {
+  data_obj <- read_ems_data(csv_file, n = Inf)
+
+  if (!cache_exists()) write_cache()
+
+  message("Caching data on disk...")
+  ._remsenv_$cache$set(which, data_obj)
+  set_cache_date(which = which, value = cache_date)
+
+  data_obj
 }
 
 #' @importFrom xml2 read_html as_list

@@ -54,77 +54,79 @@ wq_cols <- function() {
     "LOWER_DEPTH")
 }
 
-col_specs <- function(type = c("readr", "sql", "all", "names_only"), subset = NULL) {
+col_specs <- function(type = c("readr", "sql", "base", "all", "names_only"), subset = NULL) {
 
   type <- match.arg(type)
 
   specs <- list(
-    "EMS_ID" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "MONITORING_LOCATION" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "LATITUDE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "LONGITUDE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "LOCATION_TYPE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "COLLECTION_START" = list(readr_fun = col_datetime(format = "%Y%m%d%H%M%S"), sql_type = "REAL"),
-    "COLLECTION_END" = list(readr_fun = col_datetime(format = "%Y%m%d%H%M%S"), sql_type = "REAL"),
-    "LOCATION_PURPOSE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "PERMIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "PERMIT_RELATIONSHIP" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "DISCHARGE_TO" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "REQUISITION_ID" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SAMPLING_AGENCY" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "ANALYZING_AGENCY" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "COLLECTION_METHOD" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SAMPLE_CLASS" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SAMPLE_STATE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SAMPLE_DESCRIPTOR" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "PARAMETER_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "PARAMETER" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "ANALYTICAL_METHOD_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "ANALYTICAL_METHOD" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "RESULT_LETTER" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "RESULT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "METHOD_DETECTION_LIMIT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "MDL_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "QA_INDEX_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "UPPER_DEPTH" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "LOWER_DEPTH" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "TIDE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "AIR_FILTER_SIZE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "AIR_FLOW_VOLUME" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "FLOW_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "COMPOSITE_ITEMS" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "CONTINUOUS_AVERAGE" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "CONTINUOUS_MAXIMUM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "CONTINUOUS_MINIMUM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "CONTINUOUS_UNIT_CODE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "CONTINUOUS_DURATION" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "CONTINUOUS_DURATION_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "CONTINUOUS_DATA_POINTS" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "TISSUE_TYPE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SAMPLE_SPECIES" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SEX" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "LIFE_STAGE" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "BIO_SAMPLE_VOLUME" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "VOLUME_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "BIO_SAMPLE_AREA" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "AREA_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "BIO_SIZE_FROM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "BIO_SIZE_TO" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "SIZE_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "BIO_SAMPLE_WEIGHT" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "WEIGHT_UNIT" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "BIO_SAMPLE_WEIGHT_FROM" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "BIO_SAMPLE_WEIGHT_TO" = list(readr_fun = col_double(), sql_type = "DOUBLE"),
-    "WEIGHT_UNIT_1" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "SPECIES" = list(readr_fun = col_character(), sql_type = "TEXT"),
-    "RESULT_LIFE_STAGE" = list(readr_fun = col_character(), sql_type = "TEXT")
+    "EMS_ID" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "MONITORING_LOCATION" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "LATITUDE" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "LONGITUDE" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "LOCATION_TYPE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "COLLECTION_START" = list(readr_fun = col_datetime(format = ems_timestamp_format()), base_type = "POSIXct", sql_type = "TIMESTAMP"),
+    "COLLECTION_END" = list(readr_fun = col_datetime(format = ems_timestamp_format()), base_type = "POSIXct", sql_type = "TIMESTAMP"),
+    "LOCATION_PURPOSE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "PERMIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "PERMIT_RELATIONSHIP" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "DISCHARGE_TO" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "REQUISITION_ID" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SAMPLING_AGENCY" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "ANALYZING_AGENCY" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "COLLECTION_METHOD" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SAMPLE_CLASS" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SAMPLE_STATE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SAMPLE_DESCRIPTOR" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "PARAMETER_CODE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "PARAMETER" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "ANALYTICAL_METHOD_CODE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "ANALYTICAL_METHOD" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "RESULT_LETTER" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "RESULT" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "METHOD_DETECTION_LIMIT" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "MDL_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "QA_INDEX_CODE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "UPPER_DEPTH" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "LOWER_DEPTH" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "TIDE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "AIR_FILTER_SIZE" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "AIR_FLOW_VOLUME" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "FLOW_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "COMPOSITE_ITEMS" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "CONTINUOUS_AVERAGE" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "CONTINUOUS_MAXIMUM" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "CONTINUOUS_MINIMUM" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "CONTINUOUS_UNIT_CODE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "CONTINUOUS_DURATION" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "CONTINUOUS_DURATION_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "CONTINUOUS_DATA_POINTS" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "TISSUE_TYPE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SAMPLE_SPECIES" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SEX" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "LIFE_STAGE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "BIO_SAMPLE_VOLUME" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "VOLUME_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "BIO_SAMPLE_AREA" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "AREA_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "BIO_SIZE_FROM" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "BIO_SIZE_TO" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "SIZE_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "BIO_SAMPLE_WEIGHT" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "WEIGHT_UNIT" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "BIO_SAMPLE_WEIGHT_FROM" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "BIO_SAMPLE_WEIGHT_TO" = list(readr_fun = col_double(), base_type = "numeric", sql_type = "DOUBLE"),
+    "WEIGHT_UNIT_1" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "SPECIES" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT"),
+    "RESULT_LIFE_STAGE" = list(readr_fun = col_character(), base_type = "character", sql_type = "TEXT")
   )
 
   if (type == "readr") {
     ret <- lapply(specs, `[[`, "readr_fun")
   } else if (type == "sql") {
     ret <- vapply(specs, `[[`, "sql_type", FUN.VALUE = character(1))
+  } else if (type == "base") {
+    ret <- vapply(specs, `[[`, "base_type", FUN.VALUE = character(1))
   } else {
     ret <- specs
   }
@@ -145,9 +147,9 @@ col_specs <- function(type = c("readr", "sql", "all", "names_only"), subset = NU
   ret
 }
 
-ems_tz <- function() {
-  "Etc/GMT+8"
-}
+ems_tz <- function() "Etc/GMT+8"
+
+ems_timestamp_format <- function() "%Y%m%d%H%M%S"
 
 #' Save EMS data as a csv file
 #'
