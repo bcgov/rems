@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.7.1
+# rems 0.8.0
 
 <!-- badges: start -->
 
