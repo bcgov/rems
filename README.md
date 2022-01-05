@@ -194,7 +194,7 @@ head(all_data)
 #> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 And when you are finished querying the historic database, you should close
-the database connection using
+the database connection using:
 
 ``` r
 disconnect_historic_db(hist_db_con)
