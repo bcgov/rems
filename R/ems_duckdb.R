@@ -1,24 +1,27 @@
 # Copyright 2016 Province of British Columbia
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 #
 # http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and limitations under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
 
 #' Download and store the large historic ems dataset
 #'
-#' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
-#' @param ask should the function ask for your permission to cache data on your computer?
-#' Default \code{TRUE}
-#' @param dont_update should the function avoid updating the data even if there is a newer
-#' version available? Default \code{FALSE}
-#' @param httr_config configuration settings passed on to [httr::GET()],
-#' such as [httr::timeout()]
+#' @param force Force downloading the dataset, even if it's not out of date
+#'   (default \code{FALSE})
+#' @param ask should the function ask for your permission to cache data on your
+#'   computer? Default \code{TRUE}
+#' @param dont_update should the function avoid updating the data even if there
+#'   is a newer version available? Default \code{FALSE}
+#' @param httr_config configuration settings passed on to [httr::GET()], such as
+#'   [httr::timeout()]
 #'
 #' @return The path where the duckdb database is stored (invisibly).
 #' @export
@@ -26,8 +29,10 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom duckdb duckdb
 #'
-download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
-
+download_historic_data <- function(force = FALSE,
+                                   ask = TRUE,
+                                   dont_update = FALSE,
+                                   httr_config = list()) {
   file_meta <- get_file_metadata("historic", "zip")
   cache_date <- get_cache_date("historic")
 
@@ -38,7 +43,8 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
     if (db_exists) {
       warning(
         "There is a newer version of the historic ems data ",
-        ", however you have asked not to update it by setting 'dont_update' to TRUE.")
+        ", however you have asked not to update it by setting 'dont_update' to TRUE."
+      )
       return(invisible(db_path))
     }
   }
@@ -47,7 +53,6 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   if (force || !db_exists) {
     update <- TRUE # nocov
   } else if (db_exists) {
-
     if (cache_date < file_meta[["server_date"]]) {
       # nocov start
 
@@ -66,8 +71,13 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
   if (update) {
     # nocov start
     if (ask) {
-      stop_for_permission(paste0("rems would like to store a copy of the historic ems data at ",
-                                 db_path, ". Is that okay?"))
+      stop_for_permission(
+        paste0(
+          "rems would like to store a copy of the historic ems data at ",
+          db_path,
+          ". Is that okay?"
+        )
+      )
 
       message("This is going to take a while...")
       message("Downloading latest 'historic' EMS data")
@@ -82,14 +92,15 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
 
       create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
 
-      message("Successfully downloaded and stored the historic EMS data.\n",
-              "You can access and subset it with the 'read_historic_data' function, or
+      message(
+        "Successfully downloaded and stored the historic EMS data.\n",
+        "You can access and subset it with the 'read_historic_data' function, or
         attach it as a remote data.frame with 'connect_historic_db()' and
-        'attach_historic_data()' which you can then query with dplyr")
+        'attach_historic_data()' which you can then query with dplyr"
+      )
       invisible(db_path)
       # nocov end
     } else {
-
       message("This is going to take a while...")
       message("Downloading latest 'historic' EMS data")
       url <- paste0(base_url(), file_meta[["filename"]])
@@ -103,10 +114,12 @@ download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALS
 
       create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
 
-      message("Successfully downloaded and stored the historic EMS data.\n",
-              "You can access and subset it with the 'read_historic_data' function, or
+      message(
+        "Successfully downloaded and stored the historic EMS data.\n",
+        "You can access and subset it with the 'read_historic_data' function, or
         attach it as a remote data.frame with 'connect_historic_db()' and
-        'attach_historic_data()' which you can then query with dplyr")
+        'attach_historic_data()' which you can then query with dplyr"
+      )
       invisible(db_path)
       # nocov end
     }
