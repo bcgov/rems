@@ -12,16 +12,17 @@ download_historic_data(
 )
 }
 \arguments{
-\item{force}{Force downloading the dataset, even if it's not out of date (default \code{FALSE})}
+\item{force}{Force downloading the dataset, even if it's not out of date
+(default \code{FALSE})}
 
-\item{ask}{should the function ask for your permission to cache data on your computer?
-Default \code{TRUE}}
+\item{ask}{should the function ask for your permission to cache data on your
+computer? Default \code{TRUE}}
 
-\item{dont_update}{should the function avoid updating the data even if there is a newer
-version available? Default \code{FALSE}}
+\item{dont_update}{should the function avoid updating the data even if there
+is a newer version available? Default \code{FALSE}}
 
-\item{httr_config}{configuration settings passed on to \code{\link[httr:GET]{httr::GET()}},
-such as \code{\link[httr:timeout]{httr::timeout()}}}
+\item{httr_config}{configuration settings passed on to \code{\link[httr:GET]{httr::GET()}}, such as
+\code{\link[httr:timeout]{httr::timeout()}}}
 }
 \value{
 The path where the duckdb database is stored (invisibly).
