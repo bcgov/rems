@@ -39,12 +39,16 @@ download_historic_data <- function(force = FALSE,
   db_path <- write_db_path()
   db_exists <- file.exists(db_path)
 
-  if (dont_update) {
-    if (db_exists) {
-      warning(
-        "There is a newer version of the historic ems data ",
-        ", however you have asked not to update it by setting 'dont_update' to TRUE."
-      )
+  if (db_exists && !force) {
+    if (cache_date >= file_meta[["server_date"]]) {
+      message("It appears that you already have the most up-to date version of the",
+              " historic ems data.")
+      return(invisible(db_path))
+    }
+
+    if (dont_update) {
+      warning("There is a newer version of the historic ems data ",
+              ", however you have asked not to update it by setting 'dont_update' to TRUE.")
       return(invisible(db_path))
     }
   }
