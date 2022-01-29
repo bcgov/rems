@@ -59,7 +59,6 @@ download_historic_data <- function(force = FALSE,
   } else if (db_exists) {
     if (cache_date < file_meta[["server_date"]]) {
       # nocov start
-
       ans <- readline(
         paste0(
           "Your version of the historic ems data is dated ",
@@ -82,7 +81,6 @@ download_historic_data <- function(force = FALSE,
           ". Is that okay?"
         )
       )
-
       message("This is going to take a while...")
       message("Downloading latest 'historic' EMS data")
       url <- paste0(base_url(), file_meta[["filename"]])
@@ -93,9 +91,7 @@ download_historic_data <- function(force = FALSE,
         file.remove(db_path)
         write_db_path()
       }
-
       create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
-
       message(
         "Successfully downloaded and stored the historic EMS data.\n",
         "You can access and subset it with the 'read_historic_data' function, or
@@ -115,9 +111,7 @@ download_historic_data <- function(force = FALSE,
         file.remove(db_path)
         write_db_path()
       }
-
       create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
-
       message(
         "Successfully downloaded and stored the historic EMS data.\n",
         "You can access and subset it with the 'read_historic_data' function, or
