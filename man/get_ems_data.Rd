@@ -28,7 +28,7 @@ for water quality analysis, or a character vector of column names (see details b
 \item{force}{Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 if it's not out of date on your computer.}
 
-\item{ask}{should the function ask for your permission to cache data on your computer?
+\item{ask}{should the function ask for your permission to download and cache data on your computer?
 Default \code{TRUE}}
 
 \item{dont_update}{should the function checking for updates to the data and simply
