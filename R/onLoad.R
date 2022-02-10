@@ -36,7 +36,7 @@ register_ems_units <- function() {
   # as volumes (1m3 = 0.001 E3m3 = 1e-6), but can't use E3m3
   # to install the unit so have to do it as m, units takes
   # care of the rest when it is m3 <=> E3m3 etc.
-  units::install_unit("adt", "1 t")
+  # units::install_unit("adt", "1 t")
   units::install_unit("E3m", "10 m")
   units::install_unit("E6m", "100 m")
   units::install_unit("E6L", "1e6 L")
