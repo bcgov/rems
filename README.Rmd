@@ -43,6 +43,7 @@ library(devtools)
 install_github("bcgov/rems")
 ```
 
+If you are asked during installation *"Would you like to install from source the packages which require compilation"*, choose **"No"**.
 
 ## Usage
 
