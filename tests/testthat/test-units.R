@@ -1,6 +1,6 @@
 
 test_that("register_ems_units works", {
-  expect_false(register_ems_units())
+  expect_true(register_ems_units())
 })
 
 test_that("convert_unit_values works", {
