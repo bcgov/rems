@@ -23,7 +23,7 @@ register_ems_units <- function() {
              "Nephelometric Turbidity Unit", "Jackson Turbidity Unit")
   )
 
-  units::install_unit("mho", "1e-9 abmho") # == 1 S
+  # units::install_unit("mho", "1e-9 abmho") # == 1 S
   units::install_unit(symbol = c("MPN", "CFU"),
                       def = "unitless",
                       name = c("Most Probable Number", "Colony-Forming Unit"))
