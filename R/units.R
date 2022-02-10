@@ -58,6 +58,8 @@ standardize_mdl_units <- function(data) {
                                         .data$UNIT[1])
   )
 
+  data <- dplyr::ungroup(data)
+
   fixed <- !is.na(data[["converted_val"]])
 
   message("Successfully converted units in ", sum(fixed), " rows.")
