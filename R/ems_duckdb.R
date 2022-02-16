@@ -38,6 +38,7 @@ download_historic_data <- function(force = FALSE,
 
   db_path <- write_db_path()
   db_exists <- file.exists(db_path)
+  update <- FALSE
 
   if (db_exists && !force) {
     if (cache_date >= file_meta[["server_date"]]) {
@@ -45,29 +46,33 @@ download_historic_data <- function(force = FALSE,
               " historic ems data.")
       return(invisible(db_path))
     }
-
     if (dont_update) {
       warning("There is a newer version of the historic ems data ",
               ", however you have asked not to update it by setting 'dont_update' to TRUE.")
       return(invisible(db_path))
     }
+    update <- TRUE
+  }
+  else {
+    update <- TRUE
   }
 
-  update <- FALSE
-  if (force || !db_exists) {
-    update <- TRUE # nocov
-  } else if (db_exists) {
+  if (db_exists) {
     if (cache_date < file_meta[["server_date"]]) {
-      # nocov start
-      ans <- readline(
-        paste0(
-          "Your version of the historic ems data is dated ",
-          cache_date,
-          " and there is a newer version available. Would you like to download it? (y/n)"
+      if (!ask) {
+        update <- TRUE
+      } else {
+        # nocov start
+        ans <- readline(
+          paste0(
+            "Your version of the historic ems data is dated ",
+            cache_date,
+            " and there is a newer version available. Would you like to download it? (y/n)"
+          )
         )
-      )
-      if (tolower(ans) == "y") update <- TRUE
-      # nocov end
+        if (tolower(ans) == "y") update <- TRUE
+        # nocov end
+      }
     }
   }
 
@@ -81,46 +86,26 @@ download_historic_data <- function(force = FALSE,
           ". Is that okay?"
         )
       )
-      message("This is going to take a while...")
-      message("Downloading latest 'historic' EMS data")
-      url <- paste0(base_url(), file_meta[["filename"]])
-      csv_file <- download_ems_data(url)
-      on.exit(unlink(csv_file), add = TRUE)
-
-      if (db_exists) {
-        file.remove(db_path)
-        write_db_path()
-      }
-      create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
-      message(
-        "Successfully downloaded and stored the historic EMS data.\n",
-        "You can access and subset it with the 'read_historic_data' function, or
-        attach it as a remote data.frame with 'connect_historic_db()' and
-        'attach_historic_data()' which you can then query with dplyr"
-      )
-      invisible(db_path)
-      # nocov end
-    } else {
-      message("This is going to take a while...")
-      message("Downloading latest 'historic' EMS data")
-      url <- paste0(base_url(), file_meta[["filename"]])
-      csv_file <- download_ems_data(url)
-      on.exit(unlink(csv_file), add = TRUE)
-
-      if (db_exists) {
-        file.remove(db_path)
-        write_db_path()
-      }
-      create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
-      message(
-        "Successfully downloaded and stored the historic EMS data.\n",
-        "You can access and subset it with the 'read_historic_data' function, or
-        attach it as a remote data.frame with 'connect_historic_db()' and
-        'attach_historic_data()' which you can then query with dplyr"
-      )
-      invisible(db_path)
-      # nocov end
     }
+
+    message("This is going to take a while...")
+    message("Downloading latest 'historic' EMS data")
+    url <- paste0(base_url(), file_meta[["filename"]])
+    csv_file <- download_ems_data(url)
+    on.exit(unlink(csv_file), add = TRUE)
+
+    if (db_exists) {
+     file.remove(db_path)
+     write_db_path()
+    }
+    create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
+    message(
+      "Successfully downloaded and stored the historic EMS data.\n",
+      "You can access and subset it with the 'read_historic_data' function, or
+        attach it as a remote data.frame with 'connect_historic_db()' and
+        'attach_historic_data()' which you can then query with dplyr"
+    )
+    invisible(db_path)
   }
 }
 
@@ -161,19 +146,19 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     server_date <- get_file_metadata("historic", "zip")[["server_date"]]
     cache_date <- get_cache_date("historic")
     if (cache_date < server_date && file.exists(db_path)) {
-    # nocov start
+      # nocov start
       ans <- readline(paste("Your version of the historic dataset is out of date.",
-        "Would you like to continue with the version you have (y/n)? ",
-        sep = "\n"))
+                            "Would you like to continue with the version you have (y/n)? ",
+                            sep = "\n"))
       if (tolower(ans) != "y")
         stop(exit_msg, call. = FALSE)
-    # nocov end
+      # nocov end
     }
   }
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
-    param_code = param_code, from_date = from_date,
-    to_date = to_date, cols = cols)
+                                param_code = param_code, from_date = from_date,
+                                to_date = to_date, cols = cols)
 
   con <- duckdb_connect(db_path)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
@@ -312,9 +297,9 @@ stringify_vec <- function(vec) {
 }
 
 write_db_path <- function(path = getOption("rems.historic.path",
-                            default = rems_data_dir())) {
+                                           default = rems_data_dir())) {
   fpath <- normalizePath(file.path(path, "duckdb/ems_historic.duckdb"),
-                        mustWork = FALSE)
+                         mustWork = FALSE)
   dir.create(dirname(fpath), recursive = TRUE, showWarnings = FALSE)
   fpath
 }
