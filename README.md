@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.8.0
+# rems 0.8.0.9000
 
 <!-- badges: start -->
 
@@ -39,6 +39,9 @@ library(devtools)
 install_github("bcgov/rems")
 ```
 
+If you are asked during installation *“Would you like to install from
+source the packages which require compilation”*, choose **“No”**.
+
 ## Usage
 
 **NOTE:** If you are using Windows, you must be running the 64-bit
@@ -58,17 +61,17 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 1759887
+#> [1] 1092314
 head(two_year)
 #> # A tibble: 6 × 24
-#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION  LATITUDE LONGITUDE LOCATION_TYPE  
-#>   <chr>   <chr>          <chr>                   <dbl>     <dbl> <chr>          
-#> 1 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
-#> 2 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
-#> 3 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
-#> 4 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
-#> 5 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
-#> 6 0120802 FJ2000102      COWICHAN RIVER AT H…     48.8     -124. RIVER,STREAM O…
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
+#>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
+#> 1 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 2 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 3 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 4 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 5 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 6 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
 #> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -167,10 +170,6 @@ Finally, to get the results into your R session as a regular data frame,
 you must `collect()` it. Note that date/times are returned to R in the
 Pacific Standard Time timezone (PST; UTC-8).
 
-``` r
-filtered_historic3 <- collect(filtered_historic2)
-```
-
 You can combine the previously imported historic and two_year data sets
 using `bind_ems_data`:
 
@@ -178,14 +177,14 @@ using `bind_ems_data`:
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
 head(all_data)
 #> # A tibble: 6 × 24
-#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION  LATITUDE LONGITUDE LOCATION_TYPE  
-#>   <chr>   <chr>          <chr>                   <dbl>     <dbl> <chr>          
-#> 1 0126400 <NA>           QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
-#> 2 0126400 08189513       QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
-#> 3 0121580 08312097       ENGLISHMAN RIVER AT…     49.3     -124. RIVER,STREAM O…
-#> 4 0121580 08214745       ENGLISHMAN RIVER AT…     49.3     -124. RIVER,STREAM O…
-#> 5 0126400 08193504       QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
-#> 6 0126400 08334138       QUINSAM RIVER AT TH…     50.0     -125. RIVER,STREAM O…
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
+#>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
+#> 1 0126400 <NA>           QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 2 0126400 08189513       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 3 0121580 08312097       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 4 0121580 08214745       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 5 0126400 08193504       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 6 0126400 08334138       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
 #> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -193,13 +192,6 @@ head(all_data)
 #> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
 #> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
-And when you are finished querying the historic database, you should close
-the database connection using:
-
-``` r
-disconnect_historic_db(hist_db_con)
-```
-
 
 ## Units
 
@@ -301,12 +293,12 @@ head(filtered_2yr_lt_lakes_ems)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 2 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 3 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 4 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 5 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 6 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 1 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 2 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 3 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 4 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 5 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 6 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
 #> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -319,21 +311,14 @@ filtered_2yr_lt_lakes_req <- filter_ems_data(two_year, req_id = lt_lake_req(),
     "Copper Total", " Zinc Total",
     "Turbidity"))
 head(filtered_2yr_lt_lakes_req)
-#> # A tibble: 6 × 24
-#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
-#>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 2 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 3 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 4 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 5 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 6 0200052 50250087       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> # A tibble: 0 × 24
+#> # … with 24 variables: EMS_ID <chr>, REQUISITION_ID <chr>,
+#> #   MONITORING_LOCATION <chr>, LATITUDE <dbl>, LONGITUDE <dbl>,
+#> #   LOCATION_TYPE <chr>, COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
-#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
-#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>, …
 ```
 
 ## Project Status

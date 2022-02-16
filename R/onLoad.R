@@ -14,41 +14,38 @@
 
 register_ems_units <- function() {
 
-  # Test if one is installed - if it is, it means the
-  # package has been loaded once already so don't try
-  # to do it again
-  try_test <- try(
-    units::install_unit("MPN", "unitless", name = "Most Probable Number"),
-    silent = TRUE
+  # Clear these units first in case the package has already
+  # been loaded and thus defined once
+  units::remove_unit(
+    symbol = c("mho", "MPN", "CFU", "NTU", "JTU", "USG", "IG",
+      "adt", "E3m", "E6m", "E6L", "E6IG"),
+    name = c("Most Probable Number", "Colony-Forming Unit",
+             "Nephelometric Turbidity Unit", "Jackson Turbidity Unit")
   )
 
-  # nocov start
-  # This won't run in tests since it's run on pkg load, meaning
-  # the try above should return an error in subsequent calls
-  if (!inherits(try_test, "try-error")) {
-    units::install_unit("mho", "1 S")
-    units::install_unit("CFU", "1 MPN", "Colony-Forming Unit")
-    units::install_unit("NTU", name = "Nephelometric Turbidity Unit")
-    units::install_unit("JTU", "1 NTU", "Jackson Turbidity Unit")
-    units::install_unit("USG", "1 US_liquid_gallon", "US Gallon")
-    units::install_unit("IG", "1 UK_liquid_gallon", "Imperial Gallon")
-    # These petroleum measures are actually only ever used
-    # as volumes (1m3 = 0.001 E3m3 = 1e-6), but can't use E3m3
-    # to install the unit so have to do it as m, units takes
-    # care of the rest when it is m3 <=> E3m3 etc.
-    units::install_unit("adt", "1 t", "Air Dry Tonne")
-    units::install_unit("E3m", "10 m")
-    units::install_unit("E6m", "100 m")
-    units::install_unit("E6L", "1e6 L")
-    units::install_unit("E6IG", "1e6 UK_liquid_gallon")
-    #> set_units(set_units(1, "m3"), "E3m3")
-    # 0.001 [E3m3]
-    #> set_units(set_units(1, "m3"), "E6m3")
-    # 1e-06 [E6m3]
-    return(invisible(TRUE))
-  }
-  # nocov end
-  invisible(FALSE)
+  # units::install_unit("mho", "1e-9 abmho") # == 1 S
+  units::install_unit(symbol = c("MPN", "CFU"),
+                      def = "unitless",
+                      name = c("Most Probable Number", "Colony-Forming Unit"))
+  units::install_unit(symbol = c("NTU", "JTU"),
+                      name = c("Nephelometric Turbidity Unit",
+                               "Jackson Turbidity Unit"))
+  units::install_unit("USG", "1 US_liquid_gallon")
+  units::install_unit("IG", "1 UK_liquid_gallon")
+  # These petroleum measures are actually only ever used
+  # as volumes (1m3 = 0.001 E3m3 = 1e-6), but can't use E3m3
+  # to install the unit so have to do it as m, units takes
+  # care of the rest when it is m3 <=> E3m3 etc.
+  # units::install_unit("adt", "1 t")
+  units::install_unit("E3m", "10 m")
+  units::install_unit("E6m", "100 m")
+  units::install_unit("E6L", "1e6 L")
+  units::install_unit("E6IG", "1e6 UK_liquid_gallon")
+  #> set_units(set_units(1, "m3"), "E3m3")
+  # 0.001 [E3m3]
+  #> set_units(set_units(1, "m3"), "E6m3")
+  # 1e-06 [E6m3]
+  return(invisible(TRUE))
 }
 
 .onLoad <- function(libname, pkgname) {

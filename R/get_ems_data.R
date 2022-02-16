@@ -27,7 +27,7 @@
 #' for water quality analysis, or a character vector of column names (see details below).
 #' @param force Default \code{FALSE}. Setting to \code{TRUE} will download new data even
 #' if it's not out of date on your computer.
-#' @param ask should the function ask for your permission to cache data on your computer?
+#' @param ask should the function ask for your permission to download and cache data on your computer?
 #' Default \code{TRUE}
 #' @param dont_update should the function checking for updates to the data and simply
 #' load the data from the cache? Default \code{FALSE}
@@ -101,9 +101,13 @@ get_ems_data <- function(which = "2yr", n = Inf, cols = "wq", force = FALSE,
 
     if (cache_date < unique(file_meta[["server_date"]])) {
     # nocov start
-      ans <- readline(paste0("Your version of ", which, " is dated ",
-        cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
-      if (tolower(ans) == "y") update <- TRUE
+      if (!ask) {
+        update <- TRUE
+      } else {
+        ans <- readline(paste0("Your version of ", which, " is dated ",
+                               cache_date, " and there is a newer version available. Would you like to download it? (y/n)"))
+        update <- tolower(ans) == "y"
+      }
     # nocov end
     }
   }
