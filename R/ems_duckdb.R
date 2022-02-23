@@ -1,24 +1,27 @@
 # Copyright 2016 Province of British Columbia
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
 #
 # http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and limitations under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
 
 #' Download and store the large historic ems dataset
 #'
-#' @param force Force downloading the dataset, even if it's not out of date (default \code{FALSE})
-#' @param ask should the function ask for your permission to cache data on your computer?
-#' Default \code{TRUE}
-#' @param dont_update should the function avoid updating the data even if there is a newer
-#' version available? Default \code{FALSE}
-#' @param httr_config configuration settings passed on to [httr::GET()],
-#' such as [httr::timeout()]
+#' @param force Force downloading the dataset, even if it's not out of date
+#'   (default \code{FALSE})
+#' @param ask should the function ask for your permission to cache data on your
+#'   computer? Default \code{TRUE}
+#' @param dont_update should the function avoid updating the data even if there
+#'   is a newer version available? Default \code{FALSE}
+#' @param httr_config configuration settings passed on to [httr::GET()], such as
+#'   [httr::timeout()]
 #'
 #' @return The path where the duckdb database is stored (invisibly).
 #' @export
@@ -26,54 +29,73 @@
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom duckdb duckdb
 #'
-download_historic_data <- function(force = FALSE, ask = TRUE, dont_update = FALSE, httr_config = list()) {
-
+download_historic_data <- function(force = FALSE,
+                                   ask = TRUE,
+                                   dont_update = FALSE,
+                                   httr_config = list()) {
   file_meta <- get_file_metadata("historic", "zip")
   cache_date <- get_cache_date("historic")
-
   db_path <- write_db_path()
   db_exists <- file.exists(db_path)
 
-  if (db_exists && !force) {
+  if (db_exists & !force) {
+
     if (cache_date >= file_meta[["server_date"]]) {
       message("It appears that you already have the most up-to date version of the",
-        " historic ems data.")
+              " historic ems data.")
       return(invisible(db_path))
     }
 
     if (dont_update) {
       warning("There is a newer version of the historic ems data ",
-        ", however you have asked not to update it by setting 'dont_update' to TRUE.")
+              ", however you have asked not to update it by setting 'dont_update' to TRUE.")
       return(invisible(db_path))
     }
+# nocov start
+    if (ask) {
+      ans <- readline(
+        paste0(
+          "Your version of the historic ems data is dated ",
+          cache_date,
+          " and there is a newer version available. Would you like to download it? (y/n)"
+        )
+      )
+      if (tolower(ans) == "n") return(invisible(db_path))
+    }
+    # nocov end
   }
 
   # nocov start
   if (ask) {
-    stop_for_permission(paste0("rems would like to store a copy of the historic ems data at ",
-      db_path, ". Is that okay?"))
+    stop_for_permission(
+      paste0(
+        "rems would like to store a copy of the historic ems data at ",
+        db_path,
+        ". Is that okay?"
+      )
+    )
   }
+  # nocov end
 
   message("This is going to take a while...")
-
   message("Downloading latest 'historic' EMS data")
   url <- paste0(base_url(), file_meta[["filename"]])
   csv_file <- download_ems_data(url)
   on.exit(unlink(csv_file), add = TRUE)
 
   if (db_exists) {
-    file.remove(db_path)
-    write_db_path()
+   file.remove(db_path)
+   write_db_path()
   }
-
   create_rems_duckdb(csv_file, db_path, cache_date = file_meta[["server_date"]])
-
-  message("Successfully downloaded and stored the historic EMS data.\n",
+  message(
+    "Successfully downloaded and stored the historic EMS data.\n",
     "You can access and subset it with the 'read_historic_data' function, or
-        attach it as a remote data.frame with 'connect_historic_db()' and
-        'attach_historic_data()' which you can then query with dplyr")
+      attach it as a remote data.frame with 'connect_historic_db()' and
+      'attach_historic_data()' which you can then query with dplyr"
+  )
   invisible(db_path)
-  # nocov end
+
 }
 
 #' Read historic ems data into R.
@@ -113,19 +135,19 @@ read_historic_data <- function(emsid = NULL, parameter = NULL, param_code = NULL
     server_date <- get_file_metadata("historic", "zip")[["server_date"]]
     cache_date <- get_cache_date("historic")
     if (cache_date < server_date && file.exists(db_path)) {
-    # nocov start
+      # nocov start
       ans <- readline(paste("Your version of the historic dataset is out of date.",
-        "Would you like to continue with the version you have (y/n)? ",
-        sep = "\n"))
+                            "Would you like to continue with the version you have (y/n)? ",
+                            sep = "\n"))
       if (tolower(ans) != "y")
         stop(exit_msg, call. = FALSE)
-    # nocov end
+      # nocov end
     }
   }
 
   qry <- construct_historic_sql(emsid = emsid, parameter = parameter,
-    param_code = param_code, from_date = from_date,
-    to_date = to_date, cols = cols)
+                                param_code = param_code, from_date = from_date,
+                                to_date = to_date, cols = cols)
 
   con <- duckdb_connect(db_path)
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
@@ -264,9 +286,9 @@ stringify_vec <- function(vec) {
 }
 
 write_db_path <- function(path = getOption("rems.historic.path",
-                            default = rems_data_dir())) {
+                                           default = rems_data_dir())) {
   fpath <- normalizePath(file.path(path, "duckdb/ems_historic.duckdb"),
-                        mustWork = FALSE)
+                         mustWork = FALSE)
   dir.create(dirname(fpath), recursive = TRUE, showWarnings = FALSE)
   fpath
 }
