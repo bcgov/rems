@@ -62,6 +62,7 @@ download_historic_data <- function(force = FALSE,
       )
       if (tolower(ans) == "n") return(invisible(db_path))
     }
+    # nocov end
   }
 
   # nocov start
