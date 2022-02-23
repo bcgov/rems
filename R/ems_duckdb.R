@@ -74,6 +74,7 @@ download_historic_data <- function(force = FALSE,
       )
     )
   }
+  # nocov end
 
   message("This is going to take a while...")
   message("Downloading latest 'historic' EMS data")
