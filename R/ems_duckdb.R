@@ -51,7 +51,7 @@ download_historic_data <- function(force = FALSE,
               ", however you have asked not to update it by setting 'dont_update' to TRUE.")
       return(invisible(db_path))
     }
-
+# nocov start
     if (ask) {
       ans <- readline(
         paste0(
