@@ -13,6 +13,7 @@ status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/p
 [![R build
 status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+[![R-CMD-check](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ## Overview
@@ -46,8 +47,8 @@ source the packages which require compilation”*, choose **“No”**.
 
 **NOTE:** If you are using Windows, you must be running the 64-bit
 version of R, as the 32-bit version cannot handle the size of the EMS
-data. In RStudio, click on Tools -> Global Options and ensure the 64 bit
-version is chosen in the *R version* box.
+data. In RStudio, click on Tools -\> Global Options and ensure the 64
+bit version is chosen in the *R version* box.
 
 You can use the `get_ems_data()` function to get last two years of data
 (you can also specify `which = "4yr"` to get the last four years of
@@ -61,18 +62,18 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 1092314
+#> [1] 2214758
 head(two_year)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 2 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 3 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 4 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 5 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 6 0121580 VA21A0072      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> 1 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> 2 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> 3 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> 4 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> 5 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> 6 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
@@ -179,13 +180,13 @@ head(all_data)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0126400 <NA>           QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 2 0126400 08189513       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 3 0121580 08312097       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 4 0121580 08214745       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 5 0126400 08193504       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 6 0126400 08334138       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> 1 0126400 08103000       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 2 0126400 <NA>           QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 3 0121580 08204191       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 4 0126400 50126715       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 5 0126400 08192637       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 6 0121580 08193908       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
@@ -207,14 +208,14 @@ filter(all_data, UNIT != MDL_UNIT) %>%
   select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
   head()
 #> # A tibble: 6 × 4
-#>    RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
-#>     <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.00207 mg/L                    0.05 ug/L    
-#> 2 0.00053 mg/L                    0.05 ug/L    
-#> 3 0.105   mg/L                    0.2  ug/L    
-#> 4 0.00078 mg/L                    0.02 ug/L    
-#> 5 0.0002  mg/L                    0.2  ug/L    
-#> 6 0.0138  mg/L                    0.5  ug/L
+#>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
+#>      <dbl> <chr>                  <dbl> <chr>   
+#> 1 0.000001 mg/L                   0.001 ug/L    
+#> 2 0.0302   mg/L                   0.2   ug/L    
+#> 3 0.0005   mg/L                   0.2   ug/L    
+#> 4 0.00057  mg/L                   0.02  ug/L    
+#> 5 0.000002 mg/L                   0.001 ug/L    
+#> 6 0.000001 mg/L                   0.001 ug/L
 
 all_data <- standardize_mdl_units(all_data)
 #> Successfully converted units in 2172 rows.
@@ -224,7 +225,6 @@ filter(all_data, UNIT != MDL_UNIT) %>%
   select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
   head()
 #> # A tibble: 4 × 4
-#> # Groups:   MDL_UNIT, UNIT [1]
 #>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
 #>      <dbl> <chr>                  <dbl> <chr>   
 #> 1 0.00065  mg/L                      NA ug/L    
@@ -293,13 +293,13 @@ head(filtered_2yr_lt_lakes_ems)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 2 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 3 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 4 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 5 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 6 0200052 50253424       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> # … with 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> 1 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 2 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 3 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 4 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 5 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 6 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
@@ -312,7 +312,7 @@ filtered_2yr_lt_lakes_req <- filter_ems_data(two_year, req_id = lt_lake_req(),
     "Turbidity"))
 head(filtered_2yr_lt_lakes_req)
 #> # A tibble: 0 × 24
-#> # … with 24 variables: EMS_ID <chr>, REQUISITION_ID <chr>,
+#> # ℹ 24 variables: EMS_ID <chr>, REQUISITION_ID <chr>,
 #> #   MONITORING_LOCATION <chr>, LATITUDE <dbl>, LONGITUDE <dbl>,
 #> #   LOCATION_TYPE <chr>, COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
