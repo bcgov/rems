@@ -41,10 +41,30 @@ create_rems_duckdb <- function(csv_file, db_path, cache_date) {
     paste(historic_col_names, historic_col_sql_types, collapse = ', '),
     ')'))
 
+  # For some reason this file fails when read using multithreading,
+  # so disable parallel reading by default.
+  parallel <- getOption("rems.duckdb_read_parallel", default = FALSE)
+
   DBI::dbExecute(con,
-            glue("COPY {tbl_name} from '{csv_file}' ( HEADER, TIMESTAMPFORMAT '{ems_timestamp_format()}' )")
+            glue("COPY {tbl_name} from '{csv_file}'
+                 ( HEADER, TIMESTAMPFORMAT '{ems_timestamp_format()}',
+                  PARALLEL {as.character(parallel)} )")
   )
 
+  if (getOption("rems.duckdb_build_indexes", default = FALSE)) {
+    # With duckdb v0.8.1 a min-max index is automatically created for columns
+    # of all general-purpose data types. ART indexes must be able to fit in
+    # memory, and since this won't on most machines they are not built by default.
+    # https://duckdb.org/docs/archive/0.8.1/sql/indexes
+    add_indexes(con)
+  }
+
+  set_cache_date("historic", cache_date)
+
+  invisible(TRUE)
+}
+
+add_indexes <- function(con) {
   message("Adding database indexes")
   cat_if_interactive("|=")
   add_sql_index(con, colname = "EMS_ID")
@@ -70,10 +90,5 @@ create_rems_duckdb <- function(csv_file, db_path, cache_date) {
   add_sql_index(con, colname = "PARAMETER")
   cat_if_interactive("=")
   add_sql_index(con, colname = "PARAMETER_CODE")
-
   cat_if_interactive("| 100%\n")
-
-  set_cache_date("historic", cache_date)
-
-  invisible(TRUE)
 }
