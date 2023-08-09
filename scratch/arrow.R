@@ -1,22 +1,18 @@
 library(arrow)
 library(dplyr)
-
-f <- "~/Desktop/foo.csv"
-f2 <- "~/Desktop/foobar.csv"
-
-download.file("https://github.com/bcgov/rems/raw/master/tests/testthat/test_historic.csv",
-              destfile = f2)
+#
+# f <- "~/Desktop/foo.csv"
+# f2 <- "~/Desktop/foobar.csv"
+#
+# download.file("https://github.com/bcgov/rems/raw/master/tests/testthat/test_historic.csv",
+#               destfile = f)
 
 # simple out of the box open: EMS_ID all NA
-arrow::open_dataset(f, format = "csv") |>
-  head() |>
-  collect()
-
-
+tictoc::tic()
 # try with setting the schema:
 schema <- schema(EMS_ID = string(), MONITORING_LOCATION = string(), LATITUDE = float64(),
-            LONGITUDE = float64(), LOCATION_TYPE = string(), COLLECTION_START = timestamp("s", timezone = "UTC"),
-            COLLECTION_END = timestamp("s", timezone = "UTC"), LOCATION_PURPOSE = string(), PERMIT = string(),
+            LONGITUDE = float64(), LOCATION_TYPE = string(), COLLECTION_START = timestamp("s"),
+            COLLECTION_END = timestamp("s"), LOCATION_PURPOSE = string(), PERMIT = string(),
             PERMIT_RELATIONSHIP = string(), DISCHARGE_TO = string(), REQUISITION_ID = string(),
             SAMPLING_AGENCY = string(), ANALYZING_AGENCY = string(), COLLECTION_METHOD = string(),
             SAMPLE_CLASS = string(), SAMPLE_STATE = string(), SAMPLE_DESCRIPTOR = string(),
@@ -38,29 +34,34 @@ schema <- schema(EMS_ID = string(), MONITORING_LOCATION = string(), LATITUDE = f
 )
 
 # EMS_ID still all NA
-arrow::open_dataset(f,
-                    format = FileFormat$create("csv", timestamp_parsers = "%Y%m%d%H%M%S"),
-                    schema = schema) |>
-  head() |>
-  collect()
+arrow::open_csv_dataset(
+  # f,
+  "ems_sample_results_historic_expanded.csv",
+  schema = schema,
+  col_names = names(schema),
+  skip = 1,
+  timestamp_parsers = "%Y%m%d%H%M%S"
+) |>
+  # mutate(
+  #   COLLECTION_START = force_tz(COLLECTION_START, "UTC"),
+  #   COLLECTION_END = force_tz(COLLECTION_END, "UTC")
+  # ) |>
+  write_dataset(
+    "~/Desktop/ems-parquet",
+    format = "parquet" #,
+    # partitioning = "PARAMETER_CODE"
+  )
+tictoc::toc()
 
-# EMS_ID skip first row with and set names
-ds <- arrow::open_dataset("~/Desktop/ems_hist.csv",
-                    format = FileFormat$create("csv", skip_rows = 1, column_names = names(schema), timestamp_parsers = "%Y%m%d%H%M%S"),
-                    schema = schema)
-
-ems_id_summary <- ds |>
-  group_by(EMS_ID) |>
-  summarise(n = n()) |>
-  collect()
-
-ds |> group_by(PARAMETER_CODE) |>
-  write_dataset("~/Desktop/ems_parquet/")
-
-library(arrow)
-library(dplyr)
-writeLines('\xef\xbb\xbfa,b\n1,2\n', con = "testfile.csv")
-
-read_csv_arrow("testfile.csv")
-open_dataset("testfile.csv", format = "csv") |>
-  collect()
+tictoc::tic()
+arrow::open_dataset("~/Desktop/ems-parquet/") |>
+  mutate(
+    COLLECTION_START = force_tz(COLLECTION_START, "UTC"),
+    COLLECTION_END = force_tz(COLLECTION_END, "UTC")
+  ) |>
+  write_dataset(
+    "~/Desktop/ems-parquet-2",
+    format = "parquet",
+    partitioning = "PARAMETER_CODE"
+  )
+tictoc::toc()
