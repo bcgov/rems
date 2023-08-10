@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 [![R build status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+[![R-CMD-check](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ## Overview

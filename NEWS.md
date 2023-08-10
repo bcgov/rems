@@ -1,7 +1,7 @@
 # rems (development version)
 
 * `ask` parameter now skips all verification (caching and updates) when set to `FALSE` (#67, #68)
-* `download_historic_data()` now has more flixible options to update the historic database (principally to enable better updating behaviour in [shinyrems](https://github.com/bcgov/shinyrems)). (#69, thanks @aylapear)
+* `download_historic_data()` now has more flexible options to update the historic database (principally to enable better updating behaviour in [shinyrems](https://github.com/bcgov/shinyrems)). (#69, thanks @aylapear)
 * removed capability to register/convert some units due to a bug in the C library underlying the {units} package (https://github.com/r-quantities/units/issues/301). (#70)
 
 # rems 0.8.0 

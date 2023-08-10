@@ -27,7 +27,7 @@ Imports:
     rappdirs (>= 0.3.1),
     readr (>= 2.1.0),
     rlang,
-    duckdb (>= 0.3.1),
+    duckdb (>= 0.8.1),
     storr (>= 1.2.5),
     stringr (>= 1.4.0),
     tibble (>= 3.1.5),
