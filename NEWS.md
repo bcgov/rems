@@ -1,8 +1,9 @@
-# rems (development version)
+# rems (0.8.1)
 
 * `ask` parameter now skips all verification (caching and updates) when set to `FALSE` (#67, #68)
 * `download_historic_data()` now has more flexible options to update the historic database (principally to enable better updating behaviour in [shinyrems](https://github.com/bcgov/shinyrems)). (#69, thanks @aylapear)
 * removed capability to register/convert some units due to a bug in the C library underlying the {units} package (https://github.com/r-quantities/units/issues/301). (#70)
+* added temporary warning message to `connect_historic_db()` to inform users of issue #79 where the timestamp is removed from the `COLLECTION_START` and `COLLECTION_END` columns. The issue will be resolved when next {duckdb} version is released.  
 
 # rems 0.8.0 
 
