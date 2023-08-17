@@ -37,7 +37,7 @@ The package pulls data from the [B.C. Data Catalogue EMS Results](https://catalo
 The package is not available on CRAN, but can be installed using
 the [devtools](https://github.com/hadley/devtools) package:
 
-```{r eval=FALSE}
+```{r}
 # install.packages("devtools") # if not already installed
 
 library(devtools)

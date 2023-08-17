@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rems 0.8.0.9000
+# rems 0.8.1
 
 <!-- badges: start -->
 
@@ -37,7 +37,11 @@ The package is not available on CRAN, but can be installed using the
 # install.packages("devtools") # if not already installed
 
 library(devtools)
+#> Loading required package: usethis
 install_github("bcgov/rems")
+#> Using github PAT from envvar GITHUB_PAT
+#> Skipping install of 'rems' from a github remote, the SHA1 (c41bbdc9) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 ```
 
 If you are asked during installation *“Would you like to install from
@@ -62,7 +66,7 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 2214758
+#> [1] 2231866
 head(two_year)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
@@ -152,6 +156,10 @@ library(dplyr)
 #> 
 #>     intersect, setdiff, setequal, union
 hist_db_con <- connect_historic_db()
+#> Warning in connect_historic_db(): This version of rems running under R 4.3
+#> causes the time component of COLLECTION_START and COLLECTION_END to be omitted
+#> when query results are returned. This will be fixed soon via the next release
+#> of the duckdb package (See https://github.com/bcgov/rems/issues/79).
 #> Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.
 hist_tbl <- attach_historic_data(hist_db_con)
 ```
@@ -180,12 +188,12 @@ head(all_data)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0126400 08103000       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 2 0126400 <NA>           QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 3 0121580 08204191       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 4 0126400 50126715       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 5 0126400 08192637       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 6 0121580 08193908       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 1 0121580 50092680       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 2 0121580 50105403       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 3 0121580 08184843       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 4 0121580 08184771       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 5 0126400 08188795       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 6 0126400 08214498       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
 #> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -208,14 +216,14 @@ filter(all_data, UNIT != MDL_UNIT) %>%
   select(RESULT, UNIT, METHOD_DETECTION_LIMIT, MDL_UNIT) %>% 
   head()
 #> # A tibble: 6 × 4
-#>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
-#>      <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.000001 mg/L                   0.001 ug/L    
-#> 2 0.0302   mg/L                   0.2   ug/L    
-#> 3 0.0005   mg/L                   0.2   ug/L    
-#> 4 0.00057  mg/L                   0.02  ug/L    
-#> 5 0.000002 mg/L                   0.001 ug/L    
-#> 6 0.000001 mg/L                   0.001 ug/L
+#>    RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
+#>     <dbl> <chr>                  <dbl> <chr>   
+#> 1 0.00004 mg/L                    0.01 ug/L    
+#> 2 0.00079 mg/L                    0.05 ug/L    
+#> 3 0.0384  mg/L                    0.2  ug/L    
+#> 4 0.00094 mg/L                    0.02 ug/L    
+#> 5 0.00083 mg/L                    0.05 ug/L    
+#> 6 0.0947  mg/L                    0.2  ug/L
 
 all_data <- standardize_mdl_units(all_data)
 #> Successfully converted units in 2172 rows.
@@ -229,8 +237,8 @@ filter(all_data, UNIT != MDL_UNIT) %>%
 #>      <dbl> <chr>                  <dbl> <chr>   
 #> 1 0.00065  mg/L                      NA ug/L    
 #> 2 0.000005 mg/L                      NA ug/L    
-#> 3 0.0122   mg/L                      NA ug/L    
-#> 4 0.00065  mg/L                      NA ug/L
+#> 3 0.00065  mg/L                      NA ug/L    
+#> 4 0.0122   mg/L                      NA ug/L
 ```
 
 Then you can plot your data with ggplot2:
