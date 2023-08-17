@@ -182,6 +182,16 @@ connect_historic_db <- function(db_path = NULL) {
     stop("Please download the historic data with\n",
          " the 'download_historic_data' function.", call. = FALSE)
   }
+
+  #snippet added temporarily to alert users of issue with duckdb removing timestamp, see issue #79
+  #https://github.com/bcgov/rems/issues/79
+
+  if (getRversion() >= numeric_version("4.3") &&
+      packageVersion("duckdb") <= numeric_version("0.8.1.1")) {
+    warning("This version of rems running under R 4.3 causes the time component of COLLECTION_START and COLLECTION_END to be omitted when query results are returned. This will be fixed soon via the next release of the duckdb package (See https://github.com/bcgov/rems/issues/79).")
+  }
+  # end of snippet
+
   message("Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.")
   duckdb_connect(db_path)
 }
