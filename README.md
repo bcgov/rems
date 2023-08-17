@@ -37,11 +37,7 @@ The package is not available on CRAN, but can be installed using the
 # install.packages("devtools") # if not already installed
 
 library(devtools)
-#> Loading required package: usethis
 install_github("bcgov/rems")
-#> Using github PAT from envvar GITHUB_PAT
-#> Skipping install of 'rems' from a github remote, the SHA1 (c41bbdc9) has not changed since last install.
-#>   Use `force = TRUE` to force installation
 ```
 
 If you are asked during installation *“Would you like to install from
@@ -188,12 +184,12 @@ head(all_data)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0121580 50092680       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 2 0121580 50105403       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 3 0121580 08184843       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 4 0121580 08184771       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 5 0126400 08188795       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 6 0126400 08214498       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 1 0126400 08195503       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 2 0126400 08308654       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 3 0126400 <NA>           QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 4 0121580 08170541       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 5 0126400 08120854       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 6 0121580 08189653       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
 #> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -218,12 +214,12 @@ filter(all_data, UNIT != MDL_UNIT) %>%
 #> # A tibble: 6 × 4
 #>    RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
 #>     <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.00004 mg/L                    0.01 ug/L    
-#> 2 0.00079 mg/L                    0.05 ug/L    
-#> 3 0.0384  mg/L                    0.2  ug/L    
-#> 4 0.00094 mg/L                    0.02 ug/L    
-#> 5 0.00083 mg/L                    0.05 ug/L    
-#> 6 0.0947  mg/L                    0.2  ug/L
+#> 1 0.00113 mg/L                    0.02 ug/L    
+#> 2 0.00036 mg/L                    0.05 ug/L    
+#> 3 0.00142 mg/L                    0.02 ug/L    
+#> 4 0.897   mg/L                    0.2  ug/L    
+#> 5 0.19    mg/L                    0.2  ug/L    
+#> 6 0.00068 mg/L                    0.05 ug/L
 
 all_data <- standardize_mdl_units(all_data)
 #> Successfully converted units in 2172 rows.
