@@ -188,7 +188,7 @@ connect_historic_db <- function(db_path = NULL) {
 
   if (getRversion() >= numeric_version("4.3") &&
       packageVersion("duckdb") <= numeric_version("0.8.1.1")) {
-    warning("This version of rems running under R 4.3 causes the time component of COLLECTION_START and COLLECTION_END to be omitted when query results are returned. This will be fixed soon via the next release of the duckdb package (See https://github.com/bcgov/rems/issues/79).")
+    warning("This version of rems is using an outdated package version of duckdb which causes the time component of COLLECTION_START and COLLECTION_END to be omitted when query results are returned. To fix this issue, please ensure you update the duckdb package to version 0.8.1.3 or later. (See https://github.com/bcgov/rems/issues/79).")
   }
   # end of snippet
 
