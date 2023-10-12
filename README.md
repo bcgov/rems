@@ -14,6 +14,7 @@ status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/p
 status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 [![R-CMD-check](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 ## Overview
@@ -62,7 +63,7 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Caching data on disk...
 #> Loading data...
 nrow(two_year)
-#> [1] 2231866
+#> [1] 2411042
 head(two_year)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
@@ -152,10 +153,6 @@ library(dplyr)
 #> 
 #>     intersect, setdiff, setequal, union
 hist_db_con <- connect_historic_db()
-#> Warning in connect_historic_db(): This version of rems running under R 4.3
-#> causes the time component of COLLECTION_START and COLLECTION_END to be omitted
-#> when query results are returned. This will be fixed soon via the next release
-#> of the duckdb package (See https://github.com/bcgov/rems/issues/79).
 #> Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.
 hist_tbl <- attach_historic_data(hist_db_con)
 ```
@@ -184,12 +181,12 @@ head(all_data)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0126400 08195503       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 2 0126400 08308654       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 3 0126400 <NA>           QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 4 0121580 08170541       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
-#> 5 0126400 08120854       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 6 0121580 08189653       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 1 0126400 08176521       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 2 0126400 08203194       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 3 0126400 08168973       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 4 0126400 08124265       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 5 0126400 08140616       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 6 0126400 08187946       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
 #> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -214,12 +211,12 @@ filter(all_data, UNIT != MDL_UNIT) %>%
 #> # A tibble: 6 × 4
 #>    RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
 #>     <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.00113 mg/L                    0.02 ug/L    
-#> 2 0.00036 mg/L                    0.05 ug/L    
-#> 3 0.00142 mg/L                    0.02 ug/L    
-#> 4 0.897   mg/L                    0.2  ug/L    
-#> 5 0.19    mg/L                    0.2  ug/L    
-#> 6 0.00068 mg/L                    0.05 ug/L
+#> 1 0.0005  mg/L                    0.2  ug/L    
+#> 2 0.00076 mg/L                    0.02 ug/L    
+#> 3 0.00029 mg/L                    0.05 ug/L    
+#> 4 0.00069 mg/L                    0.02 ug/L    
+#> 5 0.00054 mg/L                    0.02 ug/L    
+#> 6 1.09    mg/L                    0.2  ug/L
 
 all_data <- standardize_mdl_units(all_data)
 #> Successfully converted units in 2172 rows.

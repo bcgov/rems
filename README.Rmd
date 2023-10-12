@@ -1,6 +1,9 @@
 ---
 output: github_document
 html_preview: true
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -18,24 +21,35 @@ knitr::opts_chunk$set(
 # rems `r as.character(read.dcf("DESCRIPTION", "Version"))`
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
+
+[![Codecov test
+coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CRAN status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
-[![R build status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
+[![R build
+status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
 [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 [![R-CMD-check](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 ## Overview
 
-An [R](https://www.r-project.org) package to download, import, and filter data from [B.C.'s Environmental Monitoring System (EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C) into R.
+An [R](https://www.r-project.org) package to download, import, and
+filter data from [B.C.'s Environmental Monitoring System
+(EMS)](http://www2.gov.bc.ca/gov/content?id=47D094EF8CF94B5A85F62F03D4956C0C)
+into R.
 
-The package pulls data from the [B.C. Data Catalogue EMS Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659), which is licenced under the [Open Government Licence - British Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
+The package pulls data from the [B.C. Data Catalogue EMS
+Results](https://catalogue.data.gov.bc.ca/dataset/949f2233-9612-4b06-92a9-903e817da659),
+which is licenced under the [Open Government Licence - British
+Columbia](http://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61).
 
 ## Installation
 
-The package is not available on CRAN, but can be installed using
-the [devtools](https://github.com/hadley/devtools) package:
+The package is not available on CRAN, but can be installed using the
+[devtools](https://github.com/hadley/devtools) package:
 
 ```{r, message=FALSE, results=FALSE}
 # install.packages("devtools") # if not already installed
@@ -44,14 +58,19 @@ library(devtools)
 install_github("bcgov/rems")
 ```
 
-If you are asked during installation *"Would you like to install from source the packages which require compilation"*, choose **"No"**.
+If you are asked during installation *"Would you like to install from
+source the packages which require compilation"*, choose **"No"**.
 
 ## Usage
 
-**NOTE:** If you are using Windows, you must be running the 64-bit version of R, as the 32-bit version cannot handle the size of the EMS data. In RStudio, click on Tools -> Global Options and ensure the 64 bit version is chosen in the *R version* box.
+**NOTE:** If you are using Windows, you must be running the 64-bit
+version of R, as the 32-bit version cannot handle the size of the EMS
+data. In RStudio, click on Tools -\> Global Options and ensure the 64
+bit version is chosen in the *R version* box.
 
-You can use the `get_ems_data()` function to get last two years of data (you can 
-also specify `which = "4yr"` to get the last four years of data):
+You can use the `get_ems_data()` function to get last two years of data
+(you can also specify `which = "4yr"` to get the last four years of
+data):
 
 ```{r}
 library(rems)
@@ -60,10 +79,11 @@ nrow(two_year)
 head(two_year)
 ```
 
-By default, `get_ems_data` imports only a subset of columns that are useful for 
-water quality analysis. This is controlled by the `cols` argument, which has a 
-default value of `"wq"`. This can be set to `"all"` to download all of the columns, 
-or a character vector of column names (see `?get_ems_data` for details).
+By default, `get_ems_data` imports only a subset of columns that are
+useful for water quality analysis. This is controlled by the `cols`
+argument, which has a default value of `"wq"`. This can be set to
+`"all"` to download all of the columns, or a character vector of column
+names (see `?get_ems_data` for details).
 
 You can filter the data to just get the records you want:
 
@@ -78,10 +98,12 @@ filtered_2yr <- filter_ems_data(two_year, emsid = c("0121580", "0126400"),
 
 ## Historic data
 
-You can also get the entire historic dataset, which has records back to 1964.
+You can also get the entire historic dataset, which has records back to
+1964.
 
-First download the dataset using `download_historic_data`, which downloads 
-the data and stores it in a [**DuckDB**](https://duckdb.org/) database:
+First download the dataset using `download_historic_data`, which
+downloads the data and stores it in a [**DuckDB**](https://duckdb.org/)
+database:
 
 ```{r, eval=!file.exists(rems:::write_db_path())}
 download_historic_data(ask = FALSE)
@@ -91,7 +113,8 @@ There are two ways to pull data from the historic dataset into R:
 
 ### 1. `read_historic_data()`
 
-Read in the historic data, supplying constraints to only import the records you want:
+Read in the historic data, supplying constraints to only import the
+records you want:
 
 ```{r}
 filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
@@ -105,9 +128,16 @@ filtered_historic <- read_historic_data(emsid = c("0121580", "0126400"),
 
 ### 2. `dplyr`
 
-You can also query the historic database using `dplyr`, which ultimately gives you more flexibility than using `read_historic_data`:
+You can also query the historic database using `dplyr`, which ultimately
+gives you more flexibility than using `read_historic_data`:
 
-First, create a connection to the database using `connect_historic_db()`, then attach the historic database table to your R session using `attach_historic_data()`. This creates an object which behaves like a data frame, which you can query with dplyr.  The advantage is that the computation is done in the database rather than importing all of the records into R (which would likely be impossible). This is illustrated below:
+First, create a connection to the database using
+`connect_historic_db()`, then attach the historic database table to your
+R session using `attach_historic_data()`. This creates an object which
+behaves like a data frame, which you can query with dplyr. The advantage
+is that the computation is done in the database rather than importing
+all of the records into R (which would likely be impossible). This is
+illustrated below:
 
 ```{r}
 library(dplyr)
@@ -126,11 +156,12 @@ filtered_historic2 <- hist_tbl %>%
       "Turbidity"))
 ```
 
+Finally, to get the results into your R session as a regular data frame,
+you must `collect()` it. Note that date/times are returned to R in the
+Pacific Standard Time timezone (PST; UTC-8).
 
-Finally, to get the results into your R session as a regular data frame, you must `collect()` it. 
-Note that date/times are returned to R in the Pacific Standard Time timezone (PST; UTC-8).
-
-You can combine the previously imported historic and two_year data sets using `bind_ems_data`:
+You can combine the previously imported historic and two_year data sets
+using `bind_ems_data`:
 
 ```{r}
 all_data <- bind_ems_data(filtered_2yr, filtered_historic)
@@ -139,7 +170,11 @@ head(all_data)
 
 ## Units
 
-There are many cases in EMS data where the unit of the `RESULT` (in the `UNIT` column) is different from that of `METHOD_DETECTION_LIMIT` (`MDL_UNIT` column). The `standardize_mdl_units()` function converts the `METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`, and updates the `MDL_UNIT` column accordingly:
+There are many cases in EMS data where the unit of the `RESULT` (in the
+`UNIT` column) is different from that of `METHOD_DETECTION_LIMIT`
+(`MDL_UNIT` column). The `standardize_mdl_units()` function converts the
+`METHOD_DETECTION_LIMIT` values to the same unit as `RESULT`, and
+updates the `MDL_UNIT` column accordingly:
 
 ```{r}
 # look at data with mismatched units:
@@ -165,20 +200,22 @@ ggplot(all_data, aes(x = COLLECTION_START, y = RESULT)) +
   facet_grid(PARAMETER ~ EMS_ID, scales = "free_y")
 ```
 
-When you are finished querying the historic database, you should close the 
-database connection using `disconnect_historic_db()`:
+When you are finished querying the historic database, you should close
+the database connection using `disconnect_historic_db()`:
 
 ```{r}
 disconnect_historic_db(hist_db_con)
 ```
 
-When the data are downloaded from the B.C. Data Catalogue, they are cached so that 
-you don't have to download it every time you want to use it. If there is newer 
-data available in the Catalogue, you will be prompted the next time you use 
-`get_ems_data` or `download_historic_data`.
+When the data are downloaded from the B.C. Data Catalogue, they are
+cached so that you don't have to download it every time you want to use
+it. If there is newer data available in the Catalogue, you will be
+prompted the next time you use `get_ems_data` or
+`download_historic_data`.
 
-If you want to remove the cached data, use the function `remove_data_cache`. You 
-can remove all the data, or just the "historic", "2yr", or "4yr":
+If you want to remove the cached data, use the function
+`remove_data_cache`. You can remove all the data, or just the
+"historic", "2yr", or "4yr":
 
 ```{r}
 remove_data_cache("2yr")
@@ -186,7 +223,14 @@ remove_data_cache("2yr")
 
 ## Long-term lake monitoring site search functions
 
-There are two ways to select active sites in the long-term lake monitoring program. The `lt_lake_sites` function selects the `EMS_ID` of active sites. The `lt_lake_req` function selects the `REQUISITION_ID` of active sites. Using the `lt_lake_sites` will provide all data collected under the `EMS_ID`, whereas using `lt_lake_req` will filter data collected by the long-term lakes monitoring group. Both functions can be used with `filter_ems_data` to easily pull data from active long-term lake monitoring sites. 
+There are two ways to select active sites in the long-term lake
+monitoring program. The `lt_lake_sites` function selects the `EMS_ID` of
+active sites. The `lt_lake_req` function selects the `REQUISITION_ID` of
+active sites. Using the `lt_lake_sites` will provide all data collected
+under the `EMS_ID`, whereas using `lt_lake_req` will filter data
+collected by the long-term lakes monitoring group. Both functions can be
+used with `filter_ems_data` to easily pull data from active long-term
+lake monitoring sites.
 
 ```{r}
 head(lt_lake_sites())
@@ -207,38 +251,44 @@ head(filtered_2yr_lt_lakes_req)
 
 ```
 
-
-
 ## Project Status
 
-Under development, but stable. Unlikely to break or change substantially.
+Under development, but stable. Unlikely to break or change
+substantially.
 
 ## Getting Help or Reporting an Issue
 
-To report bugs/issues/feature requests, please file an 
+To report bugs/issues/feature requests, please file an
 [issue](https://github.com/bcgov/rems/issues).
 
 ## How to Contribute
 
-If you would like to contribute to the package, please see our 
+If you would like to contribute to the package, please see our
 [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
-Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
+to abide by its terms.
 
 ## License
 
-    Copyright 2016 Province of British Columbia
+```         
+Copyright 2016 Province of British Columbia
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at 
 
-       http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-    
-This repository is maintained by [Environmental Reporting BC](http://www2.gov.bc.ca/gov/content?id=FF80E0B985F245CEA62808414D78C41B). Click [here](https://github.com/bcgov/EnvReportBC-RepoList) for a complete list of our repositories on GitHub.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+This repository is maintained by [Environmental Reporting
+BC](http://www2.gov.bc.ca/gov/content?id=FF80E0B985F245CEA62808414D78C41B).
+Click [here](https://github.com/bcgov/EnvReportBC-RepoList) for a
+complete list of our repositories on GitHub.
