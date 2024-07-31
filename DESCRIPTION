@@ -12,7 +12,7 @@ Authors@R:
              family = "Harker",
              role = "aut",
              email = "karly.harker@gov.bc.ca"),
-       person(given = "Zhuoyan",
+      person(given = "Zhuoyan",
              family = "Song",
              role = "aut",
              email = "zhuoyan.song@gov.bc.ca"),       

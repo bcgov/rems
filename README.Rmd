@@ -55,7 +55,7 @@ The package is not available on CRAN, but can be installed using the
 # install.packages("devtools") # if not already installed
 
 library(devtools)
-install_github("bcgov/rems")
+install_github("bcgov/rems@f82cc33dc59804850cf916e0677fb77ec8d4c23b")
 ```
 
 If you are asked during installation *"Would you like to install from
@@ -251,6 +251,24 @@ head(filtered_2yr_lt_lakes_req)
 
 ```
 
+## Canada-BC long-term river monitoring site search function
+
+`FP_river_sites` function is to select the `EMS_ID` of active sites. 
+
+```{r}
+# Select first six active sites
+head(FP_river_sites())
+
+
+#use with filter_ems_data
+filtered_2yr_FP_river_ems <- filter_ems_data(two_year, emsid = FP_river_sites(),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"))
+head(filtered_2yr_FP_river_ems)
+
+```
+
 ## Project Status
 
 Under development, but stable. Unlikely to break or change
@@ -273,19 +291,17 @@ to abide by its terms.
 ## License
 
 ```         
-Copyright 2016 Province of British Columbia
+Copyright 2024 Province of British Columbia
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at 
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+See the License for the specific language governing permissions and limitations under the License.
 ```
 
 This repository is maintained by [Environmental Reporting

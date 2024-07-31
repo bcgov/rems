@@ -38,7 +38,7 @@ The package is not available on CRAN, but can be installed using the
 # install.packages("devtools") # if not already installed
 
 library(devtools)
-install_github("bcgov/rems")
+install_github("bcgov/rems@f82cc33dc59804850cf916e0677fb77ec8d4c23b")
 ```
 
 If you are asked during installation *“Would you like to install from
@@ -62,18 +62,24 @@ two_year <- get_ems_data(which = "2yr", ask = FALSE)
 #> Reading data from file...
 #> Caching data on disk...
 #> Loading data...
+```
+
+``` r
 nrow(two_year)
-#> [1] 2411042
+#> [1] 2538854
+```
+
+``` r
 head(two_year)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
-#> 2 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
-#> 3 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
-#> 4 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
-#> 5 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
-#> 6 0120802 6983960101     COWICHAN RIVER AT HIG…     48.8     -124. RIVER,STREAM…
+#> 1 0120780 7055750101     CHEMAINUS RIVER AT HI…     48.9     -124. RIVER,STREAM…
+#> 2 0120780 7055750101     CHEMAINUS RIVER AT HI…     48.9     -124. RIVER,STREAM…
+#> 3 0120780 7055750101     CHEMAINUS RIVER AT HI…     48.9     -124. RIVER,STREAM…
+#> 4 0120780 7055750101     CHEMAINUS RIVER AT HI…     48.9     -124. RIVER,STREAM…
+#> 5 0120780 7055750101     CHEMAINUS RIVER AT HI…     48.9     -124. RIVER,STREAM…
+#> 6 0120780 7055750101     CHEMAINUS RIVER AT HI…     48.9     -124. RIVER,STREAM…
 #> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -152,8 +158,14 @@ library(dplyr)
 #> The following objects are masked from 'package:base':
 #> 
 #>     intersect, setdiff, setequal, union
+```
+
+``` r
 hist_db_con <- connect_historic_db()
 #> Please remember to use 'disconnect_historic_db()' when you are finished querying the historic database.
+```
+
+``` r
 hist_tbl <- attach_historic_data(hist_db_con)
 ```
 
@@ -181,12 +193,12 @@ head(all_data)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0126400 08176521       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 2 0126400 08203194       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 3 0126400 08168973       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 4 0126400 08124265       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 5 0126400 08140616       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
-#> 6 0126400 08187946       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 1 0126400 08328482       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 2 0126400 8189513        QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 3 0121580 50074438       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 4 0126400 08118336       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
+#> 5 0121580 08208334       ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 6 0126400 08198137       QUINSAM RIVER AT THE …     50.0     -125. RIVER,STREAM…
 #> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
@@ -211,15 +223,21 @@ filter(all_data, UNIT != MDL_UNIT) %>%
 #> # A tibble: 6 × 4
 #>    RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
 #>     <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.0005  mg/L                    0.2  ug/L    
-#> 2 0.00076 mg/L                    0.02 ug/L    
-#> 3 0.00029 mg/L                    0.05 ug/L    
-#> 4 0.00069 mg/L                    0.02 ug/L    
+#> 1 0.0012  mg/L                    0.2  ug/L    
+#> 2 0.0002  mg/L                    0.1  ug/L    
+#> 3 0.0114  mg/L                    0.2  ug/L    
+#> 4 0.0441  mg/L                    0.2  ug/L    
 #> 5 0.00054 mg/L                    0.02 ug/L    
-#> 6 1.09    mg/L                    0.2  ug/L
+#> 6 0.001   mg/L                    0.1  ug/L
+```
+
+``` r
 
 all_data <- standardize_mdl_units(all_data)
 #> Successfully converted units in 2172 rows.
+```
+
+``` r
 
 # Check again
 filter(all_data, UNIT != MDL_UNIT) %>% 
@@ -228,10 +246,10 @@ filter(all_data, UNIT != MDL_UNIT) %>%
 #> # A tibble: 4 × 4
 #>     RESULT UNIT  METHOD_DETECTION_LIMIT MDL_UNIT
 #>      <dbl> <chr>                  <dbl> <chr>   
-#> 1 0.00065  mg/L                      NA ug/L    
-#> 2 0.000005 mg/L                      NA ug/L    
-#> 3 0.00065  mg/L                      NA ug/L    
-#> 4 0.0122   mg/L                      NA ug/L
+#> 1 0.0122   mg/L                      NA ug/L    
+#> 2 0.00065  mg/L                      NA ug/L    
+#> 3 0.000005 mg/L                      NA ug/L    
+#> 4 0.00065  mg/L                      NA ug/L
 ```
 
 Then you can plot your data with ggplot2:
@@ -282,8 +300,14 @@ lake monitoring sites.
 ``` r
 head(lt_lake_sites())
 #> [1] "1100844" "1100953" "E207466" "E217509" "E217508" "E217507"
+```
+
+``` r
 head(lt_lake_req())
 #> [1] "50223257" "50223255" "50223254" "50223253" "50223252" "50223251"
+```
+
+``` r
 
 #use with filter_ems_data
 filtered_2yr_lt_lakes_ems <- filter_ems_data(two_year, emsid = lt_lake_sites(),
@@ -294,18 +318,21 @@ head(filtered_2yr_lt_lakes_ems)
 #> # A tibble: 6 × 24
 #>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
 #>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
-#> 1 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 2 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 3 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 4 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 5 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
-#> 6 0200052 50257596       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 1 0200052 50260659       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 2 0200052 50260659       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 3 0200052 50260659       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 4 0200052 50260659       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 5 0200052 50260659       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
+#> 6 0200052 50260659       WINDERMERE L. OFF TIM…     50.5     -116. LAKE OR POND 
 #> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
 #> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
 #> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
 #> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
+```
+
+``` r
 
 filtered_2yr_lt_lakes_req <- filter_ems_data(two_year, req_id = lt_lake_req(),
   parameter = c("Aluminum Total", "Cadmium Total",
@@ -320,6 +347,42 @@ head(filtered_2yr_lt_lakes_req)
 #> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
 #> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
 #> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>, …
+```
+
+## Canada-BC long-term river monitoring site search function
+
+`FP_river_sites` function is to select the `EMS_ID` of active sites.
+
+``` r
+# Select first six active sites
+head(FP_river_sites())
+#> [1] "E285129" "E269864" "E255962" "0200003" "E252119" "0200559"
+```
+
+``` r
+
+
+#use with filter_ems_data
+filtered_2yr_FP_river_ems <- filter_ems_data(two_year, emsid = FP_river_sites(),
+  parameter = c("Aluminum Total", "Cadmium Total",
+    "Copper Total", " Zinc Total",
+    "Turbidity"))
+head(filtered_2yr_FP_river_ems)
+#> # A tibble: 6 × 24
+#>   EMS_ID  REQUISITION_ID MONITORING_LOCATION    LATITUDE LONGITUDE LOCATION_TYPE
+#>   <chr>   <chr>          <chr>                     <dbl>     <dbl> <chr>        
+#> 1 0121580 VA23A0062      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 2 0121580 VA23A0062      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 3 0121580 VA23A0062      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 4 0121580 VA23A0062      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 5 0121580 VA23A1043      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> 6 0121580 VA23A1043      ENGLISHMAN RIVER AT P…     49.3     -124. RIVER,STREAM…
+#> # ℹ 18 more variables: COLLECTION_START <dttm>, LOCATION_PURPOSE <chr>,
+#> #   PERMIT <chr>, SAMPLE_CLASS <chr>, SAMPLE_STATE <chr>,
+#> #   SAMPLE_DESCRIPTOR <chr>, PARAMETER_CODE <chr>, PARAMETER <chr>,
+#> #   ANALYTICAL_METHOD_CODE <chr>, ANALYTICAL_METHOD <chr>, RESULT_LETTER <chr>,
+#> #   RESULT <dbl>, UNIT <chr>, METHOD_DETECTION_LIMIT <dbl>, MDL_UNIT <chr>,
+#> #   QA_INDEX_CODE <chr>, UPPER_DEPTH <dbl>, LOWER_DEPTH <dbl>
 ```
 
 ## Project Status
@@ -343,19 +406,17 @@ to abide by its terms.
 
 ## License
 
-    Copyright 2016 Province of British Columbia
+    Copyright 2024 Province of British Columbia
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at 
+    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
+    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    See the License for the specific language governing permissions and limitations under the License.
 
 This repository is maintained by [Environmental Reporting
 BC](http://www2.gov.bc.ca/gov/content?id=FF80E0B985F245CEA62808414D78C41B).
