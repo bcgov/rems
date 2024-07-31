@@ -12,6 +12,10 @@ Authors@R:
              family = "Harker",
              role = "aut",
              email = "karly.harker@gov.bc.ca"),
+       person(given = "Zhuoyan",
+             family = "Song",
+             role = "aut",
+             email = "zhuoyan.song@gov.bc.ca"),       
       person(given = "Province of British Columbia",
              role = "cph"))
 Description: Download and parse data from B.C.'s Environmental
@@ -44,5 +48,5 @@ Suggests:
     withr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
