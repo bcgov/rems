@@ -10,6 +10,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
+
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage(
+    "⚠️ The package '", pkgname, "' is being replaced and will soon be deprecated.\n",
+    "Data accessible through '", pkgname, "' is current to Feb 26, 2026.\n",
+    "Please use `renmods` instead. URL: https://github.com/bcgov/renmods."
+  )
+}
+
 ._remsenv_ <- new.env(parent = emptyenv()) # nocov
 
 register_ems_units <- function() {
