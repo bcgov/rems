@@ -25,16 +25,24 @@ knitr::opts_chunk$set(
 [![Codecov test
 coverage](https://codecov.io/gh/bcgov/rems/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/rems?branch=master)
 [![License](https://img.shields.io/badge/License-Apache2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/rems)](https://cran.r-project.org/package=rems)
 [![R build
 status](https://github.com/bcgov/rems/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/rems/actions)
-[![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+[![img](https://img.shields.io/badge/Lifecycle-Retired-d45500)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 [![R-CMD-check](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/rems/actions/workflows/R-CMD-check.yaml)
 
 <!-- badges: end -->
 
 ## Overview
+
+⚠️ **Deprecated package**
+
+**As of March 2026, this package is deprecated and is no longer maintained.**
+
+The package is frozen for reproducibility and to allow users time to transition to the new system. Data accessible using `rems` is current to February 26, 2026. 
+
+Please use the replacement package **[`renmods`](https://github.com/bcgov/renmods)**. The move to `renmods` follows the release of the new [B.C. Environmental Monitoring Data System (EnMoDs)](https://www2.gov.bc.ca/gov/content/environment/research-monitoring-reporting/monitoring/environmental-monitoring-data-system) as a replacement for EMS. 
+
+---
 
 An [R](https://www.r-project.org) package to download, import, and
 filter data from [B.C.'s Environmental Monitoring System
